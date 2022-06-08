@@ -9,7 +9,8 @@ import {createTheme, ThemeProvider} from "@mui/material";
 const theme = createTheme({
     palette: {
         background: {
-            paper: '#f5f5f5',
+            appbar: '#f5f5f5',
+            belowAppbarBox: '#212121',
         },
         text: {
             primary: '#212121',
@@ -19,6 +20,7 @@ const theme = createTheme({
 
 function GetMenuStyle(props) {
     if(window.length < 900) {
+        // TODO (@dtc03012): show the mobile menu when window size is less than 900, or it is mobile case
         return <MenuWindow/>
     }
     return <MenuWindow/>
@@ -31,13 +33,21 @@ class Header extends React.Component {
             <ThemeProvider theme={theme}>
                 <Box component="span">
                     <AppBar position="static" sx={{
-                        backgroundColor: 'background.paper',
+                        backgroundColor: 'background.appbar',
                         color: 'text.primary',
                     }}>
-                        <Toolbar sx={{display: 'flex', justifyContent: 'space-between'}}>
+                        <Toolbar sx={{
+                            display: 'flex', justifyContent: 'space-between'
+                        }}>
                             <Logo/>
                             <GetMenuStyle />
                         </Toolbar>
+                        <Box sx={{
+                            backgroundColor: 'background.belowAppbarBox',
+                            width: '100%',
+                            height: '20px',
+                        }}>
+                        </Box>
                     </AppBar>
                 </Box>
             </ThemeProvider>

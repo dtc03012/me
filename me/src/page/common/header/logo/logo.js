@@ -14,7 +14,7 @@ class Logo extends React.Component {
                     sx={{
                         mr: 2,
                         display: { xs: 'none', md: 'flex' },
-                        fontFamily: 'BlinkMacSystemFont',
+                        fontFamily: 'Cinzel',
                         fontWeight: 700,
                         letterSpacing: '.3rem',
                         color: 'inherit',
