@@ -10,36 +10,21 @@ import EmailIcon from '@mui/icons-material/Email';
 import HomeIcon from '@mui/icons-material/Home';
 import {CardActionArea, CardMedia, Grid, Link, Paper, Tooltip, Typography} from "@mui/material";
 import {ThemeProvider, createTheme} from "@mui/material/styles";
-import {withStyles} from '@mui/styles';
 
-const styles = theme => {
-    return ({
-        typography: {
-            color: 'inherit',
-            letterSpacing: '.1rem',
-            textAlign: 'center',
-        },
-    });
-};
-
-const nameTheme = createTheme({
+const Theme = createTheme({
     typography: {
-        fontFamily: 'Ubuntu',
-        fontSize: 16,
         body1: {
+            textAlign: 'center',
+            fontFamily: 'Ubuntu',
             fontSize: 20,
             fontWeight: 900,
-        }
-    },
-});
-
-const infoTheme = createTheme({
-    typography: {
-        fontFamily: 'Open+Sans',
-        fontSize: 14,
+        },
         body2: {
+            textAlign: 'center',
+            fontFamily: 'Open+Sans',
             fontSize: 14,
             fontWeight: 500,
+            letterSpacing: '.1rem',
         }
     },
 });
@@ -47,7 +32,6 @@ const infoTheme = createTheme({
 class Profile extends React.Component {
 
     render() {
-        const { classes } = this.props
         return (
             <Box sx={{
                     p: 2,
@@ -70,25 +54,25 @@ class Profile extends React.Component {
                         </Grid>
 
                         {/*My Information*/}
-                        <ThemeProvider theme={nameTheme}>
+                        <ThemeProvider theme={Theme}>
                             <Grid item>
-                                    <Typography className={classes.typography} variant="body1" sx={{
+                                    <Typography variant="body1" sx={{
                                         textDecoration: "underline",
                                     }}>
                                         Kim Tae Hun
                                     </Typography>
                            </Grid>
                         </ThemeProvider>
-                        <ThemeProvider theme={infoTheme}>
+                        <ThemeProvider theme={Theme}>
                             <Grid item>
-                                    <Typography className={classes.typography} variant="body2"  w>
+                                    <Typography variant="body2" >
                                         software engineer <br/>
                                         dtc03012 <br/>
                                         <Box sx={{
                                             display: 'flex',
                                         }}>
                                             <LocationOnIcon/>
-                                            <Typography className={classes.typography} variant="body2">
+                                            <Typography variant="body2">
                                                 Seoul, Republic of Korea
                                             </Typography>
                                         </Box>
@@ -142,4 +126,4 @@ class Profile extends React.Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(Profile);
+export default Profile;
