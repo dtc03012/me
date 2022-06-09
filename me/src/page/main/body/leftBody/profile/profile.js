@@ -8,37 +8,39 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import EmailIcon from '@mui/icons-material/Email';
 import HomeIcon from '@mui/icons-material/Home';
-import {CardActionArea, CardMedia, createTheme, Grid, Link, Paper, Tooltip, Typography} from "@mui/material";
-import {ThemeProvider, withStyles} from "@mui/styles";
+import {CardActionArea, CardMedia, Grid, Link, Paper, Tooltip, Typography} from "@mui/material";
+import {ThemeProvider, createTheme} from "@mui/material/styles";
+import {withStyles} from '@mui/styles';
 
 const styles = theme => {
     return ({
-        typography_name: {
+        typography: {
             color: 'inherit',
             letterSpacing: '.1rem',
             textAlign: 'center',
-            textDecoration: 'underline',
         },
-        typography_detail: {
-            color: 'inherit',
-            letterSpacing: '.1rem',
-            textAlign: 'center',
-            textDecoration: 'none',
-        }
     });
 };
 
-const nameFont = createTheme({
+const nameTheme = createTheme({
     typography: {
-        fontFamily: 'Cinzel',
-        fontSize: '30px',
+        fontFamily: 'Ubuntu',
+        fontSize: 16,
+        body1: {
+            fontSize: 20,
+            fontWeight: 900,
+        }
     },
 });
 
-const infoFont = createTheme({
+const infoTheme = createTheme({
     typography: {
-        fontFamily: 'Cinzel',
-        fontSize: '14px',
+        fontFamily: 'Open+Sans',
+        fontSize: 14,
+        body2: {
+            fontSize: 14,
+            fontWeight: 500,
+        }
     },
 });
 
@@ -68,29 +70,29 @@ class Profile extends React.Component {
                         </Grid>
 
                         {/*My Information*/}
-                        <ThemeProvider theme={nameFont}>
+                        <ThemeProvider theme={nameTheme}>
                             <Grid item>
-                                    <Typography className={classes.typography_name} >
+                                    <Typography className={classes.typography} variant="body1" sx={{
+                                        textDecoration: "underline",
+                                    }}>
                                         Kim Tae Hun
                                     </Typography>
                            </Grid>
                         </ThemeProvider>
-                        <ThemeProvider theme={infoFont}>
+                        <ThemeProvider theme={infoTheme}>
                             <Grid item>
-                                    <Typography className={classes.typography_detail}>
-                                        software engineer
+                                    <Typography className={classes.typography} variant="body2"  w>
+                                        software engineer <br/>
+                                        dtc03012 <br/>
+                                        <Box sx={{
+                                            display: 'flex',
+                                        }}>
+                                            <LocationOnIcon/>
+                                            <Typography className={classes.typography} variant="body2">
+                                                Seoul, Republic of Korea
+                                            </Typography>
+                                        </Box>
                                     </Typography>
-                                    <Typography className={classes.typography_detail}>
-                                        dtc03012
-                                    </Typography>
-                                    <Box sx={{
-                                        display: 'flex',
-                                    }}>
-                                        <LocationOnIcon/>
-                                        <Typography className={classes.typography_detail}>
-                                            Seoul, Republic of Korea
-                                        </Typography>
-                                    </Box>
                             </Grid>
                         </ThemeProvider>
 

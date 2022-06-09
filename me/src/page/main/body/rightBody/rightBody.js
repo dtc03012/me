@@ -7,6 +7,7 @@ class RightBody extends React.Component {
         return (
             <Box sx={{
                 p: 2,
+                width: '65%',
             }}>
                 <Introduction/>
             </Box>

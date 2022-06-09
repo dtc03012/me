@@ -8,6 +8,7 @@ class LeftBody extends React.Component {
             <Box sx={{
                 p: 2,
                 width: "25%",
+                display: { xs: 'none', sm: 'none', md: 'block' },
             }}>
                 <Profile/>
             </Box>
