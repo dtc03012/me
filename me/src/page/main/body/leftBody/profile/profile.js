@@ -16,13 +16,13 @@ const Theme = createTheme({
         body1: {
             textAlign: 'center',
             fontFamily: 'Ubuntu',
-            fontSize: 20,
-            fontWeight: 900,
+            fontSize: 24,
+            fontWeight: 1000,
         },
         body2: {
             textAlign: 'center',
             fontFamily: 'Open+Sans',
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: 500,
             letterSpacing: '.1rem',
         }

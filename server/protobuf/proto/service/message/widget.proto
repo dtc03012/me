@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package me;
+
+option go_package = "github.com/dtc03012/me/protobuf/proto/service/message";
+
+message CheckDistrictWeatherRequest {
+  string district = 1;
+}
+
+message CheckDistrictWeatherResponse {
+
+}

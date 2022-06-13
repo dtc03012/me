@@ -15,7 +15,7 @@ function CreateMenuButton(name) {
                 color: 'white',
             },
             paddingRight: 2, paddingLeft: 2,
-            fontSize: '18px', fontWeight: 570, fontFamily: 'Cantarell',
+            fontSize: '18px', fontWeight: 860, fontFamily: 'Cinzel',
             color: 'text.primary',
         }}>
             <Link href={url} underline="none" color="inherit">

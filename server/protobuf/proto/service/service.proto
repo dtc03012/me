@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package me;
+
+import "google/api/annotations.proto";
+import "proto/service/message/widget.proto";
+
+option go_package = "github.com/dtc03012/me/protobuf/proto/service";
+
+
+service me {
+  rpc CheckDistrictWeather(CheckDistrictWeatherRequest) returns (CheckDistrictWeatherResponse) {
+    option (google.api.http) = {
+      get: "/v2/check-district-weather/{district}"
+    };
+  }
+}
