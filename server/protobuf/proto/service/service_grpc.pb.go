@@ -36,7 +36,7 @@ func NewMeClient(cc grpc.ClientConnInterface) MeClient {
 
 func (c *meClient) CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error) {
 	out := new(message.CheckDistrictWeatherResponse)
-	err := c.cc.Invoke(ctx, "/me.me/CheckDistrictWeather", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v2.service.me/CheckDistrictWeather", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func _Me_CheckDistrictWeather_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/me.me/CheckDistrictWeather",
+		FullMethod: "/v2.service.me/CheckDistrictWeather",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MeServer).CheckDistrictWeather(ctx, req.(*message.CheckDistrictWeatherRequest))
@@ -93,7 +93,7 @@ func _Me_CheckDistrictWeather_Handler(srv interface{}, ctx context.Context, dec 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Me_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "me.me",
+	ServiceName: "v2.service.me",
 	HandlerType: (*MeServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

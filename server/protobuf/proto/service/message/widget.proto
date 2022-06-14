@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package me;
+package v2.service.message;
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/service/message";
 

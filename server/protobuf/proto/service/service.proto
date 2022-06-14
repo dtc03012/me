@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package me;
+package v2.service;
 
 import "google/api/annotations.proto";
 import "proto/service/message/widget.proto";
@@ -9,7 +9,7 @@ option go_package = "github.com/dtc03012/me/protobuf/proto/service";
 
 
 service me {
-  rpc CheckDistrictWeather(CheckDistrictWeatherRequest) returns (CheckDistrictWeatherResponse) {
+  rpc CheckDistrictWeather(service.message.CheckDistrictWeatherRequest) returns (service.message.CheckDistrictWeatherResponse) {
     option (google.api.http) = {
       get: "/v2/check-district-weather/{district}"
     };
