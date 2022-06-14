@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	pb "github.com/dtc03012/me/protobuf/proto/service"
+	"github.com/dtc03012/me/service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"log"
+	"net"
 	"net/http"
+	"sync"
 )
 
 const (
@@ -14,13 +17,23 @@ const (
 	grpcPortNumber = "9001"
 )
 
-func main() {
+func startgRPCServer() {
+	lis, err := net.Listen("tcp", ":"+grpcPortNumber)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
 
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	grpcServer := grpc.NewServer()
+	pb.RegisterMeServer(grpcServer, &service.MeServer{})
+
+	log.Printf("start gRPC server on %s port", grpcPortNumber)
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
+}
+
+func startGatewayServer(ctx context.Context) {
 	mux := runtime.NewServeMux()
-
 	options := []grpc.DialOption{
 		grpc.WithInsecure(),
 	}
@@ -38,4 +51,25 @@ func main() {
 	if err := http.ListenAndServe(":"+portNumber, mux); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
+}
+func main() {
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	wg := new(sync.WaitGroup)
+	wg.Add(2)
+
+	go func() {
+		startgRPCServer()
+		wg.Done()
+	}()
+
+	go func() {
+		startGatewayServer(ctx)
+		wg.Done()
+	}()
+
+	wg.Wait()
 }
