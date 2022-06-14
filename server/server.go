@@ -17,7 +17,7 @@ const (
 	grpcPortNumber = "9001"
 )
 
-func startgRPCServer() {
+func startGRPCServer() {
 	lis, err := net.Listen("tcp", ":"+grpcPortNumber)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -52,17 +52,13 @@ func startGatewayServer(ctx context.Context) {
 		log.Fatalf("failed to serve: %s", err)
 	}
 }
-func main() {
 
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
+func startServer(ctx context.Context) {
 	wg := new(sync.WaitGroup)
 	wg.Add(2)
 
 	go func() {
-		startgRPCServer()
+		startGRPCServer()
 		wg.Done()
 	}()
 
@@ -72,4 +68,13 @@ func main() {
 	}()
 
 	wg.Wait()
+}
+
+func main() {
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	startServer(ctx)
 }
