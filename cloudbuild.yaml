@@ -1,5 +1,3 @@
 steps:
   - name: 'gcr.io/cloud-builders/npm'
-    args: ['install', '-force']
-  - name: 'ubuntu'
-    args: ['ls']
+    args: ['install', '/me/package.json', '-force']
