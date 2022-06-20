@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/dtc03012/me/handler"
 	pb "github.com/dtc03012/me/protobuf/proto/service"
-	"github.com/dtc03012/me/service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"log"
@@ -24,7 +24,7 @@ func startGRPCServer() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterMeServer(grpcServer, &service.MeServer{})
+	pb.RegisterMeServer(grpcServer, &handler.MeServer{})
 
 	log.Printf("start gRPC server on %s port", grpcPortNumber)
 	if err := grpcServer.Serve(lis); err != nil {

@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS me.admin(
+    id VARCHAR(30) NOT NULL,
+    password VARCHAR(30) NOT NULL,
+    PRIMARY KEY (id)
+);

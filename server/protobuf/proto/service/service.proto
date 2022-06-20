@@ -4,11 +4,20 @@ package v2.service;
 
 import "google/api/annotations.proto";
 import "proto/service/message/widget.proto";
+import "proto/service/message/admin.proto";
 
-option go_package = "github.com/dtc03012/me/protobuf/proto/service";
+option go_package = "github.com/dtc03012/me/protobuf/proto/handler";
 
 
 service me {
+
+  rpc CheckAdmin(service.message.CheckAdminRequest) returns (service.message.CheckAdminResponse) {
+    option (google.api.http) = {
+      post: "/v2/check-admin"
+      body: "*"
+    };
+  }
+
   rpc CheckDistrictWeather(service.message.CheckDistrictWeatherRequest) returns (service.message.CheckDistrictWeatherResponse) {
     option (google.api.http) = {
       get: "/v2/check-district-weather/{district}"

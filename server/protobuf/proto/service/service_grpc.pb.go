@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.1
-// source: proto/service/service.proto
+// source: proto/handler/handler.proto
 
 package service
 
@@ -19,10 +19,11 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// MeClient is the client API for Me service.
+// MeClient is the client API for Me handler.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MeClient interface {
+	CheckAdmin(ctx context.Context, in *message.CheckAdminRequest, opts ...grpc.CallOption) (*message.CheckAdminResponse, error)
 	CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error)
 }
 
@@ -34,19 +35,29 @@ func NewMeClient(cc grpc.ClientConnInterface) MeClient {
 	return &meClient{cc}
 }
 
-func (c *meClient) CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error) {
-	out := new(message.CheckDistrictWeatherResponse)
-	err := c.cc.Invoke(ctx, "/v2.service.me/CheckDistrictWeather", in, out, opts...)
+func (c *meClient) CheckAdmin(ctx context.Context, in *message.CheckAdminRequest, opts ...grpc.CallOption) (*message.CheckAdminResponse, error) {
+	out := new(message.CheckAdminResponse)
+	err := c.cc.Invoke(ctx, "/v2.handler.me/CheckAdmin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MeServer is the server API for Me service.
+func (c *meClient) CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error) {
+	out := new(message.CheckDistrictWeatherResponse)
+	err := c.cc.Invoke(ctx, "/v2.handler.me/CheckDistrictWeather", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MeServer is the server API for Me handler.
 // All implementations must embed UnimplementedMeServer
 // for forward compatibility
 type MeServer interface {
+	CheckAdmin(context.Context, *message.CheckAdminRequest) (*message.CheckAdminResponse, error)
 	CheckDistrictWeather(context.Context, *message.CheckDistrictWeatherRequest) (*message.CheckDistrictWeatherResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
@@ -55,12 +66,15 @@ type MeServer interface {
 type UnimplementedMeServer struct {
 }
 
+func (UnimplementedMeServer) CheckAdmin(context.Context, *message.CheckAdminRequest) (*message.CheckAdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckAdmin not implemented")
+}
 func (UnimplementedMeServer) CheckDistrictWeather(context.Context, *message.CheckDistrictWeatherRequest) (*message.CheckDistrictWeatherResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckDistrictWeather not implemented")
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
-// UnsafeMeServer may be embedded to opt out of forward compatibility for this service.
+// UnsafeMeServer may be embedded to opt out of forward compatibility for this handler.
 // Use of this interface is not recommended, as added methods to MeServer will
 // result in compilation errors.
 type UnsafeMeServer interface {
@@ -69,6 +83,24 @@ type UnsafeMeServer interface {
 
 func RegisterMeServer(s grpc.ServiceRegistrar, srv MeServer) {
 	s.RegisterService(&Me_ServiceDesc, srv)
+}
+
+func _Me_CheckAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.CheckAdminRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).CheckAdmin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.handler.me/CheckAdmin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).CheckAdmin(ctx, req.(*message.CheckAdminRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Me_CheckDistrictWeather_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -81,7 +113,7 @@ func _Me_CheckDistrictWeather_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v2.service.me/CheckDistrictWeather",
+		FullMethod: "/v2.handler.me/CheckDistrictWeather",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MeServer).CheckDistrictWeather(ctx, req.(*message.CheckDistrictWeatherRequest))
@@ -89,18 +121,22 @@ func _Me_CheckDistrictWeather_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-// Me_ServiceDesc is the grpc.ServiceDesc for Me service.
+// Me_ServiceDesc is the grpc.ServiceDesc for Me handler.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Me_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "v2.service.me",
+	ServiceName: "v2.handler.me",
 	HandlerType: (*MeServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CheckAdmin",
+			Handler:    _Me_CheckAdmin_Handler,
+		},
 		{
 			MethodName: "CheckDistrictWeather",
 			Handler:    _Me_CheckDistrictWeather_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/service/service.proto",
+	Metadata: "proto/handler/handler.proto",
 }

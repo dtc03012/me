@@ -4,10 +4,10 @@ package v2.service.message;
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/handler/message";
 
-message CheckDistrictWeatherRequest {
-  string district = 1;
+message CheckAdminRequest {
+  string password = 1;
 }
 
-message CheckDistrictWeatherResponse {
-
+message CheckAdminResponse {
+  bool is_admin = 1;
 }
