@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
 )
@@ -19,8 +18,8 @@ func SetupMock() (context.Context, *sqlx.Tx, sqlmock.Sqlmock, error) {
 
 	mock.ExpectBegin()
 	tx, err := sqlxDB.BeginTxx(ctx, nil)
+
 	if err != nil {
-		fmt.Println(err)
 		return nil, nil, nil, err
 	}
 

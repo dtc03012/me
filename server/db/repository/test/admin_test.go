@@ -1,8 +1,9 @@
-package repository
+package test
 
 import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/dtc03012/me/db"
+	"github.com/dtc03012/me/db/repository"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -16,7 +17,7 @@ func TestAdmin_GetPassword(t *testing.T) {
 	mock.ExpectQuery("SELECT password FROM me.admin WHERE id = 'admin'").
 		WillReturnRows(sqlmock.NewRows([]string{"password"}).AddRow("password"))
 
-	admin := NewAdminRepo()
+	admin := repository.NewAdminRepo()
 	password, err := admin.GetPassword(ctx, tx)
 	assert.Equal(t, "password", password)
 
