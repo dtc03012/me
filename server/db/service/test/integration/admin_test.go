@@ -14,7 +14,7 @@ func TestIntegration_CheckAdmin(t *testing.T) {
 	tx, err := svc.BeginTx(ctx, nil)
 	assert.NoError(t, err)
 
-	isCorrect, err := svc.CheckAdmin(ctx, tx, os.Getenv("ME_PASSWORD"))
+	isCorrect, err := svc.CheckAdmin(ctx, tx, os.Getenv("ME_ADMIN_PASSWORD"))
 	assert.NoError(t, err)
 	assert.Equal(t, true, isCorrect)
 
