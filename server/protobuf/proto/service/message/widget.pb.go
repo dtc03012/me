@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.0
 // 	protoc        v3.21.1
-// source: proto/handler/message/widget.proto
+// source: proto/service/message/widget.proto
 
 package message
 
@@ -138,8 +138,8 @@ func file_proto_service_message_widget_proto_rawDescGZIP() []byte {
 
 var file_proto_service_message_widget_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_proto_service_message_widget_proto_goTypes = []interface{}{
-	(*CheckDistrictWeatherRequest)(nil),  // 0: v2.handler.message.CheckDistrictWeatherRequest
-	(*CheckDistrictWeatherResponse)(nil), // 1: v2.handler.message.CheckDistrictWeatherResponse
+	(*CheckDistrictWeatherRequest)(nil),  // 0: v2.service.message.CheckDistrictWeatherRequest
+	(*CheckDistrictWeatherResponse)(nil), // 1: v2.service.message.CheckDistrictWeatherResponse
 }
 var file_proto_service_message_widget_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

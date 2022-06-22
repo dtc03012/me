@@ -20,7 +20,9 @@ const (
 type DBService interface {
 	BeginTx(ctx context.Context, opts *sql.TxOptions) (*sqlx.Tx, error)
 
-	CheckAdmin(ctx context.Context, tx *sqlx.Tx, password string) (bool, error)
+	CheckAdminPassword(ctx context.Context, tx *sqlx.Tx, password string) (bool, error)
+	InsertAdminUUID(ctx context.Context, tx *sqlx.Tx, uuid string) error
+	FindAdminUUID(ctx context.Context, tx *sqlx.Tx, uuid string) (bool, error)
 }
 
 type dbService struct {
@@ -43,12 +45,14 @@ func (dbs *dbService) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sqlx.T
 
 	db, err := sqlx.Connect("mysql", dataSourceName)
 	if err != nil {
+		fmt.Println("asdf")
 		return nil, err
 	}
 
 	tx, err := db.BeginTxx(ctx, opts)
 
 	if err != nil {
+		fmt.Println("asdfv")
 		return nil, err
 	}
 

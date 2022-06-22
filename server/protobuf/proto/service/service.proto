@@ -6,14 +6,27 @@ import "google/api/annotations.proto";
 import "proto/service/message/widget.proto";
 import "proto/service/message/admin.proto";
 
-option go_package = "github.com/dtc03012/me/protobuf/proto/handler";
+option go_package = "github.com/dtc03012/me/protobuf/proto/service";
 
 
 service me {
 
-  rpc CheckAdmin(service.message.CheckAdminRequest) returns (service.message.CheckAdminResponse) {
+  rpc FindAdminUUID(service.message.FindAdminUUIDRequest) returns (service.message.FindAdminUUIDResponse) {
     option (google.api.http) = {
-      post: "/v2/check-admin"
+      get: "/v2/find-admin-uuid"
+    };
+  }
+
+  rpc InsertAdminUUID(service.message.InsertAdminUUIDRequest) returns (service.message.InsertAdminUUIDResponse) {
+    option (google.api.http) = {
+      post: "/v2/insert-admin-uuid"
+      body: "*"
+    };
+  }
+
+  rpc CheckAdmin(service.message.CheckAdminPasswordRequest) returns (service.message.CheckAdminPasswordResponse) {
+    option (google.api.http) = {
+      post: "/v2/check-admin-password"
       body: "*"
     };
   }

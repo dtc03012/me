@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS me.admin;
+DROP TABLE IF EXISTS admin;

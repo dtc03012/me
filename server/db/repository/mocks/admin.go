@@ -15,6 +15,27 @@ type Admin struct {
 	mock.Mock
 }
 
+// FindUUID provides a mock function with given fields: ctx, tx, uuid
+func (_m *Admin) FindUUID(ctx context.Context, tx *sqlx.Tx, uuid string) (string, error) {
+	ret := _m.Called(ctx, tx, uuid)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, string) string); ok {
+		r0 = rf(ctx, tx, uuid)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, string) error); ok {
+		r1 = rf(ctx, tx, uuid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetPassword provides a mock function with given fields: ctx, tx
 func (_m *Admin) GetPassword(ctx context.Context, tx *sqlx.Tx) (string, error) {
 	ret := _m.Called(ctx, tx)
@@ -34,6 +55,20 @@ func (_m *Admin) GetPassword(ctx context.Context, tx *sqlx.Tx) (string, error) {
 	}
 
 	return r0, r1
+}
+
+// InsertUUID provides a mock function with given fields: ctx, tx, uuid
+func (_m *Admin) InsertUUID(ctx context.Context, tx *sqlx.Tx, uuid string) error {
+	ret := _m.Called(ctx, tx, uuid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, string) error); ok {
+		r0 = rf(ctx, tx, uuid)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 type mockConstructorTestingTNewAdmin interface {

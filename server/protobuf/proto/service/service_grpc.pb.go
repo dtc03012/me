@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.1
-// source: proto/handler/handler.proto
+// source: proto/service/service.proto
 
 package service
 
@@ -19,11 +19,13 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// MeClient is the client API for Me handler.
+// MeClient is the client API for Me service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MeClient interface {
-	CheckAdmin(ctx context.Context, in *message.CheckAdminRequest, opts ...grpc.CallOption) (*message.CheckAdminResponse, error)
+	FindAdminUUID(ctx context.Context, in *message.FindAdminUUIDRequest, opts ...grpc.CallOption) (*message.FindAdminUUIDResponse, error)
+	InsertAdminUUID(ctx context.Context, in *message.InsertAdminUUIDRequest, opts ...grpc.CallOption) (*message.InsertAdminUUIDResponse, error)
+	CheckAdmin(ctx context.Context, in *message.CheckAdminPasswordRequest, opts ...grpc.CallOption) (*message.CheckAdminPasswordResponse, error)
 	CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error)
 }
 
@@ -35,9 +37,27 @@ func NewMeClient(cc grpc.ClientConnInterface) MeClient {
 	return &meClient{cc}
 }
 
-func (c *meClient) CheckAdmin(ctx context.Context, in *message.CheckAdminRequest, opts ...grpc.CallOption) (*message.CheckAdminResponse, error) {
-	out := new(message.CheckAdminResponse)
-	err := c.cc.Invoke(ctx, "/v2.handler.me/CheckAdmin", in, out, opts...)
+func (c *meClient) FindAdminUUID(ctx context.Context, in *message.FindAdminUUIDRequest, opts ...grpc.CallOption) (*message.FindAdminUUIDResponse, error) {
+	out := new(message.FindAdminUUIDResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/FindAdminUUID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) InsertAdminUUID(ctx context.Context, in *message.InsertAdminUUIDRequest, opts ...grpc.CallOption) (*message.InsertAdminUUIDResponse, error) {
+	out := new(message.InsertAdminUUIDResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/InsertAdminUUID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) CheckAdmin(ctx context.Context, in *message.CheckAdminPasswordRequest, opts ...grpc.CallOption) (*message.CheckAdminPasswordResponse, error) {
+	out := new(message.CheckAdminPasswordResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/CheckAdmin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,18 +66,20 @@ func (c *meClient) CheckAdmin(ctx context.Context, in *message.CheckAdminRequest
 
 func (c *meClient) CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error) {
 	out := new(message.CheckDistrictWeatherResponse)
-	err := c.cc.Invoke(ctx, "/v2.handler.me/CheckDistrictWeather", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v2.service.me/CheckDistrictWeather", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MeServer is the server API for Me handler.
+// MeServer is the server API for Me service.
 // All implementations must embed UnimplementedMeServer
 // for forward compatibility
 type MeServer interface {
-	CheckAdmin(context.Context, *message.CheckAdminRequest) (*message.CheckAdminResponse, error)
+	FindAdminUUID(context.Context, *message.FindAdminUUIDRequest) (*message.FindAdminUUIDResponse, error)
+	InsertAdminUUID(context.Context, *message.InsertAdminUUIDRequest) (*message.InsertAdminUUIDResponse, error)
+	CheckAdmin(context.Context, *message.CheckAdminPasswordRequest) (*message.CheckAdminPasswordResponse, error)
 	CheckDistrictWeather(context.Context, *message.CheckDistrictWeatherRequest) (*message.CheckDistrictWeatherResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
@@ -66,7 +88,13 @@ type MeServer interface {
 type UnimplementedMeServer struct {
 }
 
-func (UnimplementedMeServer) CheckAdmin(context.Context, *message.CheckAdminRequest) (*message.CheckAdminResponse, error) {
+func (UnimplementedMeServer) FindAdminUUID(context.Context, *message.FindAdminUUIDRequest) (*message.FindAdminUUIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindAdminUUID not implemented")
+}
+func (UnimplementedMeServer) InsertAdminUUID(context.Context, *message.InsertAdminUUIDRequest) (*message.InsertAdminUUIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertAdminUUID not implemented")
+}
+func (UnimplementedMeServer) CheckAdmin(context.Context, *message.CheckAdminPasswordRequest) (*message.CheckAdminPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckAdmin not implemented")
 }
 func (UnimplementedMeServer) CheckDistrictWeather(context.Context, *message.CheckDistrictWeatherRequest) (*message.CheckDistrictWeatherResponse, error) {
@@ -74,7 +102,7 @@ func (UnimplementedMeServer) CheckDistrictWeather(context.Context, *message.Chec
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
-// UnsafeMeServer may be embedded to opt out of forward compatibility for this handler.
+// UnsafeMeServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to MeServer will
 // result in compilation errors.
 type UnsafeMeServer interface {
@@ -85,8 +113,44 @@ func RegisterMeServer(s grpc.ServiceRegistrar, srv MeServer) {
 	s.RegisterService(&Me_ServiceDesc, srv)
 }
 
+func _Me_FindAdminUUID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.FindAdminUUIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).FindAdminUUID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/FindAdminUUID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).FindAdminUUID(ctx, req.(*message.FindAdminUUIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_InsertAdminUUID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.InsertAdminUUIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).InsertAdminUUID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/InsertAdminUUID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).InsertAdminUUID(ctx, req.(*message.InsertAdminUUIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Me_CheckAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(message.CheckAdminRequest)
+	in := new(message.CheckAdminPasswordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -95,10 +159,10 @@ func _Me_CheckAdmin_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v2.handler.me/CheckAdmin",
+		FullMethod: "/v2.service.me/CheckAdmin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MeServer).CheckAdmin(ctx, req.(*message.CheckAdminRequest))
+		return srv.(MeServer).CheckAdmin(ctx, req.(*message.CheckAdminPasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -113,7 +177,7 @@ func _Me_CheckDistrictWeather_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v2.handler.me/CheckDistrictWeather",
+		FullMethod: "/v2.service.me/CheckDistrictWeather",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MeServer).CheckDistrictWeather(ctx, req.(*message.CheckDistrictWeatherRequest))
@@ -121,13 +185,21 @@ func _Me_CheckDistrictWeather_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-// Me_ServiceDesc is the grpc.ServiceDesc for Me handler.
+// Me_ServiceDesc is the grpc.ServiceDesc for Me service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Me_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "v2.handler.me",
+	ServiceName: "v2.service.me",
 	HandlerType: (*MeServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "FindAdminUUID",
+			Handler:    _Me_FindAdminUUID_Handler,
+		},
+		{
+			MethodName: "InsertAdminUUID",
+			Handler:    _Me_InsertAdminUUID_Handler,
+		},
 		{
 			MethodName: "CheckAdmin",
 			Handler:    _Me_CheckAdmin_Handler,
@@ -138,5 +210,5 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/handler/handler.proto",
+	Metadata: "proto/service/service.proto",
 }

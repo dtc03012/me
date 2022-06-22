@@ -2,12 +2,27 @@ syntax = "proto3";
 
 package v2.service.message;
 
-option go_package = "github.com/dtc03012/me/protobuf/proto/handler/message";
+option go_package = "github.com/dtc03012/me/protobuf/proto/service/message";
 
-message CheckAdminRequest {
+message FindAdminUUIDRequest {
+  string uuid = 1;
+}
+
+message FindAdminUUIDResponse {
+  bool is_find = 1;
+}
+
+message InsertAdminUUIDRequest {
+  string uuid = 1;
+}
+
+message InsertAdminUUIDResponse {
+}
+
+message CheckAdminPasswordRequest {
   string password = 1;
 }
 
-message CheckAdminResponse {
+message CheckAdminPasswordResponse {
   bool is_admin = 1;
 }

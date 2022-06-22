@@ -24,7 +24,7 @@ func startGRPCServer() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterMeServer(grpcServer, &handler.MeServer{})
+	pb.RegisterMeServer(grpcServer, handler.NewMeServer())
 
 	log.Printf("start gRPC server on %s port", grpcPortNumber)
 	if err := grpcServer.Serve(lis); err != nil {

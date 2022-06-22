@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package v2.service.message;
 
-option go_package = "github.com/dtc03012/me/protobuf/proto/handler/message";
+option go_package = "github.com/dtc03012/me/protobuf/proto/service/message";
 
 message CheckDistrictWeatherRequest {
   string district = 1;
