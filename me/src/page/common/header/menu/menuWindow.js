@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import KeyIcon from '@mui/icons-material/Key';
-import {Button, IconButton, Tooltip, Link} from "@mui/material";
+import {Button, Link} from "@mui/material";
+import Admin from "./admin";
 
 
 function CreateMenuButton(name) {
@@ -34,11 +34,7 @@ class MenuWindow extends React.Component {
                 {CreateMenuButton('Board')}
                 {CreateMenuButton('Projects')}
                 {CreateMenuButton('Photo')}
-                <Tooltip title="Admin">
-                    <IconButton>
-                        <KeyIcon sx={{ p : 2 }} />
-                    </IconButton>
-                </Tooltip>
+                <Admin/>
             </Box>
         )
     }

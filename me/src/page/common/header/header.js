@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuWindow from "./menu/menuWindow";
-import axios from 'axios';
 import {createTheme, ThemeProvider} from "@mui/material";
 
 const theme = createTheme({
@@ -27,27 +26,7 @@ function GetMenuStyle(props) {
     return <MenuWindow/>
 }
 
-function CheckAdminLogin() {
-    if(localStorage.getItem("admin")) {
-        axios.get('http://localhost:9000/v2/check-admin').then(
-            response => {
-                if(response.data == localStorage.getItem("admin")) {
-                    return true
-                }
-            }
-        )
-    }
-    return false
-}
-
 class Header extends React.Component {
-
-    constructor(props) {
-        super(props);
-        // Don't call this.setState() here!
-        this.state = { IsAdmin: CheckAdminLogin() };
-        this.handleClick = this.handleClick.bind(this);
-    }
 
     render() {
         return (
