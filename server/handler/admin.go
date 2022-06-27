@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"github.com/dtc03012/me/protobuf/proto/service/message"
 )
 
@@ -40,7 +39,6 @@ func (m *MeServer) FindAdminUUID(ctx context.Context, req *message.FindAdminUUID
 
 	defer tx.Rollback()
 
-	fmt.Println("f3 " + req.Uuid)
 	isFind, err := m.db.FindAdminUUID(ctx, tx, req.Uuid)
 	if err != nil {
 		return nil, err

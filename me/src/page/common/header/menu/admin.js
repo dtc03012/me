@@ -48,13 +48,11 @@ class Admin extends React.Component {
 
     CheckAdminLogin = (event) =>  {
         let uuid = localStorage.getItem("uuid")
-        console.log(uuid)
         if(uuid) {
             axios.post('/v2/find-admin-uuid', {
                 uuid: uuid
             }).then(
                 response => {
-                    console.log(response)
                     if(response.data.isFind) {
                         return true
                     }
