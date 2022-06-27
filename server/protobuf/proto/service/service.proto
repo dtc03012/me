@@ -13,7 +13,8 @@ service me {
 
   rpc FindAdminUUID(service.message.FindAdminUUIDRequest) returns (service.message.FindAdminUUIDResponse) {
     option (google.api.http) = {
-      get: "/v2/find-admin-uuid"
+      post: "/v2/find-admin-uuid"
+      body: "*"
     };
   }
 
@@ -24,9 +25,9 @@ service me {
     };
   }
 
-  rpc CheckAdmin(service.message.CheckAdminPasswordRequest) returns (service.message.CheckAdminPasswordResponse) {
+  rpc LoginAdmin(service.message.LoginAdminRequest) returns (service.message.LoginAdminResponse) {
     option (google.api.http) = {
-      post: "/v2/check-admin-password"
+      post: "/v2/login-admin"
       body: "*"
     };
   }

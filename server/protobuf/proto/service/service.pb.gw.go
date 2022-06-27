@@ -32,18 +32,15 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-var (
-	filter_Me_FindAdminUUID_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
 func request_Me_FindAdminUUID_0(ctx context.Context, marshaler runtime.Marshaler, client MeClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq message.FindAdminUUIDRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_Me_FindAdminUUID_0); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -56,10 +53,11 @@ func local_request_Me_FindAdminUUID_0(ctx context.Context, marshaler runtime.Mar
 	var protoReq message.FindAdminUUIDRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_Me_FindAdminUUID_0); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -102,8 +100,8 @@ func local_request_Me_InsertAdminUUID_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_Me_CheckAdmin_0(ctx context.Context, marshaler runtime.Marshaler, client MeClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq message.CheckAdminPasswordRequest
+func request_Me_LoginAdmin_0(ctx context.Context, marshaler runtime.Marshaler, client MeClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq message.LoginAdminRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -114,13 +112,13 @@ func request_Me_CheckAdmin_0(ctx context.Context, marshaler runtime.Marshaler, c
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CheckAdmin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.LoginAdmin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Me_CheckAdmin_0(ctx context.Context, marshaler runtime.Marshaler, server MeServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq message.CheckAdminPasswordRequest
+func local_request_Me_LoginAdmin_0(ctx context.Context, marshaler runtime.Marshaler, server MeServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq message.LoginAdminRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -131,7 +129,7 @@ func local_request_Me_CheckAdmin_0(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CheckAdmin(ctx, &protoReq)
+	msg, err := server.LoginAdmin(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -194,7 +192,7 @@ func local_request_Me_CheckDistrictWeather_0(ctx context.Context, marshaler runt
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterMeHandlerFromEndpoint instead.
 func RegisterMeHandlerServer(ctx context.Context, mux *runtime.ServeMux, server MeServer) error {
 
-	mux.Handle("GET", pattern_Me_FindAdminUUID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Me_FindAdminUUID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -242,19 +240,19 @@ func RegisterMeHandlerServer(ctx context.Context, mux *runtime.ServeMux, server 
 
 	})
 
-	mux.Handle("POST", pattern_Me_CheckAdmin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Me_LoginAdmin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/v2.service.Me/CheckAdmin", runtime.WithHTTPPathPattern("/v2/check-admin-password"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/v2.service.Me/LoginAdmin", runtime.WithHTTPPathPattern("/v2/login-admin"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Me_CheckAdmin_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Me_LoginAdmin_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -262,7 +260,7 @@ func RegisterMeHandlerServer(ctx context.Context, mux *runtime.ServeMux, server 
 			return
 		}
 
-		forward_Me_CheckAdmin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Me_LoginAdmin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -331,7 +329,7 @@ func RegisterMeHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.Cl
 // "MeClient" to call the correct interceptors.
 func RegisterMeHandlerClient(ctx context.Context, mux *runtime.ServeMux, client MeClient) error {
 
-	mux.Handle("GET", pattern_Me_FindAdminUUID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Me_FindAdminUUID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -373,24 +371,24 @@ func RegisterMeHandlerClient(ctx context.Context, mux *runtime.ServeMux, client 
 
 	})
 
-	mux.Handle("POST", pattern_Me_CheckAdmin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Me_LoginAdmin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/v2.service.Me/CheckAdmin", runtime.WithHTTPPathPattern("/v2/check-admin-password"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/v2.service.Me/LoginAdmin", runtime.WithHTTPPathPattern("/v2/login-admin"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Me_CheckAdmin_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Me_LoginAdmin_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Me_CheckAdmin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Me_LoginAdmin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -423,7 +421,7 @@ var (
 
 	pattern_Me_InsertAdminUUID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v2", "insert-admin-uuid"}, ""))
 
-	pattern_Me_CheckAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v2", "check-admin-password"}, ""))
+	pattern_Me_LoginAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v2", "login-admin"}, ""))
 
 	pattern_Me_CheckDistrictWeather_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v2", "check-district-weather", "district"}, ""))
 )
@@ -433,7 +431,7 @@ var (
 
 	forward_Me_InsertAdminUUID_0 = runtime.ForwardResponseMessage
 
-	forward_Me_CheckAdmin_0 = runtime.ForwardResponseMessage
+	forward_Me_LoginAdmin_0 = runtime.ForwardResponseMessage
 
 	forward_Me_CheckDistrictWeather_0 = runtime.ForwardResponseMessage
 )

@@ -2,10 +2,11 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"github.com/dtc03012/me/protobuf/proto/service/message"
 )
 
-func (m *MeServer) CheckAdminPassword(ctx context.Context, req *message.CheckAdminPasswordRequest) (*message.CheckAdminPasswordResponse, error) {
+func (m *MeServer) LoginAdmin(ctx context.Context, req *message.LoginAdminRequest) (*message.LoginAdminResponse, error) {
 	tx, err := m.db.BeginTx(ctx, nil)
 	if err != nil {
 		return nil, err
@@ -18,9 +19,17 @@ func (m *MeServer) CheckAdminPassword(ctx context.Context, req *message.CheckAdm
 		return nil, err
 	}
 
-	return &message.CheckAdminPasswordResponse{
+	if isCorrect == true {
+		err := m.db.InsertAdminUUID(ctx, tx, req.Uuid)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	tx.Commit()
+	return &message.LoginAdminResponse{
 		IsAdmin: isCorrect,
-	}, err
+	}, nil
 }
 
 func (m *MeServer) FindAdminUUID(ctx context.Context, req *message.FindAdminUUIDRequest) (*message.FindAdminUUIDResponse, error) {
@@ -31,11 +40,13 @@ func (m *MeServer) FindAdminUUID(ctx context.Context, req *message.FindAdminUUID
 
 	defer tx.Rollback()
 
+	fmt.Println("f3 " + req.Uuid)
 	isFind, err := m.db.FindAdminUUID(ctx, tx, req.Uuid)
 	if err != nil {
 		return nil, err
 	}
 
+	tx.Commit()
 	return &message.FindAdminUUIDResponse{
 		IsFind: isFind,
 	}, nil
@@ -54,5 +65,6 @@ func (m *MeServer) InsertAdminUUID(ctx context.Context, req *message.InsertAdmin
 		return nil, err
 	}
 
+	tx.Commit()
 	return &message.InsertAdminUUIDResponse{}, nil
 }

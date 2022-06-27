@@ -25,7 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 type MeClient interface {
 	FindAdminUUID(ctx context.Context, in *message.FindAdminUUIDRequest, opts ...grpc.CallOption) (*message.FindAdminUUIDResponse, error)
 	InsertAdminUUID(ctx context.Context, in *message.InsertAdminUUIDRequest, opts ...grpc.CallOption) (*message.InsertAdminUUIDResponse, error)
-	CheckAdmin(ctx context.Context, in *message.CheckAdminPasswordRequest, opts ...grpc.CallOption) (*message.CheckAdminPasswordResponse, error)
+	LoginAdmin(ctx context.Context, in *message.LoginAdminRequest, opts ...grpc.CallOption) (*message.LoginAdminResponse, error)
 	CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error)
 }
 
@@ -55,9 +55,9 @@ func (c *meClient) InsertAdminUUID(ctx context.Context, in *message.InsertAdminU
 	return out, nil
 }
 
-func (c *meClient) CheckAdmin(ctx context.Context, in *message.CheckAdminPasswordRequest, opts ...grpc.CallOption) (*message.CheckAdminPasswordResponse, error) {
-	out := new(message.CheckAdminPasswordResponse)
-	err := c.cc.Invoke(ctx, "/v2.service.me/CheckAdmin", in, out, opts...)
+func (c *meClient) LoginAdmin(ctx context.Context, in *message.LoginAdminRequest, opts ...grpc.CallOption) (*message.LoginAdminResponse, error) {
+	out := new(message.LoginAdminResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/LoginAdmin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (c *meClient) CheckDistrictWeather(ctx context.Context, in *message.CheckDi
 type MeServer interface {
 	FindAdminUUID(context.Context, *message.FindAdminUUIDRequest) (*message.FindAdminUUIDResponse, error)
 	InsertAdminUUID(context.Context, *message.InsertAdminUUIDRequest) (*message.InsertAdminUUIDResponse, error)
-	CheckAdmin(context.Context, *message.CheckAdminPasswordRequest) (*message.CheckAdminPasswordResponse, error)
+	LoginAdmin(context.Context, *message.LoginAdminRequest) (*message.LoginAdminResponse, error)
 	CheckDistrictWeather(context.Context, *message.CheckDistrictWeatherRequest) (*message.CheckDistrictWeatherResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
@@ -94,8 +94,8 @@ func (UnimplementedMeServer) FindAdminUUID(context.Context, *message.FindAdminUU
 func (UnimplementedMeServer) InsertAdminUUID(context.Context, *message.InsertAdminUUIDRequest) (*message.InsertAdminUUIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertAdminUUID not implemented")
 }
-func (UnimplementedMeServer) CheckAdmin(context.Context, *message.CheckAdminPasswordRequest) (*message.CheckAdminPasswordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckAdmin not implemented")
+func (UnimplementedMeServer) LoginAdmin(context.Context, *message.LoginAdminRequest) (*message.LoginAdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginAdmin not implemented")
 }
 func (UnimplementedMeServer) CheckDistrictWeather(context.Context, *message.CheckDistrictWeatherRequest) (*message.CheckDistrictWeatherResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckDistrictWeather not implemented")
@@ -149,20 +149,20 @@ func _Me_InsertAdminUUID_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Me_CheckAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(message.CheckAdminPasswordRequest)
+func _Me_LoginAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.LoginAdminRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MeServer).CheckAdmin(ctx, in)
+		return srv.(MeServer).LoginAdmin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v2.service.me/CheckAdmin",
+		FullMethod: "/v2.service.me/LoginAdmin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MeServer).CheckAdmin(ctx, req.(*message.CheckAdminPasswordRequest))
+		return srv.(MeServer).LoginAdmin(ctx, req.(*message.LoginAdminRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -201,8 +201,8 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Me_InsertAdminUUID_Handler,
 		},
 		{
-			MethodName: "CheckAdmin",
-			Handler:    _Me_CheckAdmin_Handler,
+			MethodName: "LoginAdmin",
+			Handler:    _Me_LoginAdmin_Handler,
 		},
 		{
 			MethodName: "CheckDistrictWeather",

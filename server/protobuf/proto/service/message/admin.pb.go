@@ -199,16 +199,17 @@ func (*InsertAdminUUIDResponse) Descriptor() ([]byte, []int) {
 	return file_proto_service_message_admin_proto_rawDescGZIP(), []int{3}
 }
 
-type CheckAdminPasswordRequest struct {
+type LoginAdminRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	Password string `protobuf:"bytes,1,opt,name=password,proto3" json:"password,omitempty"`
+	Uuid     string `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`
 }
 
-func (x *CheckAdminPasswordRequest) Reset() {
-	*x = CheckAdminPasswordRequest{}
+func (x *LoginAdminRequest) Reset() {
+	*x = LoginAdminRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_service_message_admin_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -216,13 +217,13 @@ func (x *CheckAdminPasswordRequest) Reset() {
 	}
 }
 
-func (x *CheckAdminPasswordRequest) String() string {
+func (x *LoginAdminRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CheckAdminPasswordRequest) ProtoMessage() {}
+func (*LoginAdminRequest) ProtoMessage() {}
 
-func (x *CheckAdminPasswordRequest) ProtoReflect() protoreflect.Message {
+func (x *LoginAdminRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_service_message_admin_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -234,19 +235,26 @@ func (x *CheckAdminPasswordRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CheckAdminPasswordRequest.ProtoReflect.Descriptor instead.
-func (*CheckAdminPasswordRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use LoginAdminRequest.ProtoReflect.Descriptor instead.
+func (*LoginAdminRequest) Descriptor() ([]byte, []int) {
 	return file_proto_service_message_admin_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *CheckAdminPasswordRequest) GetPassword() string {
+func (x *LoginAdminRequest) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-type CheckAdminPasswordResponse struct {
+func (x *LoginAdminRequest) GetUuid() string {
+	if x != nil {
+		return x.Uuid
+	}
+	return ""
+}
+
+type LoginAdminResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -254,8 +262,8 @@ type CheckAdminPasswordResponse struct {
 	IsAdmin bool `protobuf:"varint,1,opt,name=is_admin,json=isAdmin,proto3" json:"is_admin,omitempty"`
 }
 
-func (x *CheckAdminPasswordResponse) Reset() {
-	*x = CheckAdminPasswordResponse{}
+func (x *LoginAdminResponse) Reset() {
+	*x = LoginAdminResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_service_message_admin_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -263,13 +271,13 @@ func (x *CheckAdminPasswordResponse) Reset() {
 	}
 }
 
-func (x *CheckAdminPasswordResponse) String() string {
+func (x *LoginAdminResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CheckAdminPasswordResponse) ProtoMessage() {}
+func (*LoginAdminResponse) ProtoMessage() {}
 
-func (x *CheckAdminPasswordResponse) ProtoReflect() protoreflect.Message {
+func (x *LoginAdminResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_service_message_admin_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -281,12 +289,12 @@ func (x *CheckAdminPasswordResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CheckAdminPasswordResponse.ProtoReflect.Descriptor instead.
-func (*CheckAdminPasswordResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use LoginAdminResponse.ProtoReflect.Descriptor instead.
+func (*LoginAdminResponse) Descriptor() ([]byte, []int) {
 	return file_proto_service_message_admin_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *CheckAdminPasswordResponse) GetIsAdmin() bool {
+func (x *LoginAdminResponse) GetIsAdmin() bool {
 	if x != nil {
 		return x.IsAdmin
 	}
@@ -309,19 +317,19 @@ var file_proto_service_message_admin_proto_rawDesc = []byte{
 	0x64, 0x6d, 0x69, 0x6e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
 	0x12, 0x0a, 0x04, 0x75, 0x75, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75,
 	0x75, 0x69, 0x64, 0x22, 0x19, 0x0a, 0x17, 0x49, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x41, 0x64, 0x6d,
-	0x69, 0x6e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x37,
-	0x0a, 0x19, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x50, 0x61, 0x73, 0x73,
-	0x77, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x70,
-	0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70,
-	0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x37, 0x0a, 0x1a, 0x43, 0x68, 0x65, 0x63, 0x6b,
-	0x41, 0x64, 0x6d, 0x69, 0x6e, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x69, 0x73, 0x5f, 0x61, 0x64, 0x6d, 0x69,
-	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x69, 0x73, 0x41, 0x64, 0x6d, 0x69, 0x6e,
-	0x42, 0x37, 0x5a, 0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64,
-	0x74, 0x63, 0x30, 0x33, 0x30, 0x31, 0x32, 0x2f, 0x6d, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x69, 0x6e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43,
+	0x0a, 0x11, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12,
+	0x12, 0x0a, 0x04, 0x75, 0x75, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75,
+	0x75, 0x69, 0x64, 0x22, 0x2f, 0x0a, 0x12, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x64, 0x6d, 0x69,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x69, 0x73, 0x5f,
+	0x61, 0x64, 0x6d, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x69, 0x73, 0x41,
+	0x64, 0x6d, 0x69, 0x6e, 0x42, 0x37, 0x5a, 0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
+	0x6f, 0x6d, 0x2f, 0x64, 0x74, 0x63, 0x30, 0x33, 0x30, 0x31, 0x32, 0x2f, 0x6d, 0x65, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -338,12 +346,12 @@ func file_proto_service_message_admin_proto_rawDescGZIP() []byte {
 
 var file_proto_service_message_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_service_message_admin_proto_goTypes = []interface{}{
-	(*FindAdminUUIDRequest)(nil),       // 0: v2.service.message.FindAdminUUIDRequest
-	(*FindAdminUUIDResponse)(nil),      // 1: v2.service.message.FindAdminUUIDResponse
-	(*InsertAdminUUIDRequest)(nil),     // 2: v2.service.message.InsertAdminUUIDRequest
-	(*InsertAdminUUIDResponse)(nil),    // 3: v2.service.message.InsertAdminUUIDResponse
-	(*CheckAdminPasswordRequest)(nil),  // 4: v2.service.message.CheckAdminPasswordRequest
-	(*CheckAdminPasswordResponse)(nil), // 5: v2.service.message.CheckAdminPasswordResponse
+	(*FindAdminUUIDRequest)(nil),    // 0: v2.service.message.FindAdminUUIDRequest
+	(*FindAdminUUIDResponse)(nil),   // 1: v2.service.message.FindAdminUUIDResponse
+	(*InsertAdminUUIDRequest)(nil),  // 2: v2.service.message.InsertAdminUUIDRequest
+	(*InsertAdminUUIDResponse)(nil), // 3: v2.service.message.InsertAdminUUIDResponse
+	(*LoginAdminRequest)(nil),       // 4: v2.service.message.LoginAdminRequest
+	(*LoginAdminResponse)(nil),      // 5: v2.service.message.LoginAdminResponse
 }
 var file_proto_service_message_admin_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -408,7 +416,7 @@ func file_proto_service_message_admin_proto_init() {
 			}
 		}
 		file_proto_service_message_admin_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckAdminPasswordRequest); i {
+			switch v := v.(*LoginAdminRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -420,7 +428,7 @@ func file_proto_service_message_admin_proto_init() {
 			}
 		}
 		file_proto_service_message_admin_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckAdminPasswordResponse); i {
+			switch v := v.(*LoginAdminResponse); i {
 			case 0:
 				return &v.state
 			case 1:

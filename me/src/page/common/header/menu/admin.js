@@ -1,23 +1,10 @@
 import React from 'react';
 import axios from "axios";
+import {v4} from 'uuid';
 import {Button, Fade, IconButton, Paper, Popper, Tooltip, Typography} from "@mui/material";
 import KeyIcon from "@mui/icons-material/Key";
 import CustomInput from "../../../components/customInput";
 import Box from "@mui/material/Box";
-
-function CheckAdminLogin() {
-    if(localStorage.getItem("admin")) {
-        axios.get('http://localhost:9000/v2/check-admin').then(
-            response => {
-                if(response.data == localStorage.getItem("admin")) {
-                    return true
-                }
-            }
-        )
-    }
-    return false
-}
-
 
 class Admin extends React.Component {
 
@@ -25,33 +12,77 @@ class Admin extends React.Component {
         super(props);
         // Don't call this.setState() here!
         this.state = {
-            // isAdmin: CheckAdminLogin(),
+            isAdmin: this.CheckAdminLogin(),
             isOpen: false,
             anchorEl: null,
-            loginId: "",
+            loginID: "",
+            loginFail: false,
         };
         this.handleClick = this.handleClick.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.Login = this.Login.bind(this);
+        this.CheckAdminLogin = this.CheckAdminLogin.bind(this);
+    }
+
+    Login = (event) => {
+        let uuid = v4()
+        axios.post('/v2/login-admin', {
+            password: this.state.loginID,
+            uuid: uuid,
+        }).then(
+            response => {
+                if(response.data.isAdmin){
+                    localStorage.setItem('uuid', uuid)
+                    this.setState({
+                        isOpen: false,
+                        loginId : "",
+                    })
+                }else {
+                    this.setState({
+                        loginFail : true,
+                    })
+                }
+            }
+        )
+    }
+
+    CheckAdminLogin = (event) =>  {
+        let uuid = localStorage.getItem("uuid")
+        console.log(uuid)
+        if(uuid) {
+            axios.post('/v2/find-admin-uuid', {
+                uuid: uuid
+            }).then(
+                response => {
+                    console.log(response)
+                    if(response.data.isFind) {
+                        return true
+                    }
+                }
+            )
+        }
+        return false
     }
 
     handleClick = (event) => {
         this.setState({
             anchorEl: event.currentTarget,
             isOpen: !this.state.isOpen,
-            loginId: "",
+            loginID: "",
+            loginFail: false,
         })
     }
 
     handleChange = (event) => {
         this.setState({
-            loginId: event.currentTarget.value
+            loginID: event.currentTarget.value
         })
     }
 
     render() {
         this.canBeOpen = this.state.isOpen && Boolean(this.state.anchorEl);
         this.id = this.canBeOpen ? 'transition-popper' : undefined;
-        console.log(this.state.loginId)
+
         return (
             <div>
                 <IconButton aria-describedby={this.id} type="button" onClick={this.handleClick}>
@@ -81,7 +112,7 @@ class Admin extends React.Component {
                                     fontFamily: 'Cinzel',
                                     fontWeight: 900,
                                     color: '#212121'
-                                }}>
+                                }} onClick={this.Login}>
                                     Login
                                 </Button>
                             </Paper>

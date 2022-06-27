@@ -19,10 +19,11 @@ message InsertAdminUUIDRequest {
 message InsertAdminUUIDResponse {
 }
 
-message CheckAdminPasswordRequest {
+message LoginAdminRequest {
   string password = 1;
+  string uuid = 2;
 }
 
-message CheckAdminPasswordResponse {
+message LoginAdminResponse {
   bool is_admin = 1;
 }
