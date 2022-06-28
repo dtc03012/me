@@ -105,7 +105,6 @@ func fetchNowWeatherData(numOfRows int, pageNo int, nx int, ny int) (*Weather, e
 	url = url + "&ny=" + strconv.Itoa(ny)
 
 	res, err := http.Get(url)
-	fmt.Println(url)
 	defer res.Body.Close()
 	if err != nil {
 		return nil, err
@@ -119,7 +118,7 @@ func fetchNowWeatherData(numOfRows int, pageNo int, nx int, ny int) (*Weather, e
 	}
 
 	if weather.Response == nil || weather.Response.Body == nil {
-		return nil, errors.New("weather can't be fetched from the API")
+		return nil, errors.New("weather API error : weather can't be fetched from the API")
 	}
 
 	return weather, err
