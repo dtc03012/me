@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package v2.entity;
+
+option go_package = "github.com/dtc03012/me/protobuf/proto/entity";
+
+message temperature {
+  string now = 1;
+  string highest = 2;
+  string lowest = 3;
+}

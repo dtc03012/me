@@ -8,6 +8,7 @@ export default class PageRouter extends React.Component {
             <BrowserRouter>
                 <Routes>
                     <Route exact path="/" element={<Main/>} />
+                    <Route exact path="/home" element={<Main/>} />
                 </Routes>
             </BrowserRouter>
         );

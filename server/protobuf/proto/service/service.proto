@@ -11,6 +11,7 @@ option go_package = "github.com/dtc03012/me/protobuf/proto/service";
 
 service me {
 
+  /// Admin Service
   rpc FindAdminUUID(service.message.FindAdminUUIDRequest) returns (service.message.FindAdminUUIDResponse) {
     option (google.api.http) = {
       post: "/v2/find-admin-uuid"
@@ -32,6 +33,7 @@ service me {
     };
   }
 
+  // Widget Service
   rpc CheckDistrictWeather(service.message.CheckDistrictWeatherRequest) returns (service.message.CheckDistrictWeatherResponse) {
     option (google.api.http) = {
       get: "/v2/check-district-weather/{district}"
