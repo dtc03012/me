@@ -112,7 +112,7 @@ class Admin extends React.Component {
                     fontSize: 12,
                     fontWeight: 900,
                     color: '#f44336',
-                    p: 2,
+                    paddingRight: 1,
                 }}>
                     Wrong!
                 </Typography>
@@ -157,7 +157,9 @@ class Admin extends React.Component {
                                 </Box>
                                 <Box sx={{
                                     display: "flex",
-                                    justifyContent: 'space-between'}}
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}
                                 >
                                     <Button type="button" sx={{
                                         fontFamily: 'Cinzel',
