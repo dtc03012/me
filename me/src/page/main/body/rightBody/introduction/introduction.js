@@ -45,18 +45,31 @@ class Introduction extends React.Component {
                     </Grid>
                 </Paper>
                 <Grid container spacing="20">
-                    <Grid item xs="6">
+                    <Grid item xs>
                         <Paper elevation={3} sx={{
                             mt: 2,
                         }}>
-                            <Weather/>
+                            <Weather districtName = "서울특별시 강남구"
+                                     districtNx = "61"
+                                     districtNy = "126"/>
                         </Paper>
                     </Grid>
-                    <Grid item xs="6">
+                    <Grid item xs>
                         <Paper elevation={3} sx={{
                             mt: 2,
                         }}>
-                            <Weather/>
+                            <Weather districtName = "대구광역시 중구"
+                                     districtNx = "89"
+                                     districtNy = "90"/>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs>
+                        <Paper elevation={3} sx={{
+                            mt: 2,
+                        }}>
+                            <Weather districtName = "부산광역시 기장군"
+                                     districtNx = "100"
+                                     districtNy = "77"/>
                         </Paper>
                     </Grid>
                 </Grid>

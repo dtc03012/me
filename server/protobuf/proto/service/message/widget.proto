@@ -2,14 +2,17 @@ syntax = "proto3";
 
 package v2.service.message;
 
-import "proto/entity/widget.proto";
+import "proto/entity/widget/weather.proto";
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/service/message";
 
-message CheckDistrictWeatherRequest {
-  string district = 1;
+message FetchDistrictWeatherRequest {
+  int32 nx = 1;
+  int32 ny = 2;
 }
 
-message CheckDistrictWeatherResponse {
-  entity.temperature temperature = 1;
+message FetchDistrictWeatherResponse {
+  entity.widget.temperature temperature = 1;
+  entity.widget.weather weather = 2;
+  entity.widget.precipitation precipitation = 3;
 }

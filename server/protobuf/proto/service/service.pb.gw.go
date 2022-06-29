@@ -134,8 +134,8 @@ func local_request_Me_LoginAdmin_0(ctx context.Context, marshaler runtime.Marsha
 
 }
 
-func request_Me_CheckDistrictWeather_0(ctx context.Context, marshaler runtime.Marshaler, client MeClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq message.CheckDistrictWeatherRequest
+func request_Me_FetchDistrictWeather_0(ctx context.Context, marshaler runtime.Marshaler, client MeClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq message.FetchDistrictWeatherRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -145,23 +145,33 @@ func request_Me_CheckDistrictWeather_0(ctx context.Context, marshaler runtime.Ma
 		_   = err
 	)
 
-	val, ok = pathParams["district"]
+	val, ok = pathParams["nx"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "district")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nx")
 	}
 
-	protoReq.District, err = runtime.String(val)
+	protoReq.Nx, err = runtime.Int32(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "district", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nx", err)
 	}
 
-	msg, err := client.CheckDistrictWeather(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	val, ok = pathParams["ny"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "ny")
+	}
+
+	protoReq.Ny, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "ny", err)
+	}
+
+	msg, err := client.FetchDistrictWeather(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Me_CheckDistrictWeather_0(ctx context.Context, marshaler runtime.Marshaler, server MeServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq message.CheckDistrictWeatherRequest
+func local_request_Me_FetchDistrictWeather_0(ctx context.Context, marshaler runtime.Marshaler, server MeServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq message.FetchDistrictWeatherRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -171,17 +181,27 @@ func local_request_Me_CheckDistrictWeather_0(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["district"]
+	val, ok = pathParams["nx"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "district")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nx")
 	}
 
-	protoReq.District, err = runtime.String(val)
+	protoReq.Nx, err = runtime.Int32(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "district", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nx", err)
 	}
 
-	msg, err := server.CheckDistrictWeather(ctx, &protoReq)
+	val, ok = pathParams["ny"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "ny")
+	}
+
+	protoReq.Ny, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "ny", err)
+	}
+
+	msg, err := server.FetchDistrictWeather(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -264,19 +284,19 @@ func RegisterMeHandlerServer(ctx context.Context, mux *runtime.ServeMux, server 
 
 	})
 
-	mux.Handle("GET", pattern_Me_CheckDistrictWeather_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Me_FetchDistrictWeather_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/v2.service.Me/CheckDistrictWeather", runtime.WithHTTPPathPattern("/v2/check-district-weather/{district}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/v2.service.Me/FetchDistrictWeather", runtime.WithHTTPPathPattern("/v2/fetch-district-weather/{nx}/{ny}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Me_CheckDistrictWeather_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Me_FetchDistrictWeather_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -284,7 +304,7 @@ func RegisterMeHandlerServer(ctx context.Context, mux *runtime.ServeMux, server 
 			return
 		}
 
-		forward_Me_CheckDistrictWeather_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Me_FetchDistrictWeather_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -392,24 +412,24 @@ func RegisterMeHandlerClient(ctx context.Context, mux *runtime.ServeMux, client 
 
 	})
 
-	mux.Handle("GET", pattern_Me_CheckDistrictWeather_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Me_FetchDistrictWeather_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/v2.service.Me/CheckDistrictWeather", runtime.WithHTTPPathPattern("/v2/check-district-weather/{district}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/v2.service.Me/FetchDistrictWeather", runtime.WithHTTPPathPattern("/v2/fetch-district-weather/{nx}/{ny}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Me_CheckDistrictWeather_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Me_FetchDistrictWeather_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Me_CheckDistrictWeather_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Me_FetchDistrictWeather_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -423,7 +443,7 @@ var (
 
 	pattern_Me_LoginAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v2", "login-admin"}, ""))
 
-	pattern_Me_CheckDistrictWeather_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v2", "check-district-weather", "district"}, ""))
+	pattern_Me_FetchDistrictWeather_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3}, []string{"v2", "fetch-district-weather", "nx", "ny"}, ""))
 )
 
 var (
@@ -433,5 +453,5 @@ var (
 
 	forward_Me_LoginAdmin_0 = runtime.ForwardResponseMessage
 
-	forward_Me_CheckDistrictWeather_0 = runtime.ForwardResponseMessage
+	forward_Me_FetchDistrictWeather_0 = runtime.ForwardResponseMessage
 )

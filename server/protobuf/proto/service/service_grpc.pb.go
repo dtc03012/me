@@ -26,7 +26,7 @@ type MeClient interface {
 	FindAdminUUID(ctx context.Context, in *message.FindAdminUUIDRequest, opts ...grpc.CallOption) (*message.FindAdminUUIDResponse, error)
 	InsertAdminUUID(ctx context.Context, in *message.InsertAdminUUIDRequest, opts ...grpc.CallOption) (*message.InsertAdminUUIDResponse, error)
 	LoginAdmin(ctx context.Context, in *message.LoginAdminRequest, opts ...grpc.CallOption) (*message.LoginAdminResponse, error)
-	CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error)
+	FetchDistrictWeather(ctx context.Context, in *message.FetchDistrictWeatherRequest, opts ...grpc.CallOption) (*message.FetchDistrictWeatherResponse, error)
 }
 
 type meClient struct {
@@ -64,9 +64,9 @@ func (c *meClient) LoginAdmin(ctx context.Context, in *message.LoginAdminRequest
 	return out, nil
 }
 
-func (c *meClient) CheckDistrictWeather(ctx context.Context, in *message.CheckDistrictWeatherRequest, opts ...grpc.CallOption) (*message.CheckDistrictWeatherResponse, error) {
-	out := new(message.CheckDistrictWeatherResponse)
-	err := c.cc.Invoke(ctx, "/v2.service.me/CheckDistrictWeather", in, out, opts...)
+func (c *meClient) FetchDistrictWeather(ctx context.Context, in *message.FetchDistrictWeatherRequest, opts ...grpc.CallOption) (*message.FetchDistrictWeatherResponse, error) {
+	out := new(message.FetchDistrictWeatherResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/FetchDistrictWeather", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ type MeServer interface {
 	FindAdminUUID(context.Context, *message.FindAdminUUIDRequest) (*message.FindAdminUUIDResponse, error)
 	InsertAdminUUID(context.Context, *message.InsertAdminUUIDRequest) (*message.InsertAdminUUIDResponse, error)
 	LoginAdmin(context.Context, *message.LoginAdminRequest) (*message.LoginAdminResponse, error)
-	CheckDistrictWeather(context.Context, *message.CheckDistrictWeatherRequest) (*message.CheckDistrictWeatherResponse, error)
+	FetchDistrictWeather(context.Context, *message.FetchDistrictWeatherRequest) (*message.FetchDistrictWeatherResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
 
@@ -97,8 +97,8 @@ func (UnimplementedMeServer) InsertAdminUUID(context.Context, *message.InsertAdm
 func (UnimplementedMeServer) LoginAdmin(context.Context, *message.LoginAdminRequest) (*message.LoginAdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginAdmin not implemented")
 }
-func (UnimplementedMeServer) CheckDistrictWeather(context.Context, *message.CheckDistrictWeatherRequest) (*message.CheckDistrictWeatherResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckDistrictWeather not implemented")
+func (UnimplementedMeServer) FetchDistrictWeather(context.Context, *message.FetchDistrictWeatherRequest) (*message.FetchDistrictWeatherResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchDistrictWeather not implemented")
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
@@ -167,20 +167,20 @@ func _Me_LoginAdmin_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Me_CheckDistrictWeather_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(message.CheckDistrictWeatherRequest)
+func _Me_FetchDistrictWeather_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.FetchDistrictWeatherRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MeServer).CheckDistrictWeather(ctx, in)
+		return srv.(MeServer).FetchDistrictWeather(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v2.service.me/CheckDistrictWeather",
+		FullMethod: "/v2.service.me/FetchDistrictWeather",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MeServer).CheckDistrictWeather(ctx, req.(*message.CheckDistrictWeatherRequest))
+		return srv.(MeServer).FetchDistrictWeather(ctx, req.(*message.FetchDistrictWeatherRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -205,8 +205,8 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Me_LoginAdmin_Handler,
 		},
 		{
-			MethodName: "CheckDistrictWeather",
-			Handler:    _Me_CheckDistrictWeather_Handler,
+			MethodName: "FetchDistrictWeather",
+			Handler:    _Me_FetchDistrictWeather_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

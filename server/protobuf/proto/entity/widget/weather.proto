@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package v2.entity.widget;
+
+option go_package = "github.com/dtc03012/me/protobuf/proto/entity/widget";
+
+///////////////////////
+// Weather Widget
+
+message temperature {
+  string now = 1;
+  string highest = 2;
+  string lowest = 3;
+}
+
+message weather {
+  enum condition {
+    NONE = 0;
+    SUNNY = 1;
+    CLOUDY = 2;
+    OVERCAST = 3;
+  }
+
+  condition weather_condition = 1;
+}
+
+message precipitation {
+  enum condition {
+    NONE = 0;
+    RAINY = 1;
+    RAINY_SNOW = 2;
+    SNOW = 3;
+    SHOWER = 4;
+  }
+
+  condition precipitation_condition = 1;
+}
