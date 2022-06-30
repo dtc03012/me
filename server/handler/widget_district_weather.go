@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/dtc03012/me/protobuf/proto/entity/widget"
 	"github.com/dtc03012/me/protobuf/proto/service/message"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"net/http"
 	"os"
 	"strconv"
@@ -146,6 +147,20 @@ func fetchNowWeatherData(numOfRows int, pageNo int, nx int, ny int) (*Weather, e
 	return weather, err
 }
 
+func getTimestamppb(baseDate string, baseTime string) *timestamppb.Timestamp {
+	var (
+		year, _   = strconv.Atoi(baseDate[:4])
+		month, _  = strconv.Atoi(baseDate[4:6])
+		day, _    = strconv.Atoi(baseDate[6:])
+		hour, _   = strconv.Atoi(baseTime[:2])
+		minute, _ = strconv.Atoi(baseTime[2:])
+	)
+
+	t := time.Date(year, time.Month(month), day, hour, minute, 0, 0, time.UTC)
+
+	return timestamppb.New(t)
+}
+
 func setWeatherCategoryMap(weather *Weather, weatherCategoryMap map[string][]*weatherCategoryData) {
 	for _, item := range weather.Response.Body.Items.ItemArr {
 		weatherCategoryMap[item.Category] = append(weatherCategoryMap[item.Category], &weatherCategoryData{
@@ -156,61 +171,100 @@ func setWeatherCategoryMap(weather *Weather, weatherCategoryMap map[string][]*we
 	}
 }
 
-func getTemperature(weather *Weather, weatherCategoryMap map[string][]*weatherCategoryData) (string, string, string, error) {
+func setTemperature(res *message.FetchDistrictWeatherResponse, weather *Weather, weatherCategoryMap map[string][]*weatherCategoryData) error {
 
 	if len(weatherCategoryMap["TMP"]) == 0 {
-		return unDefinedTemperature, unDefinedTemperature, unDefinedTemperature, errors.New("temperature error : now temperature isn't set")
+		return errors.New("temperature error : now temperature isn't set")
 	}
 
 	if len(weatherCategoryMap["TMX"]) == 0 {
-		return unDefinedTemperature, unDefinedTemperature, unDefinedTemperature, errors.New("temperature error : highest temperature isn't set")
+		return errors.New("temperature error : highest temperature isn't set")
 	}
 
 	if len(weatherCategoryMap["TMN"]) == 0 {
-		return unDefinedTemperature, unDefinedTemperature, unDefinedTemperature, errors.New("temperature error : lowest temperature isn't set")
+		return errors.New("temperature error : lowest temperature isn't set")
 	}
 
-	return weatherCategoryMap["TMX"][0].FcstValue, weatherCategoryMap["TMX"][0].FcstValue, weatherCategoryMap["TMN"][0].FcstValue, nil
+	res.Temperature = &widget.Temperature{
+		Now:     weatherCategoryMap["TMP"][0].FcstValue,
+		Highest: weatherCategoryMap["TMX"][0].FcstValue,
+		Lowest:  weatherCategoryMap["TMN"][0].FcstValue,
+	}
+	return nil
 }
 
-func getWeatherCondition(weather *Weather, weatherCategoryMap map[string][]*weatherCategoryData) (widget.WeatherCondition, error) {
+func setSkyCondition(res *message.FetchDistrictWeatherResponse, weather *Weather, weatherCategoryMap map[string][]*weatherCategoryData) error {
 
 	if len(weatherCategoryMap["SKY"]) == 0 {
-		return widget.Weather_NONE, errors.New("weather error : weather isn't set")
+		return errors.New("weather error : weather isn't set")
 	}
 
-	weatherData := weatherCategoryMap["SKY"][0]
+	res.Sky = make([]*widget.Sky, 0, len(weatherCategoryMap["SKY"]))
 
-	if weatherData.FcstValue == "1" {
-		return widget.Weather_SUNNY, nil
-	} else if weatherData.FcstValue == "3" {
-		return widget.Weather_CLOUDY, nil
-	} else if weatherData.FcstValue == "4" {
-		return widget.Weather_OVERCAST, nil
+	for _, skyData := range weatherCategoryMap["SKY"] {
+		if skyData.FcstValue == "1" {
+			res.Sky = append(res.Sky, &widget.Sky{
+				SkyCondition: widget.Sky_SUNNY,
+				ForecastTime: getTimestamppb(skyData.FcstDate, skyData.FcstTime),
+			})
+		} else if skyData.FcstValue == "3" {
+			res.Sky = append(res.Sky, &widget.Sky{
+				SkyCondition: widget.Sky_CLOUDY,
+				ForecastTime: getTimestamppb(skyData.FcstDate, skyData.FcstTime),
+			})
+		} else if skyData.FcstValue == "4" {
+			res.Sky = append(res.Sky, &widget.Sky{
+				SkyCondition: widget.Sky_OVERCAST,
+				ForecastTime: getTimestamppb(skyData.FcstDate, skyData.FcstTime),
+			})
+		} else {
+			return errors.New("sky error : unexpected sky code")
+		}
 	}
 
-	return widget.Weather_NONE, errors.New("weather error : unexpected weather code")
+	return nil
 }
 
-func getPrecipitationCondition(weather *Weather, weatherCategoryMap map[string][]*weatherCategoryData) (widget.PrecipitationCondition, error) {
+func setPrecipitationCondition(res *message.FetchDistrictWeatherResponse, weather *Weather, weatherCategoryMap map[string][]*weatherCategoryData) error {
 
 	if len(weatherCategoryMap["PTY"]) == 0 {
-		return widget.Precipitation_NONE, errors.New("precipitation error : precipitation isn't set")
+		return errors.New("precipitation error : precipitation isn't set")
 	}
 
-	precipitationData := weatherCategoryMap["PTY"][0]
+	res.Precipitation = make([]*widget.Precipitation, 0, len(weatherCategoryMap["PTY"]))
 
-	if precipitationData.FcstValue == "0" {
-		return widget.Precipitation_RAINY, nil
-	} else if precipitationData.FcstValue == "1" {
-		return widget.Precipitation_RAINY_SNOW, nil
-	} else if precipitationData.FcstValue == "2" {
-		return widget.Precipitation_SNOW, nil
-	} else if precipitationData.FcstValue == "3" {
-		return widget.Precipitation_SHOWER, nil
+	for _, precipitationData := range weatherCategoryMap["PTY"] {
+		if precipitationData.FcstValue == "0" {
+			res.Precipitation = append(res.Precipitation, &widget.Precipitation{
+				PrecipitationCondition: widget.Precipitation_NONE,
+				ForecastTime:           getTimestamppb(precipitationData.FcstDate, precipitationData.FcstTime),
+			})
+		} else if precipitationData.FcstValue == "1" {
+			res.Precipitation = append(res.Precipitation, &widget.Precipitation{
+				PrecipitationCondition: widget.Precipitation_RAINY,
+				ForecastTime:           getTimestamppb(precipitationData.FcstDate, precipitationData.FcstTime),
+			})
+		} else if precipitationData.FcstValue == "2" {
+			res.Precipitation = append(res.Precipitation, &widget.Precipitation{
+				PrecipitationCondition: widget.Precipitation_RAINY_SNOW,
+				ForecastTime:           getTimestamppb(precipitationData.FcstDate, precipitationData.FcstTime),
+			})
+		} else if precipitationData.FcstValue == "3" {
+			res.Precipitation = append(res.Precipitation, &widget.Precipitation{
+				PrecipitationCondition: widget.Precipitation_SNOW,
+				ForecastTime:           getTimestamppb(precipitationData.FcstDate, precipitationData.FcstTime),
+			})
+		} else if precipitationData.FcstValue == "4" {
+			res.Precipitation = append(res.Precipitation, &widget.Precipitation{
+				PrecipitationCondition: widget.Precipitation_SHOWER,
+				ForecastTime:           getTimestamppb(precipitationData.FcstDate, precipitationData.FcstTime),
+			})
+		} else {
+			return errors.New("precipitation error : unexpected precipitation code")
+		}
 	}
 
-	return widget.Precipitation_NONE, errors.New("precipitation error : unexpected precipitation code")
+	return nil
 }
 
 func (m *MeServer) FetchDistrictWeather(ctx context.Context, req *message.FetchDistrictWeatherRequest) (*message.FetchDistrictWeatherResponse, error) {
@@ -225,34 +279,20 @@ func (m *MeServer) FetchDistrictWeather(ctx context.Context, req *message.FetchD
 
 	res := &message.FetchDistrictWeatherResponse{}
 
-	nowTemperature, highestTemperature, lowestTemperature, err := getTemperature(weather, weatherCategoryMap)
+	err = setTemperature(res, weather, weatherCategoryMap)
 	if err != nil {
 		return nil, err
 	}
 
-	res.Temperature = &widget.Temperature{
-		Now:     nowTemperature,
-		Highest: highestTemperature,
-		Lowest:  lowestTemperature,
-	}
-
-	weatherCondition, err := getWeatherCondition(weather, weatherCategoryMap)
+	err = setSkyCondition(res, weather, weatherCategoryMap)
 	if err != nil {
 		return nil, err
 	}
 
-	res.Weather = &widget.Weather{
-		WeatherCondition: weatherCondition,
-	}
-
-	precipitationCondition, err := getPrecipitationCondition(weather, weatherCategoryMap)
+	err = setPrecipitationCondition(res, weather, weatherCategoryMap)
 	if err != nil {
 		return nil, err
 	}
 
-	res.Precipitation = &widget.Precipitation{
-		PrecipitationCondition: precipitationCondition,
-	}
-	
 	return res, nil
 }

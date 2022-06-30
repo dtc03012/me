@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package v2.entity.widget;
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/entity/widget";
 
@@ -13,7 +14,7 @@ message temperature {
   string lowest = 3;
 }
 
-message weather {
+message sky {
   enum condition {
     NONE = 0;
     SUNNY = 1;
@@ -21,7 +22,9 @@ message weather {
     OVERCAST = 3;
   }
 
-  condition weather_condition = 1;
+  condition sky_condition = 1;
+
+  google.protobuf.Timestamp forecast_time = 2;
 }
 
 message precipitation {
@@ -34,4 +37,6 @@ message precipitation {
   }
 
   condition precipitation_condition = 1;
+
+  google.protobuf.Timestamp forecast_time = 2;
 }

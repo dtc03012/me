@@ -13,6 +13,6 @@ message FetchDistrictWeatherRequest {
 
 message FetchDistrictWeatherResponse {
   entity.widget.temperature temperature = 1;
-  entity.widget.weather weather = 2;
-  entity.widget.precipitation precipitation = 3;
+  repeated entity.widget.sky sky = 2;
+  repeated entity.widget.precipitation precipitation = 3;
 }
