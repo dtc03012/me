@@ -6,6 +6,8 @@ COPY package.json ./
 
 RUN npm config set legacy-peer-deps true
 
+RUN npm install
+
 RUN npm ci --only=production
 
 COPY . .
