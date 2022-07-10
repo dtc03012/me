@@ -4,6 +4,7 @@ WORKDIR /usr/src/me
 
 COPY package.json ./
 
+ARG SERVER_IP
 ENV SERVER_IP $SERVER_IP
 
 RUN npm config set legacy-peer-deps true
