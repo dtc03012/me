@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	encodedAPI                 = os.Getenv("weatherAPI")
+	encodedAPI                 = os.Getenv("WEATHER_API")
 	weatherBaseDateList        = []string{"0200", "0500", "0800", "1100", "1400", "1700", "2000", "2300"}
 	weatherBaseDateAPITimeList = []string{"0209", "0509", "0809", "1109", "1409", "1709", "2009", "2309"}
 	cacheWeatherDataMap        = make(map[cacheWeatherKey]*Weather)
@@ -126,7 +126,7 @@ func fetchNowWeatherData(numOfRows int, pageNo int, nx int, ny int) (*Weather, e
 	url = url + "&ny=" + strconv.Itoa(ny)
 
 	fmt.Println(url)
-	
+
 	res, err := http.Get(url)
 	defer res.Body.Close()
 	if err != nil {
