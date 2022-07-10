@@ -4,6 +4,8 @@ WORKDIR /usr/src/me
 
 COPY package.json ./
 
+ENV SERVER_IP $SERVER_IP
+
 RUN npm config set legacy-peer-deps true
 
 RUN npm install
