@@ -125,6 +125,8 @@ func fetchNowWeatherData(numOfRows int, pageNo int, nx int, ny int) (*Weather, e
 	url = url + "&nx=" + strconv.Itoa(nx)
 	url = url + "&ny=" + strconv.Itoa(ny)
 
+	fmt.Println(url)
+	
 	res, err := http.Get(url)
 	defer res.Body.Close()
 	if err != nil {
