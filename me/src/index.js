@@ -9,6 +9,7 @@ root.render(
   <React.StrictMode>
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Open+Sans&display=swap" rel="stylesheet"/>
       <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet"/>
+      <link href="//font.elice.io/EliceDigitalBaeum.css" rel="stylesheet"/>
       <PageRouter/>
   </React.StrictMode>
 );

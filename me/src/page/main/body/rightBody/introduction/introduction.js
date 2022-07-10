@@ -4,11 +4,12 @@ import {Grid, Paper, Typography} from "@mui/material";
 import CampaignIcon from '@mui/icons-material/Campaign';
 import {ThemeProvider, createTheme} from "@mui/material/styles";
 import Weather from "./widget/weather";
+import CoinChart from "./widget/coinChart";
 
 const boardTheme = createTheme({
     typography: {
         body1: {
-            fontFamily: 'Open+Sans',
+            fontFamily: "Elice Digital Baeum",
             fontSize: 20,
             fontWeight: 700,
         }
@@ -37,7 +38,7 @@ class Introduction extends React.Component {
                         </Grid>
                         <Grid item>
                             <ThemeProvider theme={boardTheme}>
-                                <Typography>
+                                <Typography variant="body1">
                                     안녕하세요! 반갑습니다!
                                 </Typography>
                             </ThemeProvider>
@@ -45,32 +46,30 @@ class Introduction extends React.Component {
                     </Grid>
                 </Paper>
                 <Grid container spacing="20">
-                    <Grid item xs>
-                        <Paper elevation={3} sx={{
-                            mt: 2,
-                        }}>
+                    <Grid item container spacing="20">
+                        <Grid item xs>
                             <Weather districtName = "서울특별시 강남구"
                                      districtNx = "61"
                                      districtNy = "126"/>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs>
-                        <Paper elevation={3} sx={{
-                            mt: 2,
-                        }}>
+                        </Grid>
+                        <Grid item xs>
                             <Weather districtName = "대구광역시 중구"
                                      districtNx = "89"
                                      districtNy = "90"/>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs>
-                        <Paper elevation={3} sx={{
-                            mt: 2,
-                        }}>
+                        </Grid>
+                        <Grid item xs>
                             <Weather districtName = "부산광역시 기장군"
                                      districtNx = "100"
                                      districtNy = "77"/>
-                        </Paper>
+                        </Grid>
+                    </Grid>
+                    <Grid item container spacing="20">
+                        <Grid item xs="6">
+                            <CoinChart chartName = "BTC/USDT"/>
+                        </Grid>
+                        <Grid item xs="6">
+                            <CoinChart chartName = "ETH/USDT"/>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Box>

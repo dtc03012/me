@@ -1,6 +1,6 @@
 import React from 'react'
 import Box from "@mui/material/Box";
-import {Button, Grid, Typography} from "@mui/material";
+import {Button, Grid, Paper, Typography} from "@mui/material";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import axios from "axios";
 
@@ -25,8 +25,8 @@ class Weather extends React.Component {
     Theme = createTheme({
         typography: {
             body1: {
-                fontFamily: "Open+Sans",
-                fontSize: 14,
+                fontFamily: "Elice Digital Baeum",
+                fontSize: 18,
             },
         },
     });
@@ -294,92 +294,91 @@ class Weather extends React.Component {
 
     render() {
         return (
-            <Box sx = {{
-                p: 2
+            <Paper elevation={3} sx={{
+                mt: 2,
             }}>
-                <ThemeProvider theme={this.Theme}>
-                    <Grid container direction="column">
-                        <Grid item container spacing={2}>
-                            <Grid item xs container>
-                                <Grid item container direction="column" >
-                                    <Grid item>
-                                        <Typography variant="body1" sx={{
-                                            fontWeight: 500,
-                                        }}>
-                                            현재 위치
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item container spacing={2}>
-                                        <Grid item sm>
+                <Box sx = {{
+                    p: 2
+                }}>
+                    <ThemeProvider theme={this.Theme}>
+                        <Grid container direction="column">
+                            <Grid item container spacing={2}>
+                                <Grid item xs container>
+                                    <Grid item container direction="column" >
+                                        <Grid item>
                                             <Typography variant="body1" sx={{
-                                                fontWeight: 900,
+                                                fontWeight: 500,
                                             }}>
-                                                {this.state.districtName}
+                                                현재 위치
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item container spacing={2}>
+                                            <Grid item sm>
+                                                <Typography variant="body1" sx={{
+                                                    fontWeight: 900,
+                                                }}>
+                                                    {this.state.districtName}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item>
+                                    <Grid item xs container>
+                                        <Grid item xs container direction="column" sx={{
+                                            pr: 1
+                                        }}>
+                                            <Typography sx={{
+                                                color: '#f44336',
+                                                fontSize: 13,
+                                                fontWeight: 600,
+                                            }}>
+                                                {this.state.weatherData.temperature.highest}
+                                            </Typography>
+                                            <Typography sx={{
+                                                color: '#3d5afe',
+                                                fontSize: 13,
+                                                fontWeight: 600,
+                                            }}>
+                                                {this.state.weatherData.temperature.lowest}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item>
+                                            <Typography sx={{
+                                                fontSize: 23,
+                                                fontWeight: 600,
+                                            }}>
+                                                {this.state.weatherData.temperature.now}
                                             </Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid item>
-                                <Grid item xs container>
-                                    <Grid item xs container direction="column" sx={{
-                                        pr: 1
-                                    }}>
-                                        <Typography sx={{
-                                            color: '#f44336',
-                                            fontSize: 13,
-                                            fontFamily: "Open+Sans",
-                                            fontWeight: 600,
-                                        }}>
-                                            {this.state.weatherData.temperature.highest}
-                                        </Typography>
-                                        <Typography sx={{
-                                            color: '#3d5afe',
-                                            fontSize: 13,
-                                            fontFamily: "Open+Sans",
-                                            fontWeight: 600,
-                                        }}>
-                                            {this.state.weatherData.temperature.lowest}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item>
-                                        <Typography sx={{
-                                            fontSize: 23,
-                                            fontFamily: "Open+Sans",
-                                            fontWeight: 600,
-                                        }}>
-                                            {this.state.weatherData.temperature.now}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
+                            <Grid item sx={{
+                                pt: 3
+                            }}>
+                                <Typography sx={{
+                                    fontSize: 15,
+                                    fontWeight: 600
+                                }}>
+                                    {this.analyzeCurrentWeather()}
+                                </Typography>
+                            </Grid>
+                            <Grid item sx={{
+                                pt: 4
+                            }}>
+                                <Typography sx={{
+                                    fontSize: 15,
+                                    fontWeight: 600,
+                                    whiteSpace: "pre-wrap",
+                                }}>
+                                    {this.analyzeExpectedWeather()}
+                                </Typography>
                             </Grid>
                         </Grid>
-                        <Grid item sx={{
-                            pt: 3
-                        }}>
-                            <Typography sx={{
-                                fontSize: 14,
-                                fontFamily: "Open+Sans",
-                                fontWeight: 600
-                            }}>
-                                {this.analyzeCurrentWeather()}
-                            </Typography>
-                        </Grid>
-                        <Grid item sx={{
-                            pt: 2
-                        }}>
-                            <Typography sx={{
-                                fontSize: 14,
-                                fontFamily: "Open+Sans",
-                                fontWeight: 600,
-                                whiteSpace: "pre-wrap",
-                            }}>
-                                {this.analyzeExpectedWeather()}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </ThemeProvider>
-            </Box>
+                    </ThemeProvider>
+                </Box>
+            </Paper>
         )
     }
 }
