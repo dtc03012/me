@@ -40,6 +40,9 @@ func (dbs *dbService) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sqlx.T
 	password = os.Getenv("MYSQL_PASSWORD")
 	mysqlIP = os.Getenv("MYSQL_IP")
 
+	fmt.Println(password)
+	fmt.Println(mysqlIP)
+	
 	if os.Getenv("ME_ENV") == EnvProd {
 		dataSourceName = fmt.Sprintf("root:%s@tcp(%s)/me?multiStatements=true", password, mysqlIP)
 	} else {
