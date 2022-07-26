@@ -1,13 +1,16 @@
 package service
 
 import (
+	"cloud.google.com/go/cloudsqlconn"
 	"context"
 	"database/sql"
 	"fmt"
 	"github.com/dtc03012/me/db/repository"
 	"github.com/dtc03012/me/db/repository/mocks"
+	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"net"
 	"os"
 )
 
@@ -32,17 +35,26 @@ type dbService struct {
 func (dbs *dbService) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sqlx.Tx, error) {
 
 	var (
-		password       string
-		dataSourceName string
-		mysqlIP        string
+		password               = os.Getenv("MYSQL_PASSWORD")
+		mysqlIP                = os.Getenv("MYSQL_IP")
+		instanceConnectionName = os.Getenv("INSTANCE_CONNECTION_NAME")
+		usePrivate             = os.Getenv("PRIVATE_IP")
+		dataSourceName         string
 	)
 
-	password = os.Getenv("MYSQL_PASSWORD")
-	mysqlIP = os.Getenv("MYSQL_IP")
+	d, err := cloudsqlconn.NewDialer(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("cloudsqlconn.NewDialer: %v", err)
+	}
 
-	fmt.Println(password)
-	fmt.Println(mysqlIP)
-	
+	mysql.RegisterDialContext("cloudsqlconn",
+		func(ctx context.Context, addr string) (net.Conn, error) {
+			if usePrivate != "" {
+				return d.Dial(ctx, instanceConnectionName, cloudsqlconn.WithPrivateIP())
+			}
+			return d.Dial(ctx, instanceConnectionName)
+		})
+
 	if os.Getenv("ME_ENV") == EnvProd {
 		dataSourceName = fmt.Sprintf("root:%s@tcp(%s)/me?multiStatements=true", password, mysqlIP)
 	} else {
