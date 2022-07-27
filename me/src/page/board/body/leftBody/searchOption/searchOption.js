@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import {Grid, Paper, Typography} from "@mui/material";
-import NameSearchOption from "./nameSearchOption";
+import TextSearchOption from "./textSearchOption";
 import TopicSearchOption from "./topicSearchOption";
 import TagSearchOption from "./tagSearchOption";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
@@ -10,10 +10,20 @@ const Theme = createTheme({
     typography: {
         body1: {
             fontFamily: "Elice Digital Baeum",
-            fontSize: 8,
+            fontSize: 13,
             fontWeight: 700,
+        },
+        body2: {
+            fontFamily: "Elice Digital Baeum",
+            fontSize: 20,
+            fontWeight: 1000,
         }
     },
+    palette: {
+        background: {
+            belowAppbarBox: '#212121',
+        },
+    }
 });
 
 class SearchOption extends React.Component {
@@ -25,10 +35,29 @@ class SearchOption extends React.Component {
                 <Paper elevation={3} >
                     <Grid spacing={2} container
                           direction="column"
-                          alignItems="center"
-                          justify="center">
+                          sx={{
+                              pl: 4,
+                          }}
+                    >
+                        <Grid item sx={{
+                            width: '80%',
+                            justifyContent: 'center'
+                        }}>
+                            <ThemeProvider theme={Theme}>
+                                <Typography variant="body2" sx={{
+                                    pb: 1,
+                                }}>
+                                    검색 옵션
+                                </Typography>
+                                <Box sx={{
+                                    backgroundColor: 'background.belowAppbarBox',
+                                    width: '100%',
+                                    height: 2,
+                                }}/>
+                            </ThemeProvider>
+                        </Grid>
                         <Grid item>
-                            <NameSearchOption/>
+                            <TextSearchOption/>
                         </Grid>
                         <Grid item>
                             <TopicSearchOption/>
