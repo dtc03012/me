@@ -42,7 +42,7 @@ func (dbs *dbService) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sqlx.T
 		dataSourceName         string
 	)
 
-	d, err := cloudsqlconn.NewDialer(context.Background())
+	d, err := cloudsqlconn.NewDialer(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("cloudsqlconn.NewDialer: %v", err)
 	}
