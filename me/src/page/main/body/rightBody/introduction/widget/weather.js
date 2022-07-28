@@ -1,6 +1,6 @@
 import React from 'react'
 import Box from "@mui/material/Box";
-import {Button, Grid, Paper, Typography} from "@mui/material";
+import {Grid, Paper, Typography} from "@mui/material";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import axios from "axios";
 
@@ -17,8 +17,6 @@ const precipitationCondition = {
     SNOW: "SNOW",
     SHOWER: "SHOWER",
 }
-
-const unexpectedEndOfTime = -1
 
 class Weather extends React.Component {
 
@@ -54,6 +52,10 @@ class Weather extends React.Component {
             },
         }
         this.fetchWeatherData = this.fetchWeatherData.bind(this)
+    }
+
+    componentDidMount() {
+        this.fetchWeatherData()
     }
 
     fetchWeatherData() {
@@ -125,19 +127,19 @@ class Weather extends React.Component {
         conditionList.forEach(data => {
             const time = Date.parse(data.forecastTime)
             if(data.condition === condition){
-                if(beginTime == -1) {
+                if(beginTime === -1) {
                     beginTime = time
                 }
                 lastTime = time
             }else {
-                if(beginTime != -1) {
+                if(beginTime !== -1) {
                     timeList.push({beginTime: beginTime, endTime: time})
                     beginTime = -1
                 }
             }
         })
 
-        if(beginTime != -1){
+        if(beginTime !== -1){
             timeList.push({beginTime: beginTime, endTime: lastTime})
         }
 
@@ -268,7 +270,7 @@ class Weather extends React.Component {
         let currentTime = new Date()
         let currentWeatherMessage = this.generateWeatherMessage(currentTime)
 
-        if(currentWeatherMessage == "") {
+        if(currentWeatherMessage === "") {
             return ""
         }
 
@@ -280,16 +282,12 @@ class Weather extends React.Component {
 
         let tomorrowWeatherMessage = this.generateWeatherMessage(tomorrowTime)
 
-        if(tomorrowWeatherMessage != "") {
+        if(tomorrowWeatherMessage !== "") {
             message += '\n● 내일 기상 예보\n'
             message += tomorrowWeatherMessage
         }
 
         return message
-    }
-
-    componentDidMount() {
-        this.fetchWeatherData()
     }
 
     render() {

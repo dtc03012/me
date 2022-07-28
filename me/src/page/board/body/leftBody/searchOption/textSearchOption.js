@@ -1,9 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import CustomInput from "../../../../components/customInput";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import {Grid, MenuItem, Select, TextField} from "@mui/material";
+import {Grid, MenuItem, TextField} from "@mui/material";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 
 const Theme = createTheme({
@@ -31,10 +29,9 @@ class TextSearchOption extends React.Component {
         super(props);
         // Don't call this.setState() here!
         this.state = {
-            text: "",
-            option: "",
             open: false,
         };
+
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleOptionChange = this.handleOptionChange.bind(this)
         this.handleOptionOpen = this.handleOptionOpen.bind(this)
@@ -42,16 +39,11 @@ class TextSearchOption extends React.Component {
     }
 
     handleInputChange = (event) => {
-        this.setState({
-            text: event.currentTarget.value
-        })
+        this.props.setText(event.currentTarget.value)
     }
 
     handleOptionChange = (event) => {
-        console.log(event)
-        this.setState({
-            option: event.target.value
-        })
+        this.props.setOption(event.target.value)
     };
 
     handleOptionClose = () => {
@@ -76,6 +68,7 @@ class TextSearchOption extends React.Component {
                         pr: 3,
                     }}>
                         <CustomInput
+                            value={this.props.getText()}
                             labelText=""
                             id="text"
                             formControlProps={{
@@ -90,7 +83,7 @@ class TextSearchOption extends React.Component {
                             <TextField
                                 label="옵션"
                                 select
-                                value={this.state.option}
+                                value={this.props.getOption()}
                                 onChange={this.handleOptionChange}
                                 InputProps={{
                                     style: {

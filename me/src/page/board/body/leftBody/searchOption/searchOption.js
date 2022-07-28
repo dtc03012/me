@@ -1,8 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import {Grid, Paper, Typography} from "@mui/material";
+import {Button, Grid, Paper, Typography} from "@mui/material";
 import TextSearchOption from "./textSearchOption";
-import TopicSearchOption from "./topicSearchOption";
 import TagSearchOption from "./tagSearchOption";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 
@@ -27,6 +26,68 @@ const Theme = createTheme({
 });
 
 class SearchOption extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedTags: [],
+            inputTag: "",
+            text: "",
+            option: "",
+        }
+
+        this.handleInitButtonClick = this.handleInitButtonClick.bind(this)
+    }
+
+    getSelectedTags = () => {
+        return this.state.selectedTags
+    }
+
+    setSelectedTags = (tags) => {
+        this.setState({
+            selectedTags: tags
+        })
+    }
+
+    getInputTag = () => {
+        return this.state.inputTag
+    }
+
+    setInputTag = (tag) => {
+        this.setState({
+            inputTag: tag
+        })
+    }
+
+    getText = () => {
+        return this.state.text
+    }
+
+    setText = (text) => {
+        this.setState({
+            text: text
+        })
+    }
+
+    getOption = () => {
+        return this.state.option
+    }
+
+    setOption = (option) => {
+        this.setState({
+            option: option
+        })
+    }
+
+    handleInitButtonClick = (event) => {
+        this.setState({
+            selectedTags: [],
+            inputTag: "",
+            text: "",
+            option: "",
+        })
+    }
+
     render() {
         return (
             <Box sx={{
@@ -57,16 +118,51 @@ class SearchOption extends React.Component {
                             </ThemeProvider>
                         </Grid>
                         <Grid item>
-                            <TextSearchOption/>
-                        </Grid>
-                        <Grid item>
-                            <TopicSearchOption/>
-                        </Grid>
-                        <Grid item>
-                            <TagSearchOption/>
+                            <TextSearchOption
+                                getText={this.getText}
+                                setText={this.setText}
+                                getOption={this.getOption}
+                                setOption={this.setOption}
+                            />
                         </Grid>
                         <Grid item sx={{
-                            pb: 1,
+                            width: '80%',
+                            justifyContent: 'center'
+                        }}>
+                            <ThemeProvider theme={Theme}>
+                                <Typography variant="body2" sx={{
+                                    pb: 1,
+                                }}>
+                                    태그 옵션
+                                </Typography>
+                                <Box sx={{
+                                    backgroundColor: 'background.belowAppbarBox',
+                                    width: '100%',
+                                    height: 2,
+                                }}/>
+                            </ThemeProvider>
+                        </Grid>
+                        <Grid item>
+                            <TagSearchOption
+                                getSelectedTags={this.getSelectedTags}
+                                setSelectedTags={this.setSelectedTags}
+                                getInputTag={this.getInputTag}
+                                setInputTag={this.setInputTag}
+                            />
+                        </Grid>
+                        <Grid item sx={{
+                            mt: 3,
+                            pr: 6,
+                            display: 'flex',
+                            justifyContent: 'space-between'
+                        }}>
+                            <Button variant="contained" color="success">검색</Button>
+                            <Button variant="contained" color="error" onClick={this.handleInitButtonClick}>초기화</Button>
+                        </Grid>
+                        <Grid item sx={{
+                            mt: 2,
+                            mb: 2,
+                            pr: 4,
                         }}>
                             <ThemeProvider theme={Theme}>
                                 <Grid item>
