@@ -156,8 +156,14 @@ class SearchOption extends React.Component {
                             display: 'flex',
                             justifyContent: 'space-between'
                         }}>
-                            <Button variant="contained" color="success">검색</Button>
-                            <Button variant="contained" color="error" onClick={this.handleInitButtonClick}>초기화</Button>
+                            <Button variant="contained" color="success" sx={{
+                                fontSize: 15,
+                                fontFamily: "Elice Digital Baeum",
+                            }}>검색</Button>
+                            <Button variant="contained" color="error" onClick={this.handleInitButtonClick} sx={{
+                                fontSize: 15,
+                                fontFamily: "Elice Digital Baeum",
+                            }}>초기화</Button>
                         </Grid>
                         <Grid item sx={{
                             mt: 2,

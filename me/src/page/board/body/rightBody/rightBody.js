@@ -1,5 +1,6 @@
 import React from 'react';
 import Box from "@mui/material/Box";
+import PostBoard from "./postBoard/postBoard";
 
 
 class RightBody extends React.Component {
@@ -7,10 +8,10 @@ class RightBody extends React.Component {
         return (
             <Box sx={{
                 p: 2,
-                width: "75%",
+                width: "60%",
                 display: { xs: 'none', sm: 'none', md: 'block' },
             }}>
-                <h1> rightBody </h1>
+                <PostBoard/>
             </Box>
         )
     }
