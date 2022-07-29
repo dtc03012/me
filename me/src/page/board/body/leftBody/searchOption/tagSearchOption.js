@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 import {Chip, Grid, IconButton} from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CustomInput from "../../../../components/customInput";
+import {useDispatch, useSelector} from "react-redux";
+import { setSelectedTag, setInputTag } from "../../../../../redux/reducers/board/tagOptionReducer";
 
 class TagSearchOption extends React.Component {
 
@@ -16,24 +18,40 @@ class TagSearchOption extends React.Component {
         this.handleAddTagClick = this.handleAddTagClick.bind(this)
     }
 
+    getSelectedTags = () => {
+        return this.props.selectedTag
+    }
+
+    setSelectedTags = (tags) => {
+        this.props.dispatch(setSelectedTag({selectedTag: tags}))
+    }
+
+    getInputTag = () => {
+        return this.props.inputTag
+    }
+
+    setInputTag = (tag) => {
+        this.props.dispatch(setInputTag({inputTag: tag}))
+    }
+
     handleInputTagChange = (event) => {
-        this.props.setInputTag(event.currentTarget.value)
+        this.setInputTag(event.currentTarget.value)
     }
 
     handleDeleteTagClick = (tag) => {
-        this.props.setSelectedTags(this.props.getSelectedTags().filter(item => item !== tag))
+        this.setSelectedTags(this.getSelectedTags().filter(item => item !== tag))
     }
 
     handleAddTagClick = (tag) => {
-        if(this.props.getInputTag() !== "" && this.checkExistedTag(tag) === false) {
-            this.props.setSelectedTags(this.props.getSelectedTags().concat(tag))
+        if(this.getInputTag() !== "" && this.checkExistedTag(tag) === false) {
+            this.setSelectedTags(this.getSelectedTags().concat(tag))
         }
-        this.props.setInputTag("")
+        this.setInputTag("")
     }
 
     checkExistedTag = (tag) => {
         let exist = false;
-        this.props.getSelectedTags().forEach(item => {
+        this.getSelectedTags().forEach(item => {
             if(item === tag) {
                 exist = true
             }
@@ -43,7 +61,7 @@ class TagSearchOption extends React.Component {
     }
 
     createTagList = () => {
-        return (this.props.getSelectedTags().map( (tag) => (
+        return (this.getSelectedTags().map( (tag) => (
                 <Grid item>
                     <Chip label={String(tag)} variant="outlined" onDelete={() => this.handleDeleteTagClick(String(tag))} sx={{
                         '& .MuiChip-label': {
@@ -69,7 +87,7 @@ class TagSearchOption extends React.Component {
                         <Grid item>
                             <CustomInput
                                 labelText=""
-                                value={this.props.getInputTag()}
+                                value={this.getInputTag()}
                                 id="text"
                                 formControlProps={{
                                     fullWidth: true
@@ -79,7 +97,7 @@ class TagSearchOption extends React.Component {
                             />
                         </Grid>
                         <Grid item>
-                            <IconButton type="button" onClick={() => this.handleAddTagClick(this.props.getInputTag())}>
+                            <IconButton type="button" onClick={() => this.handleAddTagClick(this.getInputTag())}>
                                 <AddCircleOutlineIcon sx={{
                                     fontSize: 28,
                                 }}/>
@@ -98,4 +116,14 @@ class TagSearchOption extends React.Component {
     }
 }
 
-export default TagSearchOption
+export default () => {
+    const dispatch = useDispatch();
+    const selectedTag = useSelector((state) => state.tagOptionReducer.selectedTag);
+    const inputTag = useSelector((state) => state.tagOptionReducer.inputTag)
+    return (
+        <TagSearchOption
+            selectedTag={selectedTag}
+            inputTag={inputTag}
+            dispatch={dispatch}/>
+    )
+}

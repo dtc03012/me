@@ -4,6 +4,8 @@ import {Button, Grid, Paper, Typography} from "@mui/material";
 import TextSearchOption from "./textSearchOption";
 import TagSearchOption from "./tagSearchOption";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
+import {useDispatch, useSelector} from "react-redux";
+import { setSelectedTag, setInputTag } from "../../../../../redux/reducers/board/tagOptionReducer";
 
 const Theme = createTheme({
     typography: {
@@ -30,33 +32,11 @@ class SearchOption extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTags: [],
-            inputTag: "",
             text: "",
             option: "",
         }
 
         this.handleInitButtonClick = this.handleInitButtonClick.bind(this)
-    }
-
-    getSelectedTags = () => {
-        return this.state.selectedTags
-    }
-
-    setSelectedTags = (tags) => {
-        this.setState({
-            selectedTags: tags
-        })
-    }
-
-    getInputTag = () => {
-        return this.state.inputTag
-    }
-
-    setInputTag = (tag) => {
-        this.setState({
-            inputTag: tag
-        })
     }
 
     getText = () => {
@@ -81,11 +61,11 @@ class SearchOption extends React.Component {
 
     handleInitButtonClick = (event) => {
         this.setState({
-            selectedTags: [],
-            inputTag: "",
             text: "",
             option: "",
         })
+        this.props.dispatch(setSelectedTag({selectedTag: []}))
+        this.props.dispatch(setInputTag({inputTag: ""}))
     }
 
     render() {
@@ -143,12 +123,7 @@ class SearchOption extends React.Component {
                             </ThemeProvider>
                         </Grid>
                         <Grid item>
-                            <TagSearchOption
-                                getSelectedTags={this.getSelectedTags}
-                                setSelectedTags={this.setSelectedTags}
-                                getInputTag={this.getInputTag}
-                                setInputTag={this.setInputTag}
-                            />
+                            <TagSearchOption/>
                         </Grid>
                         <Grid item sx={{
                             mt: 3,
@@ -186,4 +161,12 @@ class SearchOption extends React.Component {
     }
 }
 
-export default SearchOption
+export default () => {
+    const dispatch = useDispatch();
+    const selectedTag = useSelector((state) => state.tagOptionReducer.selectedTag);
+    const inputTag = useSelector((state) => state.tagOptionReducer.inputTag)
+    return (
+        <SearchOption
+            dispatch={dispatch}/>
+    )
+}

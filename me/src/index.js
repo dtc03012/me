@@ -3,15 +3,19 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import PageRouter from "./pageRouter";
 import reportWebVitals from './reportWebVitals';
+import {Provider} from "react-redux";
+import store from './redux/store/store'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-      <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Open+Sans&display=swap" rel="stylesheet"/>
-      <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet"/>
-      <link href="//font.elice.io/EliceDigitalBaeum.css" rel="stylesheet"/>
-      <PageRouter/>
-  </React.StrictMode>
+    <React.StrictMode>
+          <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Open+Sans&display=swap" rel="stylesheet"/>
+          <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet"/>
+          <link href="//font.elice.io/EliceDigitalBaeum.css" rel="stylesheet"/>
+          <Provider store={store}>
+            <PageRouter/>
+          </Provider>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

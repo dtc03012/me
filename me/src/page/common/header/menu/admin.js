@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from "axios";
 import {v4} from 'uuid';
-import {Button, Fade, IconButton, Paper, Popper, Tooltip, Typography} from "@mui/material";
+import {Button, Fade, IconButton, Paper, Popper, Typography} from "@mui/material";
 import KeyIcon from "@mui/icons-material/Key";
 import LockIcon from '@mui/icons-material/Lock';
 import CustomInput from "../../../components/customInput";
@@ -62,7 +62,6 @@ class Admin extends React.Component {
     checkAdminLogin = (event) =>  {
         let uuid = getCookie('uuid')
         if(uuid) {
-            let isCheck = false
             axios.post('/v2/find-admin-uuid', {
                 uuid: uuid
             }).then(
