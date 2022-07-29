@@ -12,7 +12,6 @@ export const tagOptionSlice = createSlice({
         },
 
         setInputTag: (state, action) => {
-            console.log(action)
             state.inputTag = action.payload.inputTag
         },
     },
