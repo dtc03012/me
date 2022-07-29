@@ -8,7 +8,7 @@ class RightBody extends React.Component {
         return (
             <Box sx={{
                 p: 2,
-                width: "60%",
+                width: "55%",
                 display: { xs: 'none', sm: 'none', md: 'block' },
             }}>
                 <PostBoard/>
