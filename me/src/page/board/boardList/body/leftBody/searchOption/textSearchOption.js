@@ -1,6 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import CustomInput from "../../../../components/customInput";
+import CustomInput from "../../../../../components/customInput";
 import {Grid, MenuItem, TextField} from "@mui/material";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 

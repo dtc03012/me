@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from "@mui/material/Box";
 import Header from "../common/header/header";
-import Body from "./body/body";
+import Body from "./boardList/body/body";
 
 class Board extends React.Component {
     render() {

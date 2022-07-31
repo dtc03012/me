@@ -5,7 +5,7 @@ import TextSearchOption from "./textSearchOption";
 import TagSearchOption from "./tagSearchOption";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import {useDispatch, useSelector} from "react-redux";
-import { setSelectedTag, setInputTag } from "../../../../../redux/reducers/board/tagOptionReducer";
+import { setSelectedTag, setInputTag } from "../../../../../../redux/reducers/board/tagOptionReducer";
 
 const Theme = createTheme({
     typography: {

@@ -1,6 +1,8 @@
 import React from 'react';
 import Box from "@mui/material/Box";
 import PostBoard from "./postBoard/postBoard";
+import {Button, Grid} from "@mui/material";
+import PostOption from "./postBoard/postOption";
 
 
 class RightBody extends React.Component {
@@ -11,7 +13,14 @@ class RightBody extends React.Component {
                 width: "55%",
                 display: { xs: 'none', sm: 'none', md: 'block' },
             }}>
-                <PostBoard/>
+                <Grid container direction="column">
+                    <Grid item>
+                        <PostOption/>
+                    </Grid>
+                    <Grid item>
+                        <PostBoard/>
+                    </Grid>
+                </Grid>
             </Box>
         )
     }

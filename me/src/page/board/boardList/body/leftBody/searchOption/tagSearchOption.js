@@ -2,9 +2,9 @@ import React from "react";
 import Box from "@mui/material/Box";
 import {Chip, Grid, IconButton} from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CustomInput from "../../../../components/customInput";
+import CustomInput from "../../../../../components/customInput";
 import {useDispatch, useSelector} from "react-redux";
-import { setSelectedTag, setInputTag } from "../../../../../redux/reducers/board/tagOptionReducer";
+import { setSelectedTag, setInputTag } from "../../../../../../redux/reducers/board/tagOptionReducer";
 
 class TagSearchOption extends React.Component {
 
