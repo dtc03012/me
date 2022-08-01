@@ -1,6 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import {Button, Grid, Tab, Tabs, Typography} from "@mui/material";
+import {Button, Grid, Link, Tab, Tabs, Typography} from "@mui/material";
 
 class PostOption extends React.Component {
 
@@ -76,7 +76,11 @@ class PostOption extends React.Component {
                 <Button variant="contained" color="success" sx={{
                     fontSize: 15,
                     fontFamily: "Elice Digital Baeum",
-                }}>글쓰기</Button>
+                }}>
+                    <Link href="/board/write" underline="none" color="inherit">
+                        글쓰기
+                    </Link>
+                </Button>
             </Box>
         )
     }

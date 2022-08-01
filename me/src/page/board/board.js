@@ -2,6 +2,7 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import Header from "../common/header/header";
 import Body from "./boardList/body/body";
+import PostEditor from "./postEditor/postEditor";
 
 class Board extends React.Component {
     render() {
