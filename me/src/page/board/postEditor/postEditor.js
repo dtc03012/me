@@ -132,7 +132,7 @@ class PostEditor extends React.Component {
                 title: this.state.title,
                 writer: 'admin',
                 content: this.state.editorContent,
-                timeToRead: this.state.timeToReadMinute,
+                timeToReadMinute: this.state.timeToReadMinute,
                 tags: this.state.tags,
             }
         }).then(

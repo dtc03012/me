@@ -43,7 +43,7 @@ func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOpt
 
 	var posts []*entity.Post
 	posts = make([]*entity.Post, 0)
-	
+
 	n, m, err := option.CalculateDBRange(opt.SizeRange)
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, t
 		return errors.New("post db error: post is nil")
 	}
 
-	postResult, err := tx.Exec("INSERT IGNORE INTO board_post(writer, title, content, time_to_read) VALUES (?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.TimeToRead)
+	postResult, err := tx.Exec("INSERT IGNORE INTO board_post(writer, title, content, time_to_read_minute) VALUES (?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.TimeToReadMinute)
 	if err != nil {
 		return err
 	}

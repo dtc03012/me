@@ -17,14 +17,14 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 	}
 
 	post := &entity.Post{
-		Title:      postData.Title,
-		Writer:     postData.Writer,
-		Content:    postData.Content,
-		TimeToRead: postData.TimeToRead,
+		Title:            postData.GetTitle(),
+		Writer:           postData.GetWriter(),
+		Content:          postData.GetContent(),
+		TimeToReadMinute: postData.GetTimeToReadMinute(),
 	}
 
-	tags := make([]string, 0, len(postData.Tags))
-	for _, tag := range postData.Tags {
+	tags := make([]string, 0, len(postData.GetTags()))
+	for _, tag := range postData.GetTags() {
 		tags = append(tags, tag)
 	}
 
@@ -54,13 +54,13 @@ func (dbs *dbService) FetchPosts(ctx context.Context, tx *sqlx.Tx, row int, size
 
 	for _, p := range posts {
 		convertPost := &post.Data{
-			Id:         p.Id,
-			Title:      p.Title,
-			Writer:     p.Writer,
-			Content:    p.Content,
-			Tags:       p.Tags,
-			TimeToRead: p.TimeToRead,
-			CreateAt:   timestamppb.New(p.CreateAt),
+			Id:               p.Id,
+			Title:            p.Title,
+			Writer:           p.Writer,
+			Content:          p.Content,
+			Tags:             p.Tags,
+			TimeToReadMinute: p.TimeToReadMinute,
+			CreateAt:         timestamppb.New(p.CreateAt),
 		}
 
 		convertPosts = append(convertPosts, convertPost)

@@ -22,7 +22,7 @@ func TestPost_GetPost(t *testing.T) {
 	currentTime := time.Now()
 	expectedSQL := fmt.Sprintf("SELECT * FROM board_post WHERE pid = ?")
 	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(1).
-		WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "time_to_read", "create_at"}).AddRow(1, "writer1", "title1", "content1", 1, currentTime))
+		WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "time_to_read_minute", "create_at"}).AddRow(1, "writer1", "title1", "content1", 1, currentTime))
 
 	expectedSQL = fmt.Sprintf("SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)")
 	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(1).
@@ -38,7 +38,7 @@ func TestPost_GetPost(t *testing.T) {
 	assert.Equal(t, "writer1", post.Writer)
 	assert.Equal(t, "title1", post.Title)
 	assert.Equal(t, "content1", post.Content)
-	assert.Equal(t, int32(1), post.TimeToRead)
+	assert.Equal(t, int32(1), post.TimeToReadMinute)
 	assert.Equal(t, currentTime, post.CreateAt)
 
 	assert.Len(t, post.Tags, 1)
@@ -56,7 +56,7 @@ func TestPost_GetBulkPost(t *testing.T) {
 	currentTime := time.Now()
 	expectedSQL := fmt.Sprintf("SELECT * FROM board_post ORDER BY pid DESC LIMIT ?, ?")
 	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(0, 1).
-		WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "time_to_read", "create_at"}).AddRow(1, "writer1", "title1", "content1", 1, currentTime))
+		WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "time_to_read_minute", "create_at"}).AddRow(1, "writer1", "title1", "content1", 1, currentTime))
 
 	expectedSQL = fmt.Sprintf("SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)")
 	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(1).
@@ -73,7 +73,7 @@ func TestPost_GetBulkPost(t *testing.T) {
 	assert.Equal(t, "writer1", post[0].Writer)
 	assert.Equal(t, "title1", post[0].Title)
 	assert.Equal(t, "content1", post[0].Content)
-	assert.Equal(t, int32(1), post[0].TimeToRead)
+	assert.Equal(t, int32(1), post[0].TimeToReadMinute)
 	assert.Equal(t, currentTime, post[0].CreateAt)
 
 	assert.Len(t, post[0].Tags, 1)
@@ -89,16 +89,16 @@ func TestPost_InsertPost(t *testing.T) {
 	assert.NoError(t, err)
 
 	post := &entity.Post{
-		Writer:     "writer1",
-		Title:      "title1",
-		Content:    "content1",
-		TimeToRead: 1,
+		Writer:           "writer1",
+		Title:            "title1",
+		Content:          "content1",
+		TimeToReadMinute: 1,
 	}
 
 	tags := []string{"tag1"}
 
-	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_post(writer, title, content, time_to_read) VALUES (?, ?, ?, ?)")
-	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(post.Writer, post.Title, post.Content, post.TimeToRead).WillReturnResult(sqlmock.NewResult(1, 1))
+	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_post(writer, title, content, time_to_read_minute) VALUES (?, ?, ?, ?)")
+	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(post.Writer, post.Title, post.Content, post.TimeToReadMinute).WillReturnResult(sqlmock.NewResult(1, 1))
 
 	expectedSQL = fmt.Sprintf("INSERT IGNORE INTO board_tag(value) VALUES (?)")
 	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(tags[0]).WillReturnResult(sqlmock.NewResult(1, 1))
