@@ -42,8 +42,8 @@ func TestAdmin_InsertUUID(t *testing.T) {
 	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO admin_login_list VALUES (?)")
 	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs("uuid").WillReturnResult(sqlmock.NewResult(1, 1))
 
-	admin := repository.NewAdminRepo()
-	err = admin.InsertUUID(ctx, tx, "uuid")
+	adminRepo := repository.NewAdminRepo()
+	err = adminRepo.InsertUUID(ctx, tx, "uuid")
 	assert.NoError(t, err)
 
 	mock.ExpectationsWereMet()
@@ -59,8 +59,8 @@ func TestAdmin_FindUUID(t *testing.T) {
 	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs("uuid").
 		WillReturnRows(sqlmock.NewRows([]string{"uuid"}).AddRow("uuid"))
 
-	admin := repository.NewAdminRepo()
-	uuid, err := admin.FindUUID(ctx, tx, "uuid")
+	adminRepo := repository.NewAdminRepo()
+	uuid, err := adminRepo.FindUUID(ctx, tx, "uuid")
 	assert.NoError(t, err)
 	assert.Equal(t, "uuid", uuid)
 

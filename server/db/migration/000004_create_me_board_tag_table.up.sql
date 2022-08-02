@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS board_tag(
+    tid INT NOT NULL AUTO_INCREMENT,
+    value VARCHAR(30) NOT NULL,
+
+    PRIMARY KEY (tid)
+);

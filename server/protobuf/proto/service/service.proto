@@ -5,6 +5,7 @@ package v2.service;
 import "google/api/annotations.proto";
 import "proto/service/message/widget.proto";
 import "proto/service/message/admin.proto";
+import "proto/service/message/post.proto";
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/service";
 
@@ -41,6 +42,22 @@ service me {
   rpc FetchDistrictWeather(service.message.FetchDistrictWeatherRequest) returns (service.message.FetchDistrictWeatherResponse) {
     option (google.api.http) = {
       get: "/v2/fetch-district-weather/{nx}/{ny}"
+    };
+  }
+
+  /////////////////////
+  // Post Service
+
+  rpc UploadPost(service.message.UploadPostRequest) returns (service.message.UploadPostResponse) {
+    option (google.api.http) = {
+      post: "/v2/upload-post"
+      body: "*"
+    };
+  }
+
+  rpc FetchPosts(service.message.FetchPostsRequest) returns (service.message.FetchPostsResponse) {
+    option (google.api.http) = {
+      get: "/v2/fetch-post"
     };
   }
 }

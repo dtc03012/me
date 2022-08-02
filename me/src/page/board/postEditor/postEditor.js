@@ -128,11 +128,13 @@ class PostEditor extends React.Component {
 
     uploadPost = () => {
         axios.post("/v2/upload-post",{
-            title: this.state.title,
-            content: this.state.editorContent,
-            tags: this.state.tags,
-            timeToRead: this.state.timeToReadMinute,
-            atCreate: Date.now(),
+            data: {
+                title: this.state.title,
+                writer: 'admin',
+                content: this.state.editorContent,
+                timeToRead: this.state.timeToReadMinute,
+                tags: this.state.tags,
+            }
         }).then(
             response => {
                 console.log("good")

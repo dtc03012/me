@@ -27,6 +27,8 @@ type MeClient interface {
 	InsertAdminUUID(ctx context.Context, in *message.InsertAdminUUIDRequest, opts ...grpc.CallOption) (*message.InsertAdminUUIDResponse, error)
 	LoginAdmin(ctx context.Context, in *message.LoginAdminRequest, opts ...grpc.CallOption) (*message.LoginAdminResponse, error)
 	FetchDistrictWeather(ctx context.Context, in *message.FetchDistrictWeatherRequest, opts ...grpc.CallOption) (*message.FetchDistrictWeatherResponse, error)
+	UploadPost(ctx context.Context, in *message.UploadPostRequest, opts ...grpc.CallOption) (*message.UploadPostResponse, error)
+	FetchPosts(ctx context.Context, in *message.FetchPostsRequest, opts ...grpc.CallOption) (*message.FetchPostsResponse, error)
 }
 
 type meClient struct {
@@ -73,6 +75,24 @@ func (c *meClient) FetchDistrictWeather(ctx context.Context, in *message.FetchDi
 	return out, nil
 }
 
+func (c *meClient) UploadPost(ctx context.Context, in *message.UploadPostRequest, opts ...grpc.CallOption) (*message.UploadPostResponse, error) {
+	out := new(message.UploadPostResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/UploadPost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) FetchPosts(ctx context.Context, in *message.FetchPostsRequest, opts ...grpc.CallOption) (*message.FetchPostsResponse, error) {
+	out := new(message.FetchPostsResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/FetchPosts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MeServer is the server API for Me service.
 // All implementations must embed UnimplementedMeServer
 // for forward compatibility
@@ -81,6 +101,8 @@ type MeServer interface {
 	InsertAdminUUID(context.Context, *message.InsertAdminUUIDRequest) (*message.InsertAdminUUIDResponse, error)
 	LoginAdmin(context.Context, *message.LoginAdminRequest) (*message.LoginAdminResponse, error)
 	FetchDistrictWeather(context.Context, *message.FetchDistrictWeatherRequest) (*message.FetchDistrictWeatherResponse, error)
+	UploadPost(context.Context, *message.UploadPostRequest) (*message.UploadPostResponse, error)
+	FetchPosts(context.Context, *message.FetchPostsRequest) (*message.FetchPostsResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
 
@@ -99,6 +121,12 @@ func (UnimplementedMeServer) LoginAdmin(context.Context, *message.LoginAdminRequ
 }
 func (UnimplementedMeServer) FetchDistrictWeather(context.Context, *message.FetchDistrictWeatherRequest) (*message.FetchDistrictWeatherResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchDistrictWeather not implemented")
+}
+func (UnimplementedMeServer) UploadPost(context.Context, *message.UploadPostRequest) (*message.UploadPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UploadPost not implemented")
+}
+func (UnimplementedMeServer) FetchPosts(context.Context, *message.FetchPostsRequest) (*message.FetchPostsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchPosts not implemented")
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
@@ -185,6 +213,42 @@ func _Me_FetchDistrictWeather_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Me_UploadPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.UploadPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).UploadPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/UploadPost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).UploadPost(ctx, req.(*message.UploadPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_FetchPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.FetchPostsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).FetchPosts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/FetchPosts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).FetchPosts(ctx, req.(*message.FetchPostsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Me_ServiceDesc is the grpc.ServiceDesc for Me service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -207,6 +271,14 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FetchDistrictWeather",
 			Handler:    _Me_FetchDistrictWeather_Handler,
+		},
+		{
+			MethodName: "UploadPost",
+			Handler:    _Me_UploadPost_Handler,
+		},
+		{
+			MethodName: "FetchPosts",
+			Handler:    _Me_FetchPosts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
