@@ -2,10 +2,9 @@ import React from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Box from "@mui/material/Box";
-import {Button, Chip, Grid, IconButton, Link, TextField} from "@mui/material";
+import {Button, Chip, Grid, Link, TextField} from "@mui/material";
 import "./postEditor.css"
 import axios from "axios";
-import {setCookie} from "../../../util/cookie";
 
 function uploadAdapter(loader) {
     return {
@@ -50,6 +49,7 @@ class PostEditor extends React.Component {
             editorContent: "",
             tags: [],
             inputTag: "",
+            likeCnt: 0,
             timeToReadMinute: 0,
         }
 
@@ -133,6 +133,7 @@ class PostEditor extends React.Component {
                 writer: 'admin',
                 content: this.state.editorContent,
                 timeToReadMinute: this.state.timeToReadMinute,
+                likeCnt: this.state.likeCnt,
                 tags: this.state.tags,
             }
         }).then(
@@ -172,7 +173,6 @@ class PostEditor extends React.Component {
                         <CKEditor
                             config={{
                                 extraPlugins: [uploadPlugin],
-                                width: 3,
                             }}
                             editor={ClassicEditor}
                             onReady={(editor) => {}}
@@ -183,7 +183,6 @@ class PostEditor extends React.Component {
                                     editorContent: editor.getData()
                                 })
                             }}
-                            {...this.props}
                         />
                     </Grid>
                     <Grid item container direction="column" spacing="10">
@@ -243,9 +242,9 @@ class PostEditor extends React.Component {
                             fontSize: 15,
                             fontFamily: "Elice Digital Baeum",
                         }} onClick={() => this.uploadPost()}>
-                            {/*<Link href="/board" underline="none" color="inherit">*/}
+                            <Link href="/board" underline="none" color="inherit">
                                 완료
-                            {/*</Link>*/}
+                            </Link>
                         </Button>
                     </Grid>
                 </Grid>

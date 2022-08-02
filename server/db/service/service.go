@@ -74,6 +74,7 @@ func (dbs *dbService) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sqlx.T
 	if err != nil {
 		return nil, err
 	}
+	defer db.Close()
 
 	tx, err := db.BeginTxx(ctx, opts)
 

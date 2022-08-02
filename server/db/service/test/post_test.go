@@ -20,6 +20,7 @@ func TestDBService_UploadPost(t *testing.T) {
 		Title:            "title1",
 		Content:          "content1",
 		Tags:             []string{"tag1"},
+		LikeCnt:          3,
 		TimeToReadMinute: 1,
 	}
 
@@ -46,6 +47,7 @@ func TestDBService_FetchPosts(t *testing.T) {
 		Title:            "title1",
 		Content:          "content1",
 		Tags:             []string{"tag1"},
+		LikeCnt:          3,
 		TimeToReadMinute: 1,
 	}
 
@@ -53,6 +55,7 @@ func TestDBService_FetchPosts(t *testing.T) {
 		Title:            "title2",
 		Content:          "content2",
 		Tags:             []string{"tag2"},
+		LikeCnt:          3,
 		TimeToReadMinute: 1,
 	}
 

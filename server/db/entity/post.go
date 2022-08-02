@@ -8,6 +8,7 @@ type Post struct {
 	Tags             []string  `db:"value"`
 	Title            string    `db:"title"`
 	Content          string    `db:"content"`
+	LikeCnt          int32     `db:"like_cnt"'`
 	TimeToReadMinute int32     `db:"time_to_read_minute"`
 	CreateAt         time.Time `db:"create_at"`
 }

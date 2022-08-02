@@ -71,7 +71,7 @@ func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, t
 		return errors.New("post db error: post is nil")
 	}
 
-	postResult, err := tx.Exec("INSERT IGNORE INTO board_post(writer, title, content, time_to_read_minute) VALUES (?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.TimeToReadMinute)
+	postResult, err := tx.Exec("INSERT IGNORE INTO board_post(writer, title, content, like_cnt, time_to_read_minute) VALUES (?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.LikeCnt, post.TimeToReadMinute)
 	if err != nil {
 		return err
 	}

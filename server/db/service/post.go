@@ -20,6 +20,7 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 		Title:            postData.GetTitle(),
 		Writer:           postData.GetWriter(),
 		Content:          postData.GetContent(),
+		LikeCnt:          postData.GetLikeCnt(),
 		TimeToReadMinute: postData.GetTimeToReadMinute(),
 	}
 
@@ -60,6 +61,7 @@ func (dbs *dbService) FetchPosts(ctx context.Context, tx *sqlx.Tx, row int, size
 			Content:          p.Content,
 			Tags:             p.Tags,
 			TimeToReadMinute: p.TimeToReadMinute,
+			LikeCnt:          p.LikeCnt,
 			CreateAt:         timestamppb.New(p.CreateAt),
 		}
 
