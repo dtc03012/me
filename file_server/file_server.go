@@ -127,7 +127,7 @@ func startFileServer(ctx context.Context) {
 	mux.HandleFunc("/file/get-file/{fileName}", GetFileHandler)
 
 	log.Printf("start File server on %s port", filePortNumber)
-	if err := http.ListenAndServe(":4500", mux); err != nil {
+	if err := http.ListenAndServe(":"+filePortNumber, mux); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
 }
