@@ -117,7 +117,6 @@ func startFileServer(ctx context.Context) {
 	driveSrv, err = api.GoogleDriveAPIInit(ctx)
 	if err != nil {
 		log.Fatalf("failed to serve: %s", err)
-		return
 	}
 
 	fileSrv = handler.NewFileServer()
