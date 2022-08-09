@@ -20,7 +20,7 @@ func getClient(config *oauth2.Config) *http.Client {
 	// The file token.json stores the user's access and refresh tokens, and is
 	// created automatically when the authorization flow completes for the first
 	// time.
-	tokFile := "token.json"
+	tokFile := "secret/token/token.json"
 	tok, err := tokenFromFile(tokFile)
 	if err != nil {
 		tok = getTokenFromWeb(config)
@@ -72,7 +72,7 @@ func saveToken(path string, token *oauth2.Token) {
 
 func GoogleDriveAPIInit(ctx context.Context) (*drive.Service, error) {
 
-	b, err := ioutil.ReadFile("client_secret.json")
+	b, err := ioutil.ReadFile("secret/client_secret/client_secret.json")
 	if err != nil {
 		return nil, fmt.Errorf("unable to read client secret file: %v", err)
 	}
