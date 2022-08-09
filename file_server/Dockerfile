@@ -20,7 +20,7 @@ RUN go get
 
 RUN go install
 
-EXPOSE 9000 9001
+EXPOSE 4500
 
-CMD [ "go", "run", "server.go" ]
+CMD [ "go", "run", "file_server.go" ]
 
