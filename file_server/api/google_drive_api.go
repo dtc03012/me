@@ -17,10 +17,10 @@ import (
 
 // Retrieve a token, saves the token, then returns the generated client.
 func getClient(config *oauth2.Config) *http.Client {
-	// The file token.json stores the user's access and refresh tokens, and is
+	// The file token stores the user's access and refresh tokens, and is
 	// created automatically when the authorization flow completes for the first
 	// time.
-	tokFile := "secret/token/token.json"
+	tokFile := "secret/token/token"
 	tok, err := tokenFromFile(tokFile)
 	if err != nil {
 		tok = getTokenFromWeb(config)
@@ -72,12 +72,12 @@ func saveToken(path string, token *oauth2.Token) {
 
 func GoogleDriveAPIInit(ctx context.Context) (*drive.Service, error) {
 
-	b, err := ioutil.ReadFile("secret/client_secret/client_secret.json")
+	b, err := ioutil.ReadFile("secret/client_secret/client_secret")
 	if err != nil {
 		return nil, fmt.Errorf("unable to read client secret file: %v", err)
 	}
 
-	// If modifying these scopes, delete your previously saved token.json.
+	// If modifying these scopes, delete your previously saved token.
 	config, err := google.ConfigFromJSON(b, drive.DriveFileScope)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse client secret file to config: %v", err)
