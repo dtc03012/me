@@ -6,9 +6,7 @@ import RightBody from "./rightBody/rightBody";
 class Body extends React.Component {
     render() {
         return (
-            <Box display="flex" sx={{
-                backgroundColor: '#f5f5f5',
-            }}>
+            <Box display="flex">
                 <LeftBody/>
                 <RightBody/>
             </Box>

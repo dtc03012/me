@@ -12,7 +12,8 @@ message data {
   string content = 4;
   int32 like_cnt = 5;
   int32 time_to_read_minute = 6;
-  repeated string tags = 7;
+  int32 views = 7;
+  repeated string tags = 8;
 
-  google.protobuf.Timestamp create_at = 8;
+  google.protobuf.Timestamp create_at = 9;
 }

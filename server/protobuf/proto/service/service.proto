@@ -50,14 +50,45 @@ service me {
 
   rpc UploadPost(service.message.UploadPostRequest) returns (service.message.UploadPostResponse) {
     option (google.api.http) = {
-      post: "/v2/upload-post"
+      post: "/v2/upload-board-post"
       body: "*"
     };
   }
 
-  rpc FetchPosts(service.message.FetchPostsRequest) returns (service.message.FetchPostsResponse) {
+  rpc FetchPostList(service.message.FetchPostListRequest) returns (service.message.FetchPostListResponse) {
     option (google.api.http) = {
-      get: "/v2/fetch-post"
+      get: "/v2/fetch-board-post-list"
+    };
+  }
+
+  rpc FetchPost(service.message.FetchPostRequest) returns (service.message.FetchPostResponse) {
+    option (google.api.http) = {
+      get: "/v2/fetch-board-post"
+    };
+  }
+
+  rpc IncrementView(service.message.IncrementViewRequest) returns (service.message.IncrementViewResponse) {
+    option (google.api.http) = {
+      put: "/v2/increment-board-view"
+    };
+  }
+
+  rpc LeaveComment(service.message.LeaveCommentRequest) returns (service.message.LeaveCommentResponse) {
+    option (google.api.http) = {
+      post: "/v2/leave-board-comment"
+      body: "*"
+    };
+  }
+
+  rpc FetchCommentList(service.message.FetchCommentListRequest) returns (service.message.FetchCommentListResponse) {
+    option (google.api.http) = {
+      get: "/v2/fetch-board-comment-list"
+    };
+  }
+
+  rpc DeleteComment(service.message.DeleteCommentRequest) returns (service.message.DeleteCommentResponse) {
+    option (google.api.http) = {
+      delete: "/v2/delete-board-comment"
     };
   }
 }

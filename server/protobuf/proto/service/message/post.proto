@@ -3,6 +3,7 @@ syntax = "proto3";
 package v2.service.message;
 
 import "proto/entity/post/post.proto";
+import "proto/entity/post/comment.proto";
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/service/message";
 
@@ -13,11 +14,51 @@ message UploadPostRequest {
 message UploadPostResponse {
 }
 
-message FetchPostsRequest {
+message FetchPostListRequest {
   int32 row = 1;
   int32 size = 2;
 }
 
-message FetchPostsResponse {
+message FetchPostListResponse {
   repeated entity.post.data data = 1;
+}
+
+message FetchPostRequest {
+  int32 id = 1;
+}
+
+message FetchPostResponse {
+  entity.post.data data = 1;
+}
+
+message IncrementViewRequest{
+  int32 id = 1;
+}
+
+message IncrementViewResponse {
+}
+
+message LeaveCommentRequest {
+  entity.post.comment comment = 1;
+}
+
+message LeaveCommentResponse {
+}
+
+message FetchCommentListRequest {
+  int32 post_id = 1;
+  int32 row = 2;
+  int32 size = 3;
+}
+
+message FetchCommentListResponse {
+  repeated entity.post.comment data = 1;
+}
+
+message DeleteCommentRequest {
+  int32 post_id = 1;
+  int32 comment_id = 2;
+}
+
+message DeleteCommentResponse {
 }

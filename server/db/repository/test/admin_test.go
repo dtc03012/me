@@ -30,7 +30,8 @@ func TestAdmin_GetPassword(t *testing.T) {
 	_, err = admin.GetPassword(ctx, tx)
 	assert.Error(t, err)
 
-	mock.ExpectationsWereMet()
+	err = mock.ExpectationsWereMet()
+	assert.NoError(t, err)
 }
 
 func TestAdmin_InsertUUID(t *testing.T) {
@@ -46,7 +47,8 @@ func TestAdmin_InsertUUID(t *testing.T) {
 	err = adminRepo.InsertUUID(ctx, tx, "uuid")
 	assert.NoError(t, err)
 
-	mock.ExpectationsWereMet()
+	err = mock.ExpectationsWereMet()
+	assert.NoError(t, err)
 }
 
 func TestAdmin_FindUUID(t *testing.T) {
@@ -64,5 +66,6 @@ func TestAdmin_FindUUID(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "uuid", uuid)
 
-	mock.ExpectationsWereMet()
+	err = mock.ExpectationsWereMet()
+	assert.NoError(t, err)
 }

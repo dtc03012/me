@@ -16,21 +16,21 @@ func (a *post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Pos
 	var post []*entity.Post
 	post = make([]*entity.Post, 0)
 
-	err := tx.Select(&post, "SELECT * FROM board_post WHERE pid = ?", pid)
+	err := tx.SelectContext(ctx, &post, "SELECT * FROM board_post WHERE pid = ?", pid)
 
 	if err != nil {
 		return nil, err
 	}
 
 	if len(post) == 0 {
-		return nil, errors.New("post db error: there is no file id in db")
+		return nil, errors.New("post db repository error: there is no file id in db")
 	}
 
 	if len(post) > 1 {
-		return nil, errors.New("post db error: duplicate file id. it is caused by server error")
+		return nil, errors.New("post db repository error: duplicate file id. it is caused by server error")
 	}
 
-	err = tx.Select(&post[0].Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", pid)
+	err = tx.SelectContext(ctx, &post[0].Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", pid)
 
 	if err != nil {
 		return nil, err
@@ -49,14 +49,14 @@ func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOpt
 		return nil, err
 	}
 
-	err = tx.Select(&posts, "SELECT * FROM board_post ORDER BY pid DESC LIMIT ?, ?", n, m)
+	err = tx.SelectContext(ctx, &posts, "SELECT * FROM board_post ORDER BY pid DESC LIMIT ?, ?", n, m)
 
 	if err != nil {
 		return nil, err
 	}
 
 	for _, post := range posts {
-		err = tx.Select(&post.Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", post.Id)
+		err = tx.SelectContext(ctx, &post.Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", post.Id)
 	}
 
 	if err != nil {
@@ -68,10 +68,10 @@ func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOpt
 
 func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, tags []string) error {
 	if post == nil {
-		return errors.New("post db error: post is nil")
+		return errors.New("post db repository error: post is nil")
 	}
 
-	postResult, err := tx.Exec("INSERT IGNORE INTO board_post(writer, title, content, like_cnt, time_to_read_minute) VALUES (?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.LikeCnt, post.TimeToReadMinute)
+	postResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_post(writer, title, content, like_cnt, views, time_to_read_minute) VALUES (?, ?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.LikeCnt, post.Views, post.TimeToReadMinute)
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, t
 	}
 
 	for _, tag := range tags {
-		tagResult, err := tx.Exec("INSERT IGNORE INTO board_tag(value) VALUES (?)", tag)
+		tagResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_tag(value) VALUES (?)", tag)
 		if err != nil {
 			return err
 		}
@@ -92,10 +92,79 @@ func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, t
 			return err
 		}
 
-		_, err = tx.Exec("INSERT IGNORE INTO board_post_tag(tid, pid) VALUES(?, ?)", tid, pid)
+		_, err = tx.ExecContext(ctx, "INSERT IGNORE INTO board_post_tag(tid, pid) VALUES(?, ?)", tid, pid)
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (a *post) GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error) {
+
+	var views []int32
+
+	err := tx.SelectContext(ctx, &views, "SELECT views FROM board_post WHERE pid = ?", pid)
+	if err != nil {
+		return 0, err
+	}
+
+	if len(views) == 0 {
+		return 0, errors.New("get views db repository error: there is no given pid in db")
+	}
+
+	return int(views[0]), nil
+}
+
+func (a *post) UpdateViews(ctx context.Context, tx *sqlx.Tx, views int32, pid int32) error {
+
+	_, err := tx.ExecContext(ctx, "UPDATE board_post SET board_post.views = ? WHERE pid = ?", views, pid)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *post) GetBulkComment(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*entity.Comment, error) {
+
+	var comments []*entity.Comment
+	comments = make([]*entity.Comment, 0)
+
+	n, m, err := option.CalculateDBRange(opt.SizeRange)
+	if err != nil {
+		return nil, err
+	}
+
+	err = tx.SelectContext(ctx, &comments, "SELECT * FROM board_comment WHERE pid = ? ORDER BY cid LIMIT ?, ?", opt.PostId, n, m)
+	if err != nil {
+		return nil, err
+	}
+
+	return comments, nil
+}
+
+func (a *post) InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.Comment) error {
+
+	if comment == nil {
+		return errors.New("insert comment db repository error: comment is nil")
+	}
+
+	_, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_comment(pid, writer, password, comment, like_cnt) VALUES(?, ?, ?, ?, ?)",
+		comment.PostId, comment.Writer, comment.Password, comment.Comment, comment.LikeCnt)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *post) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
+
+	_, err := tx.ExecContext(ctx, "DELETE FROM board_comment WHERE pid = ? and cid = ?", postId, commentId)
+	if err != nil {
+		return err
 	}
 
 	return nil

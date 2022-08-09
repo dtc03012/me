@@ -18,6 +18,43 @@ type Post struct {
 	mock.Mock
 }
 
+// DeleteComment provides a mock function with given fields: ctx, tx, postId, commentId
+func (_m *Post) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
+	ret := _m.Called(ctx, tx, postId, commentId)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int) error); ok {
+		r0 = rf(ctx, tx, postId, commentId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// GetBulkComment provides a mock function with given fields: ctx, tx, opt
+func (_m *Post) GetBulkComment(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*entity.Comment, error) {
+	ret := _m.Called(ctx, tx, opt)
+
+	var r0 []*entity.Comment
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *option.CommentOption) []*entity.Comment); ok {
+		r0 = rf(ctx, tx, opt)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.Comment)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, *option.CommentOption) error); ok {
+		r1 = rf(ctx, tx, opt)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetBulkPost provides a mock function with given fields: ctx, tx, opt
 func (_m *Post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error) {
 	ret := _m.Called(ctx, tx, opt)
@@ -64,6 +101,41 @@ func (_m *Post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Po
 	return r0, r1
 }
 
+// GetViews provides a mock function with given fields: ctx, tx, pid
+func (_m *Post) GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error) {
+	ret := _m.Called(ctx, tx, pid)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32) int); ok {
+		r0 = rf(ctx, tx, pid)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int32) error); ok {
+		r1 = rf(ctx, tx, pid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// InsertComment provides a mock function with given fields: ctx, tx, comment
+func (_m *Post) InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.Comment) error {
+	ret := _m.Called(ctx, tx, comment)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *entity.Comment) error); ok {
+		r0 = rf(ctx, tx, comment)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // InsertPost provides a mock function with given fields: ctx, tx, post, tags
 func (_m *Post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, tags []string) error {
 	ret := _m.Called(ctx, tx, post, tags)
@@ -71,6 +143,20 @@ func (_m *Post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *entity.Post, []string) error); ok {
 		r0 = rf(ctx, tx, post, tags)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UpdateViews provides a mock function with given fields: ctx, tx, views, pid
+func (_m *Post) UpdateViews(ctx context.Context, tx *sqlx.Tx, views int32, pid int32) error {
+	ret := _m.Called(ctx, tx, views, pid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32, int32) error); ok {
+		r0 = rf(ctx, tx, views, pid)
 	} else {
 		r0 = ret.Error(0)
 	}

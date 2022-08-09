@@ -8,3 +8,8 @@ type PostOption struct {
 	SearchWriter         string
 	SearchComment        string
 }
+
+type CommentOption struct {
+	SizeRange *RangeOption
+	PostId    int
+}

@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
+	"time"
 )
 
 func TestDBService_UploadPost(t *testing.T) {
@@ -21,6 +22,7 @@ func TestDBService_UploadPost(t *testing.T) {
 		Content:          "content1",
 		Tags:             []string{"tag1"},
 		LikeCnt:          3,
+		Views:            1,
 		TimeToReadMinute: 1,
 	}
 
@@ -37,7 +39,7 @@ func TestDBService_UploadPost(t *testing.T) {
 	m.PostRepo.AssertExpectations(t)
 }
 
-func TestDBService_FetchPosts(t *testing.T) {
+func TestDBService_FetchPostList(t *testing.T) {
 	t.Parallel()
 
 	ctx, tx, _, err := db.SetupMock()
@@ -48,6 +50,7 @@ func TestDBService_FetchPosts(t *testing.T) {
 		Content:          "content1",
 		Tags:             []string{"tag1"},
 		LikeCnt:          3,
+		Views:            1,
 		TimeToReadMinute: 1,
 	}
 
@@ -56,6 +59,7 @@ func TestDBService_FetchPosts(t *testing.T) {
 		Content:          "content2",
 		Tags:             []string{"tag2"},
 		LikeCnt:          3,
+		Views:            1,
 		TimeToReadMinute: 1,
 	}
 
@@ -66,15 +70,150 @@ func TestDBService_FetchPosts(t *testing.T) {
 	svc, m := service.NewMockDBService()
 	m.PostRepo.On("GetBulkPost", mock.Anything, mock.Anything, mock.Anything).Return(posts, nil).Once()
 
-	fetchPosts, err := svc.FetchPosts(ctx, tx, 1, 2)
+	fetchPosts, err := svc.FetchPostList(ctx, tx, 1, 2)
 	assert.NoError(t, err)
 	assert.Len(t, fetchPosts, 2)
 	assert.Equal(t, "title1", fetchPosts[0].Title)
 	assert.Equal(t, "title2", fetchPosts[1].Title)
 
-	_, err = svc.FetchPosts(ctx, tx, 0, 2)
+	_, err = svc.FetchPostList(ctx, tx, 0, 2)
 	assert.Error(t, err)
 
 	m.PostRepo.AssertNumberOfCalls(t, "GetBulkPost", 1)
+	m.PostRepo.AssertExpectations(t)
+}
+
+func TestDBService_FetchPost(t *testing.T) {
+	t.Parallel()
+
+	ctx, tx, _, err := db.SetupMock()
+	assert.NoError(t, err)
+
+	postData := &entity.Post{
+		Title:            "title1",
+		Content:          "content1",
+		Tags:             []string{"tag1"},
+		LikeCnt:          3,
+		Views:            1,
+		TimeToReadMinute: 1,
+	}
+
+	svc, m := service.NewMockDBService()
+	m.PostRepo.On("GetPost", mock.Anything, mock.Anything, mock.Anything).Return(postData, nil).Once()
+
+	fetchPost, err := svc.FetchPost(ctx, tx, 1)
+	assert.NoError(t, err)
+	assert.NotNil(t, fetchPost)
+	assert.Equal(t, "title1", fetchPost.Title)
+	assert.Equal(t, "content1", fetchPost.Content)
+	assert.Equal(t, []string{"tag1"}, fetchPost.Tags)
+	assert.Equal(t, int32(1), fetchPost.Views)
+	assert.Equal(t, int32(3), fetchPost.LikeCnt)
+	assert.Equal(t, int32(1), fetchPost.TimeToReadMinute)
+
+	_, err = svc.FetchPost(ctx, tx, 0)
+	assert.Error(t, err)
+
+	m.PostRepo.AssertNumberOfCalls(t, "GetPost", 1)
+	m.PostRepo.AssertExpectations(t)
+}
+
+func TestDBService_IncrementViews(t *testing.T) {
+	t.Parallel()
+
+	ctx, tx, _, err := db.SetupMock()
+	assert.NoError(t, err)
+
+	svc, m := service.NewMockDBService()
+	m.PostRepo.On("GetViews", mock.Anything, mock.Anything, mock.Anything).Return(1, nil).Once()
+	m.PostRepo.On("UpdateViews", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
+
+	err = svc.IncrementViews(ctx, tx, 1)
+	assert.NoError(t, err)
+
+	m.PostRepo.AssertExpectations(t)
+}
+
+func TestDBService_LeaveComment(t *testing.T) {
+	t.Parallel()
+
+	ctx, tx, _, err := db.SetupMock()
+	assert.NoError(t, err)
+
+	comment := &post.Comment{
+		Id:       1,
+		PostId:   1,
+		Writer:   "writer1",
+		Password: "password1",
+		Comment:  "comment1",
+		LikeCnt:  1,
+	}
+
+	svc, m := service.NewMockDBService()
+	m.PostRepo.On("InsertComment", mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
+
+	err = svc.LeaveComment(ctx, tx, comment)
+	assert.NoError(t, err)
+
+	m.PostRepo.AssertExpectations(t)
+}
+
+func TestDBService_FetchCommentList(t *testing.T) {
+	t.Parallel()
+
+	ctx, tx, _, err := db.SetupMock()
+	assert.NoError(t, err)
+
+	currentTime := time.Now()
+	svc, m := service.NewMockDBService()
+	m.PostRepo.On("GetBulkComment", mock.Anything, mock.Anything, mock.Anything).Return([]*entity.Comment{
+		{
+			Id:       1,
+			PostId:   1,
+			Writer:   "writer1",
+			Password: "password1",
+			Comment:  "comment1",
+			LikeCnt:  1,
+			CreateAt: currentTime,
+		},
+		{
+			Id:       2,
+			PostId:   1,
+			Writer:   "writer2",
+			Password: "password2",
+			Comment:  "comment2",
+			LikeCnt:  1,
+			CreateAt: currentTime,
+		},
+	}, nil)
+
+	commentList, err := svc.FetchCommentList(ctx, tx, 1, 1, 2)
+	assert.NoError(t, err)
+	assert.NotNil(t, commentList)
+	assert.Len(t, commentList, 2)
+	assert.Equal(t, "writer1", commentList[0].Writer)
+	assert.Equal(t, "writer2", commentList[1].Writer)
+
+	m.PostRepo.AssertExpectations(t)
+}
+
+func TestDBService_DeleteComment(t *testing.T) {
+	t.Parallel()
+
+	ctx, tx, _, err := db.SetupMock()
+	assert.NoError(t, err)
+
+	svc, m := service.NewMockDBService()
+	m.PostRepo.On("DeleteComment", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
+
+	err = svc.DeleteComment(ctx, tx, 1, 1)
+	assert.NoError(t, err)
+
+	err = svc.DeleteComment(ctx, tx, 0, 1)
+	assert.Error(t, err)
+
+	err = svc.DeleteComment(ctx, tx, 1, 0)
+	assert.Error(t, err)
+
 	m.PostRepo.AssertExpectations(t)
 }

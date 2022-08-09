@@ -7,7 +7,9 @@ import PostEditor from "./postEditor/postEditor";
 class Board extends React.Component {
     render() {
         return (
-            <Box>
+            <Box minHeight="1000px" sx={{
+                backgroundColor: '#f5f5f5',
+            }}>
                 <Header/>
                 <Body/>
             </Box>

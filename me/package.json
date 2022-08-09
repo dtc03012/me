@@ -20,6 +20,7 @@
     "classnames": "^2.3.1",
     "connected-react-router": "^6.9.3",
     "cucumber": "^6.0.7",
+    "dompurify": "^2.3.10",
     "dotenv": "^16.0.1",
     "http-proxy-middleware": "^2.0.6",
     "package.json": "^0.0.0",

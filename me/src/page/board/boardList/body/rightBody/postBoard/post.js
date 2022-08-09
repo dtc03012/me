@@ -1,8 +1,7 @@
 import React from 'react';
-import {Avatar, Chip, Grid, Paper, Typography} from "@mui/material";
-import Box from "@mui/material/Box";
+import {Avatar, Chip, Grid, Link, Paper, Typography} from "@mui/material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import {red} from "@mui/material/colors";
+import "./post.css";
 
 class Post extends React.Component {
 
@@ -22,7 +21,7 @@ class Post extends React.Component {
                 <Grid item>
                     <Chip label={String(tag)} variant="outlined" sx={{
                         '& .MuiChip-label': {
-                            fontSize: 14,
+                            fontSize: 12,
                             fontFamily: "Elice Digital Baeum",
                         },
                     }} />
@@ -43,7 +42,7 @@ class Post extends React.Component {
         return (
             <Grid container>
                 <Grid item xs={12} sm={12}>
-                    <Paper elevation={3} sx={{ p: 2,}}>
+                    <Paper elevation={3} sx={{ p: 1,}}>
                         <Grid container direction="row" alignItems="center">
                             <Grid item sx={{
                                 pl: 2,
@@ -54,7 +53,7 @@ class Post extends React.Component {
                                     </Grid>
                                     <Grid item>
                                         <Typography sx={{
-                                            fontSize: 13,
+                                            fontSize: 12,
                                             fontWeight: 900,
                                             fontFamily: "Elice Digital Baeum",
                                         }}>{this.props.postInfo.writer}</Typography>
@@ -67,11 +66,13 @@ class Post extends React.Component {
                                 <Grid container direction="column" spacing={1.5}>
                                     <Grid item>
                                         <Typography sx={{
-                                            fontSize: 30,
+                                            fontSize: 25,
                                             fontWeight: 900,
                                             fontFamily: "Elice Digital Baeum",
                                         }}>
-                                            {this.props.postInfo.title}
+                                            <Link href={"/board/post/"+this.props.postInfo.id} color="inherit" className="title-link" underline="none">
+                                                {this.props.postInfo.title}
+                                            </Link>
                                         </Typography>
                                     </Grid>
                                     <Grid item>
@@ -82,10 +83,10 @@ class Post extends React.Component {
                                 </Grid>
                                 </Grid>
                             <Grid item xs={1.5} sm={1.5}>
-                                <Grid container direction="column" spacing={1}>
+                                <Grid container direction="column" spacing={0.5}>
                                     <Grid item>
                                         <Typography sx={{
-                                            fontSize: 14,
+                                            fontSize: 13,
                                             fontWeight: 600,
                                             fontFamily: "Elice Digital Baeum",
                                         }}>
@@ -94,11 +95,20 @@ class Post extends React.Component {
                                     </Grid>
                                     <Grid item>
                                         <Typography sx={{
-                                            fontSize: 14,
+                                            fontSize: 13,
                                             fontWeight: 600,
                                             fontFamily: "Elice Digital Baeum",
                                         }}>
                                             예상 읽는 시간: {this.props.postInfo.timeToReadMinute}분
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography sx={{
+                                            fontSize: 13,
+                                            fontWeight: 600,
+                                            fontFamily: "Elice Digital Baeum",
+                                        }}>
+                                            조회수: {this.props.postInfo.views}
                                         </Typography>
                                     </Grid>
                                     <Grid item>
@@ -110,7 +120,7 @@ class Post extends React.Component {
                                             </Grid>
                                             <Grid item>
                                                 <Typography sx={{
-                                                    fontSize: 14,
+                                                    fontSize: 13,
                                                     fontWeight: 600,
                                                     fontFamily: "Elice Digital Baeum",
                                                 }}>

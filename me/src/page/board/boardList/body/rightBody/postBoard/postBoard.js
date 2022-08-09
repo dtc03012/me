@@ -16,7 +16,7 @@ class PostBoard extends React.Component {
     }
 
     componentDidMount() {
-        let url = "/v2/fetch-post?row=1&size=6"
+        let url = "/v2/fetch-board-post-list?row=1&size=6"
         axios.get(url).then(
             response => {
                 let newPostInfo = []
@@ -34,6 +34,7 @@ class PostBoard extends React.Component {
                         likeCnt: data.likeCnt,
                         timeToReadMinute: data.timeToReadMinute,
                         tags: data.tags,
+                        views: data.views,
                         createAt: data.createAt,
                     }]
                 })

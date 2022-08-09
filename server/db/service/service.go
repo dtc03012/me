@@ -30,7 +30,13 @@ type DBService interface {
 	FindAdminUUID(ctx context.Context, tx *sqlx.Tx, uuid string) (bool, error)
 
 	UploadPost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error
-	FetchPosts(ctx context.Context, tx *sqlx.Tx, row int, size int) ([]*post.Data, error)
+	FetchPostList(ctx context.Context, tx *sqlx.Tx, row int, size int) ([]*post.Data, error)
+	FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*post.Data, error)
+	IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int) error
+
+	LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *post.Comment) error
+	FetchCommentList(ctx context.Context, tx *sqlx.Tx, postId int, row int, size int) ([]*post.Comment, error)
+	DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error
 }
 
 type dbService struct {

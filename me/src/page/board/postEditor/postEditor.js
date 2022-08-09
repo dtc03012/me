@@ -127,7 +127,7 @@ class PostEditor extends React.Component {
     }
 
     uploadPost = () => {
-        axios.post("/v2/upload-post",{
+        axios.post("/v2/upload-board-post",{
             data: {
                 title: this.state.title,
                 writer: 'admin',

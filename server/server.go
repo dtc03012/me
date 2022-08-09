@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/dtc03012/me/handler"
 	pb "github.com/dtc03012/me/protobuf/proto/service"
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"log"
@@ -55,17 +54,6 @@ func startGatewayServer(ctx context.Context) {
 	}
 }
 
-func startFileServer() {
-	mux := mux.NewRouter()
-	mux.HandleFunc("/file/upload-file", handler.UploadFileHandler)
-	mux.HandleFunc("/file/get-file/{fileName}", handler.GetFileHandler)
-
-	log.Printf("start File server on %s port", filePortNumber)
-	if err := http.ListenAndServe(":4500", mux); err != nil {
-		log.Fatalf("failed to serve: %s", err)
-	}
-}
-
 func startServer(ctx context.Context) {
 	wg := new(sync.WaitGroup)
 	wg.Add(3)
@@ -77,11 +65,6 @@ func startServer(ctx context.Context) {
 
 	go func() {
 		startGatewayServer(ctx)
-		wg.Done()
-	}()
-
-	go func() {
-		startFileServer()
 		wg.Done()
 	}()
 

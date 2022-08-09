@@ -20,7 +20,7 @@ func (a *admin) GetPassword(ctx context.Context, tx *sqlx.Tx) (string, error) {
 	}
 
 	if len(password) != 1 {
-		return "", fmt.Errorf("admin db error :  please check the health of the mysql")
+		return "", fmt.Errorf("admin db repository error:  please check the health of the mysql")
 	}
 
 	return password[0], nil
@@ -29,7 +29,7 @@ func (a *admin) GetPassword(ctx context.Context, tx *sqlx.Tx) (string, error) {
 func (a *admin) InsertUUID(ctx context.Context, tx *sqlx.Tx, uuid string) error {
 
 	if len(uuid) == 0 {
-		return errors.New("admin db error : uuid isn't set")
+		return errors.New("admin db repository error: uuid isn't set")
 	}
 
 	_, err := tx.Exec("INSERT IGNORE INTO admin_login_list VALUES (?)", uuid)
@@ -44,7 +44,7 @@ func (a *admin) InsertUUID(ctx context.Context, tx *sqlx.Tx, uuid string) error 
 func (a *admin) FindUUID(ctx context.Context, tx *sqlx.Tx, uuid string) (string, error) {
 
 	if len(uuid) == 0 {
-		return "", errors.New("admin db error : uuid isn't set")
+		return "", errors.New("admin db repository error: uuid isn't set")
 	}
 
 	var uuidList []string

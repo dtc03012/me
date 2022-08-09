@@ -9,7 +9,7 @@ class WritePost extends React.Component {
 
     render() {
         return (
-            <Box display="flex" sx={{
+            <Box minHeight="1000px" sx={{
                 backgroundColor: '#f5f5f5',
             }}>
                 <Grid container direction="column">

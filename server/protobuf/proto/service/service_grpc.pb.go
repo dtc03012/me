@@ -28,7 +28,12 @@ type MeClient interface {
 	LoginAdmin(ctx context.Context, in *message.LoginAdminRequest, opts ...grpc.CallOption) (*message.LoginAdminResponse, error)
 	FetchDistrictWeather(ctx context.Context, in *message.FetchDistrictWeatherRequest, opts ...grpc.CallOption) (*message.FetchDistrictWeatherResponse, error)
 	UploadPost(ctx context.Context, in *message.UploadPostRequest, opts ...grpc.CallOption) (*message.UploadPostResponse, error)
-	FetchPosts(ctx context.Context, in *message.FetchPostsRequest, opts ...grpc.CallOption) (*message.FetchPostsResponse, error)
+	FetchPostList(ctx context.Context, in *message.FetchPostListRequest, opts ...grpc.CallOption) (*message.FetchPostListResponse, error)
+	FetchPost(ctx context.Context, in *message.FetchPostRequest, opts ...grpc.CallOption) (*message.FetchPostResponse, error)
+	IncrementView(ctx context.Context, in *message.IncrementViewRequest, opts ...grpc.CallOption) (*message.IncrementViewResponse, error)
+	LeaveComment(ctx context.Context, in *message.LeaveCommentRequest, opts ...grpc.CallOption) (*message.LeaveCommentResponse, error)
+	FetchCommentList(ctx context.Context, in *message.FetchCommentListRequest, opts ...grpc.CallOption) (*message.FetchCommentListResponse, error)
+	DeleteComment(ctx context.Context, in *message.DeleteCommentRequest, opts ...grpc.CallOption) (*message.DeleteCommentResponse, error)
 }
 
 type meClient struct {
@@ -84,9 +89,54 @@ func (c *meClient) UploadPost(ctx context.Context, in *message.UploadPostRequest
 	return out, nil
 }
 
-func (c *meClient) FetchPosts(ctx context.Context, in *message.FetchPostsRequest, opts ...grpc.CallOption) (*message.FetchPostsResponse, error) {
-	out := new(message.FetchPostsResponse)
-	err := c.cc.Invoke(ctx, "/v2.service.me/FetchPosts", in, out, opts...)
+func (c *meClient) FetchPostList(ctx context.Context, in *message.FetchPostListRequest, opts ...grpc.CallOption) (*message.FetchPostListResponse, error) {
+	out := new(message.FetchPostListResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/FetchPostList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) FetchPost(ctx context.Context, in *message.FetchPostRequest, opts ...grpc.CallOption) (*message.FetchPostResponse, error) {
+	out := new(message.FetchPostResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/FetchPost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) IncrementView(ctx context.Context, in *message.IncrementViewRequest, opts ...grpc.CallOption) (*message.IncrementViewResponse, error) {
+	out := new(message.IncrementViewResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/IncrementView", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) LeaveComment(ctx context.Context, in *message.LeaveCommentRequest, opts ...grpc.CallOption) (*message.LeaveCommentResponse, error) {
+	out := new(message.LeaveCommentResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/LeaveComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) FetchCommentList(ctx context.Context, in *message.FetchCommentListRequest, opts ...grpc.CallOption) (*message.FetchCommentListResponse, error) {
+	out := new(message.FetchCommentListResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/FetchCommentList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) DeleteComment(ctx context.Context, in *message.DeleteCommentRequest, opts ...grpc.CallOption) (*message.DeleteCommentResponse, error) {
+	out := new(message.DeleteCommentResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/DeleteComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +152,12 @@ type MeServer interface {
 	LoginAdmin(context.Context, *message.LoginAdminRequest) (*message.LoginAdminResponse, error)
 	FetchDistrictWeather(context.Context, *message.FetchDistrictWeatherRequest) (*message.FetchDistrictWeatherResponse, error)
 	UploadPost(context.Context, *message.UploadPostRequest) (*message.UploadPostResponse, error)
-	FetchPosts(context.Context, *message.FetchPostsRequest) (*message.FetchPostsResponse, error)
+	FetchPostList(context.Context, *message.FetchPostListRequest) (*message.FetchPostListResponse, error)
+	FetchPost(context.Context, *message.FetchPostRequest) (*message.FetchPostResponse, error)
+	IncrementView(context.Context, *message.IncrementViewRequest) (*message.IncrementViewResponse, error)
+	LeaveComment(context.Context, *message.LeaveCommentRequest) (*message.LeaveCommentResponse, error)
+	FetchCommentList(context.Context, *message.FetchCommentListRequest) (*message.FetchCommentListResponse, error)
+	DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
 
@@ -125,8 +180,23 @@ func (UnimplementedMeServer) FetchDistrictWeather(context.Context, *message.Fetc
 func (UnimplementedMeServer) UploadPost(context.Context, *message.UploadPostRequest) (*message.UploadPostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadPost not implemented")
 }
-func (UnimplementedMeServer) FetchPosts(context.Context, *message.FetchPostsRequest) (*message.FetchPostsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FetchPosts not implemented")
+func (UnimplementedMeServer) FetchPostList(context.Context, *message.FetchPostListRequest) (*message.FetchPostListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchPostList not implemented")
+}
+func (UnimplementedMeServer) FetchPost(context.Context, *message.FetchPostRequest) (*message.FetchPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchPost not implemented")
+}
+func (UnimplementedMeServer) IncrementView(context.Context, *message.IncrementViewRequest) (*message.IncrementViewResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrementView not implemented")
+}
+func (UnimplementedMeServer) LeaveComment(context.Context, *message.LeaveCommentRequest) (*message.LeaveCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LeaveComment not implemented")
+}
+func (UnimplementedMeServer) FetchCommentList(context.Context, *message.FetchCommentListRequest) (*message.FetchCommentListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchCommentList not implemented")
+}
+func (UnimplementedMeServer) DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
@@ -231,20 +301,110 @@ func _Me_UploadPost_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Me_FetchPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(message.FetchPostsRequest)
+func _Me_FetchPostList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.FetchPostListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MeServer).FetchPosts(ctx, in)
+		return srv.(MeServer).FetchPostList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v2.service.me/FetchPosts",
+		FullMethod: "/v2.service.me/FetchPostList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MeServer).FetchPosts(ctx, req.(*message.FetchPostsRequest))
+		return srv.(MeServer).FetchPostList(ctx, req.(*message.FetchPostListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_FetchPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.FetchPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).FetchPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/FetchPost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).FetchPost(ctx, req.(*message.FetchPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_IncrementView_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.IncrementViewRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).IncrementView(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/IncrementView",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).IncrementView(ctx, req.(*message.IncrementViewRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_LeaveComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.LeaveCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).LeaveComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/LeaveComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).LeaveComment(ctx, req.(*message.LeaveCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_FetchCommentList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.FetchCommentListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).FetchCommentList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/FetchCommentList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).FetchCommentList(ctx, req.(*message.FetchCommentListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_DeleteComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.DeleteCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).DeleteComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/DeleteComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).DeleteComment(ctx, req.(*message.DeleteCommentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -277,8 +437,28 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Me_UploadPost_Handler,
 		},
 		{
-			MethodName: "FetchPosts",
-			Handler:    _Me_FetchPosts_Handler,
+			MethodName: "FetchPostList",
+			Handler:    _Me_FetchPostList_Handler,
+		},
+		{
+			MethodName: "FetchPost",
+			Handler:    _Me_FetchPost_Handler,
+		},
+		{
+			MethodName: "IncrementView",
+			Handler:    _Me_IncrementView_Handler,
+		},
+		{
+			MethodName: "LeaveComment",
+			Handler:    _Me_LeaveComment_Handler,
+		},
+		{
+			MethodName: "FetchCommentList",
+			Handler:    _Me_FetchCommentList_Handler,
+		},
+		{
+			MethodName: "DeleteComment",
+			Handler:    _Me_DeleteComment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

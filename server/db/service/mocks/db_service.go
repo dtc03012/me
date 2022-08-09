@@ -5,6 +5,7 @@ package mocks
 import (
 	context "context"
 
+	post "github.com/dtc03012/me/protobuf/proto/entity/post"
 	mock "github.com/stretchr/testify/mock"
 
 	sql "database/sql"
@@ -40,8 +41,8 @@ func (_m *DBService) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sqlx.Tx
 	return r0, r1
 }
 
-// CheckAdmin provides a mock function with given fields: ctx, tx, password
-func (_m *DBService) CheckAdmin(ctx context.Context, tx *sqlx.Tx, password string) (bool, error) {
+// CheckAdminPassword provides a mock function with given fields: ctx, tx, password
+func (_m *DBService) CheckAdminPassword(ctx context.Context, tx *sqlx.Tx, password string) (bool, error) {
 	ret := _m.Called(ctx, tx, password)
 
 	var r0 bool
@@ -59,6 +60,166 @@ func (_m *DBService) CheckAdmin(ctx context.Context, tx *sqlx.Tx, password strin
 	}
 
 	return r0, r1
+}
+
+// DeleteComment provides a mock function with given fields: ctx, tx, postId, commentId
+func (_m *DBService) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
+	ret := _m.Called(ctx, tx, postId, commentId)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int) error); ok {
+		r0 = rf(ctx, tx, postId, commentId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// FetchCommentList provides a mock function with given fields: ctx, tx, postId, row, size
+func (_m *DBService) FetchCommentList(ctx context.Context, tx *sqlx.Tx, postId int, row int, size int) ([]*post.Comment, error) {
+	ret := _m.Called(ctx, tx, postId, row, size)
+
+	var r0 []*post.Comment
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int, int) []*post.Comment); ok {
+		r0 = rf(ctx, tx, postId, row, size)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*post.Comment)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int, int, int) error); ok {
+		r1 = rf(ctx, tx, postId, row, size)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FetchPost provides a mock function with given fields: ctx, tx, postId
+func (_m *DBService) FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*post.Data, error) {
+	ret := _m.Called(ctx, tx, postId)
+
+	var r0 *post.Data
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int) *post.Data); ok {
+		r0 = rf(ctx, tx, postId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*post.Data)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int) error); ok {
+		r1 = rf(ctx, tx, postId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FetchPostList provides a mock function with given fields: ctx, tx, row, size
+func (_m *DBService) FetchPostList(ctx context.Context, tx *sqlx.Tx, row int, size int) ([]*post.Data, error) {
+	ret := _m.Called(ctx, tx, row, size)
+
+	var r0 []*post.Data
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int) []*post.Data); ok {
+		r0 = rf(ctx, tx, row, size)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*post.Data)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int, int) error); ok {
+		r1 = rf(ctx, tx, row, size)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindAdminUUID provides a mock function with given fields: ctx, tx, uuid
+func (_m *DBService) FindAdminUUID(ctx context.Context, tx *sqlx.Tx, uuid string) (bool, error) {
+	ret := _m.Called(ctx, tx, uuid)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, string) bool); ok {
+		r0 = rf(ctx, tx, uuid)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, string) error); ok {
+		r1 = rf(ctx, tx, uuid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// IncrementViews provides a mock function with given fields: ctx, tx, postId
+func (_m *DBService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int) error {
+	ret := _m.Called(ctx, tx, postId)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int) error); ok {
+		r0 = rf(ctx, tx, postId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// InsertAdminUUID provides a mock function with given fields: ctx, tx, uuid
+func (_m *DBService) InsertAdminUUID(ctx context.Context, tx *sqlx.Tx, uuid string) error {
+	ret := _m.Called(ctx, tx, uuid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, string) error); ok {
+		r0 = rf(ctx, tx, uuid)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// LeaveComment provides a mock function with given fields: ctx, tx, comment
+func (_m *DBService) LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *post.Comment) error {
+	ret := _m.Called(ctx, tx, comment)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *post.Comment) error); ok {
+		r0 = rf(ctx, tx, comment)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UploadPost provides a mock function with given fields: ctx, tx, postData
+func (_m *DBService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error {
+	ret := _m.Called(ctx, tx, postData)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *post.Data) error); ok {
+		r0 = rf(ctx, tx, postData)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 type mockConstructorTestingTNewDBService interface {
