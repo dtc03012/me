@@ -38,7 +38,7 @@ func (dbs *dbService) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sqlx.T
 		mysqlIP                = os.Getenv("MYSQL_IP")
 		instanceConnectionName = os.Getenv("INSTANCE_CONNECTION_NAME")
 		usePrivate             = os.Getenv("PRIVATE_IP")
-		env                    = os.Getenv("ME_ENV")
+		env                    = os.Getenv("FILE_SERVER_ENV")
 		dataSourceName         string
 	)
 
