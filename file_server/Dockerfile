@@ -1,6 +1,6 @@
 FROM golang:1.18.3-alpine
 
-WORKDIR /usr/src/server
+WORKDIR /usr/src/file_server
 
 COPY . .
 
@@ -17,7 +17,7 @@ RUN go get
 
 RUN go install
 
-EXPOSE 4500
+EXPOSE 8282
 
 CMD [ "go", "run", "file_server.go" ]
 

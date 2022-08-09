@@ -17,7 +17,7 @@ import (
 
 const (
 	MaxUploadSize  = 10 * 1024 * 1024 // 1MB
-	filePortNumber = "4500"
+	filePortNumber = "8282"
 )
 
 var (
