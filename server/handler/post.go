@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"github.com/dtc03012/me/db/option"
 	"github.com/dtc03012/me/protobuf/proto/service/message"
 )
 
@@ -70,7 +71,7 @@ func (m *MeServer) IncrementView(ctx context.Context, req *message.IncrementView
 
 	defer tx.Rollback()
 
-	err = m.db.IncrementViews(ctx, tx, int(req.GetId()))
+	err = m.db.IncrementViews(ctx, tx, int(req.GetId()), req.GetUuid())
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +107,13 @@ func (m *MeServer) FetchCommentList(ctx context.Context, req *message.FetchComme
 
 	defer tx.Rollback()
 
-	commentList, err := m.db.FetchCommentList(ctx, tx, int(req.GetPostId()), int(req.GetRow()), int(req.GetSize()))
+	commentList, err := m.db.FetchCommentList(ctx, tx, &option.CommentOption{
+		SizeRange: &option.RangeOption{
+			Row:  int(req.GetRow()),
+			Size: int(req.GetSize()),
+		},
+		PostId: int(req.GetPostId()),
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -133,4 +140,29 @@ func (m *MeServer) DeleteComment(ctx context.Context, req *message.DeleteComment
 
 	tx.Commit()
 	return &message.DeleteCommentResponse{}, nil
+}
+
+func (m *MeServer) SearchPostList(ctx context.Context, req *message.SearchPostListRequest) (*message.SearchPostListResponse, error) {
+
+	tx, err := m.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer tx.Rollback()
+
+	postList, err := m.db.QueryPostList(ctx, tx, &option.PostOption{
+		SizeRange: &option.RangeOption{
+			Row:  int(req.GetRow()),
+			Size: int(req.GetSize()),
+		},
+		QueryType: option.QueryTypeMap[req.GetOption().GetSearchOption().String()],
+		Query:     req.GetOption().GetSearchQuery(),
+		Tags:      req.GetOption().GetTags(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &message.SearchPostListResponse{Data: postList}, nil
 }

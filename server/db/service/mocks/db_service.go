@@ -5,8 +5,10 @@ package mocks
 import (
 	context "context"
 
-	post "github.com/dtc03012/me/protobuf/proto/entity/post"
+	option "github.com/dtc03012/me/db/option"
 	mock "github.com/stretchr/testify/mock"
+
+	post "github.com/dtc03012/me/protobuf/proto/entity/post"
 
 	sql "database/sql"
 
@@ -76,13 +78,13 @@ func (_m *DBService) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int,
 	return r0
 }
 
-// FetchCommentList provides a mock function with given fields: ctx, tx, postId, row, size
-func (_m *DBService) FetchCommentList(ctx context.Context, tx *sqlx.Tx, postId int, row int, size int) ([]*post.Comment, error) {
-	ret := _m.Called(ctx, tx, postId, row, size)
+// FetchCommentList provides a mock function with given fields: ctx, tx, opt
+func (_m *DBService) FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*post.Comment, error) {
+	ret := _m.Called(ctx, tx, opt)
 
 	var r0 []*post.Comment
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int, int) []*post.Comment); ok {
-		r0 = rf(ctx, tx, postId, row, size)
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *option.CommentOption) []*post.Comment); ok {
+		r0 = rf(ctx, tx, opt)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*post.Comment)
@@ -90,8 +92,8 @@ func (_m *DBService) FetchCommentList(ctx context.Context, tx *sqlx.Tx, postId i
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int, int, int) error); ok {
-		r1 = rf(ctx, tx, postId, row, size)
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, *option.CommentOption) error); ok {
+		r1 = rf(ctx, tx, opt)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -166,13 +168,13 @@ func (_m *DBService) FindAdminUUID(ctx context.Context, tx *sqlx.Tx, uuid string
 	return r0, r1
 }
 
-// IncrementViews provides a mock function with given fields: ctx, tx, postId
-func (_m *DBService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int) error {
-	ret := _m.Called(ctx, tx, postId)
+// IncrementViews provides a mock function with given fields: ctx, tx, postId, uuid
+func (_m *DBService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error {
+	ret := _m.Called(ctx, tx, postId, uuid)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int) error); ok {
-		r0 = rf(ctx, tx, postId)
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, string) error); ok {
+		r0 = rf(ctx, tx, postId, uuid)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -206,6 +208,29 @@ func (_m *DBService) LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *pos
 	}
 
 	return r0
+}
+
+// QueryPostList provides a mock function with given fields: ctx, tx, opt
+func (_m *DBService) QueryPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error) {
+	ret := _m.Called(ctx, tx, opt)
+
+	var r0 []*post.Data
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *option.PostOption) []*post.Data); ok {
+		r0 = rf(ctx, tx, opt)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*post.Data)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, *option.PostOption) error); ok {
+		r1 = rf(ctx, tx, opt)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // UploadPost provides a mock function with given fields: ctx, tx, postData

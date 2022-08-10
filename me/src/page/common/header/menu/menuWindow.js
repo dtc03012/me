@@ -9,6 +9,7 @@ function CreateMenuButton(name) {
 
     return (
         <Button
+            href={url}
             sx = {{
             '&:hover': {
               bgcolor: 'gray',
@@ -18,9 +19,7 @@ function CreateMenuButton(name) {
             fontSize: '18px', fontWeight: 860, fontFamily: 'Cinzel',
             color: 'text.primary',
         }}>
-            <Link href={url} underline="none" color="inherit">
-                {name}
-            </Link>
+            {name}
         </Button>
     )
 }

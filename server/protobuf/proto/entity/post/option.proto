@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package v2.entity.post;
+
+option go_package = "github.com/dtc03012/me/protobuf/proto/entity/post";
+
+enum search_option {
+  Undefined = 0;
+  TitleAndContent = 1;
+  Title = 2;
+  Content = 3;
+  Writer = 4;
+  Comment = 5;
+}
+
+message option {
+  search_option search_option = 1;
+  string search_query = 2;
+  repeated string tags = 3;
+}

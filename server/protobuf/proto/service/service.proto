@@ -91,4 +91,10 @@ service me {
       delete: "/v2/delete-board-comment"
     };
   }
+
+  rpc SearchPostList(service.message.SearchPostListRequest) returns (service.message.SearchPostListResponse) {
+    option (google.api.http) = {
+      get: "/v2/search-board-post-list"
+    };
+  }
 }

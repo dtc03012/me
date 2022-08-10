@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/dtc03012/me/db/option"
 	"github.com/dtc03012/me/db/repository"
 	"github.com/dtc03012/me/db/repository/mocks"
 	"github.com/dtc03012/me/protobuf/proto/entity/post"
@@ -32,11 +33,13 @@ type DBService interface {
 	UploadPost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error
 	FetchPostList(ctx context.Context, tx *sqlx.Tx, row int, size int) ([]*post.Data, error)
 	FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*post.Data, error)
-	IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int) error
+	IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error
 
 	LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *post.Comment) error
-	FetchCommentList(ctx context.Context, tx *sqlx.Tx, postId int, row int, size int) ([]*post.Comment, error)
+	FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*post.Comment, error)
 	DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error
+
+	QueryPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error)
 }
 
 type dbService struct {

@@ -12,7 +12,7 @@ export default class PageRouter extends React.Component {
                 <Routes>
                     <Route exact path="/" element={<Main/>} />
                     <Route exact path="/home" element={<Main/>} />
-                    <Route exact path="/board" element={<Board/>} />
+                    <Route exact path="/board*" element={<Board/>} />
                     <Route exact path="/board/write" element={<WritePost/>} />
                     <Route path="/board/post/*" element={<ViewPost/>} />
                 </Routes>

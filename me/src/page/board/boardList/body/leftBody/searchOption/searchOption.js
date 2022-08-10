@@ -5,7 +5,12 @@ import TextSearchOption from "./textSearchOption";
 import TagSearchOption from "./tagSearchOption";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import {useDispatch, useSelector} from "react-redux";
-import { setSelectedTag, setInputTag } from "../../../../../../redux/reducers/board/tagOptionReducer";
+import {
+    setSelectedTag,
+    setInputTag,
+    setUrlParam,
+    setQueryOption, setQueryString
+} from "../../../../../../redux/reducers/board/BoardOptionReducer";
 
 const Theme = createTheme({
     typography: {
@@ -34,6 +39,7 @@ class SearchOption extends React.Component {
         this.state = {
             text: "",
             option: "",
+            searchURL: "",
         }
 
         this.handleInitButtonClick = this.handleInitButtonClick.bind(this)
@@ -67,6 +73,24 @@ class SearchOption extends React.Component {
         this.props.dispatch(setSelectedTag({selectedTag: []}))
         this.props.dispatch(setInputTag({inputTag: ""}))
     }
+
+    optionMap = {
+        "제목+내용": "TitleAndContent",
+        "제목": "Title",
+        "내용": "Content",
+        "작성자": "Writer",
+    }
+
+    createSearchURL = () => {
+        let url = "/board?page=1&queryOption=" + this.optionMap[this.state.option]
+        url += "&queryString=" + this.state.text
+        this.props.selectedTag.map((tag) => {
+            url += "&tags=" + tag
+        })
+
+        return url
+    }
+
 
     render() {
         return (
@@ -134,7 +158,7 @@ class SearchOption extends React.Component {
                             <Button variant="contained" color="success" sx={{
                                 fontSize: 15,
                                 fontFamily: "Elice Digital Baeum",
-                            }}>검색</Button>
+                            }} href={this.createSearchURL()}>검색</Button>
                             <Button variant="contained" color="error" onClick={this.handleInitButtonClick} sx={{
                                 fontSize: 15,
                                 fontFamily: "Elice Digital Baeum",
@@ -163,10 +187,10 @@ class SearchOption extends React.Component {
 
 export default () => {
     const dispatch = useDispatch();
-    const selectedTag = useSelector((state) => state.tagOptionReducer.selectedTag);
-    const inputTag = useSelector((state) => state.tagOptionReducer.inputTag)
+    const selectedTag = useSelector((state) => state.boardOptionReducer.selectedTag);
     return (
         <SearchOption
+            selectedTag={selectedTag}
             dispatch={dispatch}/>
     )
 }

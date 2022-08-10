@@ -3,6 +3,7 @@ package test
 import (
 	"github.com/dtc03012/me/db"
 	"github.com/dtc03012/me/db/entity"
+	"github.com/dtc03012/me/db/option"
 	"github.com/dtc03012/me/db/service"
 	"github.com/dtc03012/me/protobuf/proto/entity/post"
 	"github.com/stretchr/testify/assert"
@@ -50,7 +51,6 @@ func TestDBService_FetchPostList(t *testing.T) {
 		Content:          "content1",
 		Tags:             []string{"tag1"},
 		LikeCnt:          3,
-		Views:            1,
 		TimeToReadMinute: 1,
 	}
 
@@ -59,7 +59,6 @@ func TestDBService_FetchPostList(t *testing.T) {
 		Content:          "content2",
 		Tags:             []string{"tag2"},
 		LikeCnt:          3,
-		Views:            1,
 		TimeToReadMinute: 1,
 	}
 
@@ -125,10 +124,9 @@ func TestDBService_IncrementViews(t *testing.T) {
 	assert.NoError(t, err)
 
 	svc, m := service.NewMockDBService()
-	m.PostRepo.On("GetViews", mock.Anything, mock.Anything, mock.Anything).Return(1, nil).Once()
-	m.PostRepo.On("UpdateViews", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
+	m.PostRepo.On("InsertViews", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
 
-	err = svc.IncrementViews(ctx, tx, 1)
+	err = svc.IncrementViews(ctx, tx, 1, "uuid")
 	assert.NoError(t, err)
 
 	m.PostRepo.AssertExpectations(t)
@@ -187,7 +185,13 @@ func TestDBService_FetchCommentList(t *testing.T) {
 		},
 	}, nil)
 
-	commentList, err := svc.FetchCommentList(ctx, tx, 1, 1, 2)
+	commentList, err := svc.FetchCommentList(ctx, tx, &option.CommentOption{
+		SizeRange: &option.RangeOption{
+			Size: 1,
+			Row:  1,
+		},
+		PostId: 1,
+	})
 	assert.NoError(t, err)
 	assert.NotNil(t, commentList)
 	assert.Len(t, commentList, 2)
@@ -214,6 +218,49 @@ func TestDBService_DeleteComment(t *testing.T) {
 
 	err = svc.DeleteComment(ctx, tx, 1, 0)
 	assert.Error(t, err)
+
+	m.PostRepo.AssertExpectations(t)
+}
+
+func TestDBService_QueryPostList(t *testing.T) {
+
+	t.Parallel()
+
+	ctx, tx, _, err := db.SetupMock()
+	assert.NoError(t, err)
+
+	svc, m := service.NewMockDBService()
+	m.PostRepo.On("QueryBulkPost", mock.Anything, mock.Anything, mock.Anything).Return([]*entity.Post{
+		{
+			Id:               1,
+			Title:            "title1",
+			Content:          "content1",
+			LikeCnt:          1,
+			TimeToReadMinute: 1,
+			Writer:           "writer1",
+			Tags:             []string{"tag1"},
+		},
+	}, nil)
+
+	postList, err := svc.QueryPostList(ctx, tx, &option.PostOption{
+		SizeRange: &option.RangeOption{
+			Size: 1,
+			Row:  1,
+		},
+		QueryType: option.Title,
+		Query:     "title1",
+		Tags:      []string{},
+	})
+
+	assert.NoError(t, err)
+	assert.NotNil(t, postList)
+	assert.Len(t, postList, 1)
+	assert.Len(t, postList[0].Tags, 1)
+
+	assert.Equal(t, int32(1), postList[0].Id)
+	assert.Equal(t, "title1", postList[0].Title)
+	assert.Equal(t, "writer1", postList[0].Writer)
+	assert.Equal(t, "content1", postList[0].Content)
 
 	m.PostRepo.AssertExpectations(t)
 }

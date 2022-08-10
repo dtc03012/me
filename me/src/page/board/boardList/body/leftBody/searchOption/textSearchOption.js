@@ -22,7 +22,6 @@ class TextSearchOption extends React.Component {
         '제목',
         '내용',
         '작성자',
-        '댓글',
     ];
 
     constructor(props) {

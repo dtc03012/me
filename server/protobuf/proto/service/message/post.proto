@@ -4,6 +4,7 @@ package v2.service.message;
 
 import "proto/entity/post/post.proto";
 import "proto/entity/post/comment.proto";
+import "proto/entity/post/option.proto";
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/service/message";
 
@@ -33,6 +34,7 @@ message FetchPostResponse {
 
 message IncrementViewRequest{
   int32 id = 1;
+  string uuid = 2;
 }
 
 message IncrementViewResponse {
@@ -61,4 +63,14 @@ message DeleteCommentRequest {
 }
 
 message DeleteCommentResponse {
+}
+
+message SearchPostListRequest {
+  entity.post.option option = 1;
+  int32 row = 2;
+  int32 size = 3;
+}
+
+message SearchPostListResponse {
+  repeated entity.post.data data = 1;
 }

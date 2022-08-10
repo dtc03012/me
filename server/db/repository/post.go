@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/dtc03012/me/db/entity"
 	"github.com/dtc03012/me/db/option"
 	"github.com/jmoiron/sqlx"
@@ -16,7 +17,7 @@ func (a *post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Pos
 	var post []*entity.Post
 	post = make([]*entity.Post, 0)
 
-	err := tx.SelectContext(ctx, &post, "SELECT * FROM board_post WHERE pid = ?", pid)
+	err := tx.SelectContext(ctx, &post, "SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid WHERE bp.pid = ? GROUP BY bp.pid", pid)
 
 	if err != nil {
 		return nil, err
@@ -41,21 +42,21 @@ func (a *post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Pos
 
 func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error) {
 
-	var posts []*entity.Post
-	posts = make([]*entity.Post, 0)
+	var postList []*entity.Post
+	postList = make([]*entity.Post, 0)
 
 	n, m, err := option.CalculateDBRange(opt.SizeRange)
 	if err != nil {
 		return nil, err
 	}
 
-	err = tx.SelectContext(ctx, &posts, "SELECT * FROM board_post ORDER BY pid DESC LIMIT ?, ?", n, m)
+	err = tx.SelectContext(ctx, &postList, "SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid GROUP BY bp.pid ORDER BY pid DESC LIMIT ?, ?", n, m)
 
 	if err != nil {
 		return nil, err
 	}
 
-	for _, post := range posts {
+	for _, post := range postList {
 		err = tx.SelectContext(ctx, &post.Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", post.Id)
 	}
 
@@ -63,7 +64,7 @@ func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOpt
 		return nil, err
 	}
 
-	return posts, nil
+	return postList, nil
 }
 
 func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, tags []string) error {
@@ -71,7 +72,7 @@ func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, t
 		return errors.New("post db repository error: post is nil")
 	}
 
-	postResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_post(writer, title, content, like_cnt, views, time_to_read_minute) VALUES (?, ?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.LikeCnt, post.Views, post.TimeToReadMinute)
+	postResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_post(writer, title, content, like_cnt, time_to_read_minute) VALUES (?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.LikeCnt, post.TimeToReadMinute)
 	if err != nil {
 		return err
 	}
@@ -105,7 +106,7 @@ func (a *post) GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error
 
 	var views []int32
 
-	err := tx.SelectContext(ctx, &views, "SELECT views FROM board_post WHERE pid = ?", pid)
+	err := tx.SelectContext(ctx, &views, "SELECT count(*) FROM board_views WHERE pid = ?", pid)
 	if err != nil {
 		return 0, err
 	}
@@ -117,9 +118,9 @@ func (a *post) GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error
 	return int(views[0]), nil
 }
 
-func (a *post) UpdateViews(ctx context.Context, tx *sqlx.Tx, views int32, pid int32) error {
+func (a *post) InsertViews(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error {
 
-	_, err := tx.ExecContext(ctx, "UPDATE board_post SET board_post.views = ? WHERE pid = ?", views, pid)
+	_, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_views(pid, uuid) VALUES(?, ?)", pid, uuid)
 	if err != nil {
 		return err
 	}
@@ -129,20 +130,20 @@ func (a *post) UpdateViews(ctx context.Context, tx *sqlx.Tx, views int32, pid in
 
 func (a *post) GetBulkComment(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*entity.Comment, error) {
 
-	var comments []*entity.Comment
-	comments = make([]*entity.Comment, 0)
+	var commentList []*entity.Comment
+	commentList = make([]*entity.Comment, 0)
 
 	n, m, err := option.CalculateDBRange(opt.SizeRange)
 	if err != nil {
 		return nil, err
 	}
 
-	err = tx.SelectContext(ctx, &comments, "SELECT * FROM board_comment WHERE pid = ? ORDER BY cid LIMIT ?, ?", opt.PostId, n, m)
+	err = tx.SelectContext(ctx, &commentList, "SELECT * FROM board_comment WHERE pid = ? ORDER BY cid LIMIT ?, ?", opt.PostId, n, m)
 	if err != nil {
 		return nil, err
 	}
 
-	return comments, nil
+	return commentList, nil
 }
 
 func (a *post) InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.Comment) error {
@@ -168,4 +169,60 @@ func (a *post) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, comme
 	}
 
 	return nil
+}
+
+func (a *post) QueryBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error) {
+
+	var (
+		candPostList  []*entity.Post
+		validPostList []*entity.Post
+	)
+
+	candPostList = make([]*entity.Post, 0)
+
+	n, m, err := option.CalculateDBRange(opt.SizeRange)
+	if err != nil {
+		return nil, err
+	}
+
+	query := "SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid "
+	if opt.QueryType == option.TitleAndContent {
+		query += fmt.Sprintf("WHERE bp.title LIKE '%%%s%%' AND bp.content LIKE '%%%s%%' ", opt.Query, opt.Query)
+	} else if opt.QueryType == option.Title {
+		query += fmt.Sprintf("WHERE bp.title LIKE '%%%s%%' ", opt.Query)
+	} else if opt.QueryType == option.Content {
+		query += fmt.Sprintf("WHERE bp.content LIKE '%%%s%%' ", opt.Query)
+	} else if opt.QueryType == option.Writer {
+		query += fmt.Sprintf("WHERE bp.writer LIKE '%%%s%%' ", opt.Query)
+	}
+
+	query += fmt.Sprintf("GROUP BY bp.pid ORDER BY pid DESC LIMIT %d, %d", n, m)
+
+	err = tx.SelectContext(ctx, &candPostList, query)
+	if err != nil {
+		return nil, err
+	}
+
+	validPostList = make([]*entity.Post, 0)
+
+	for _, post := range candPostList {
+		err = tx.SelectContext(ctx, &post.Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", post.Id)
+		var suc = true
+		for _, tag := range opt.Tags {
+			var check = false
+			for _, pTag := range post.Tags {
+				if pTag == tag {
+					check = true
+				}
+			}
+			if check == false {
+				suc = false
+			}
+		}
+		if suc {
+			validPostList = append(validPostList, post)
+		}
+	}
+
+	return validPostList, nil
 }

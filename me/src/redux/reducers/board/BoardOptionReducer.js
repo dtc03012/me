@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const tagOptionSlice = createSlice({
-    name: 'tagOption',
+export const BoardOptionSlice = createSlice({
+    name: 'BoardOption',
     initialState: {
         selectedTag: [],
         inputTag: "",
@@ -17,4 +17,4 @@ export const tagOptionSlice = createSlice({
     },
 })
 
-export const { setSelectedTag, setInputTag } = tagOptionSlice.actions
+export const { setSelectedTag, setInputTag } = BoardOptionSlice.actions

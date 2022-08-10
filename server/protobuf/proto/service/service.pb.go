@@ -35,7 +35,7 @@ var file_proto_service_service_proto_rawDesc = []byte{
 	0x67, 0x65, 0x2f, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6d, 0x65,
 	0x73, 0x73, 0x61, 0x67, 0x65, 0x2f, 0x70, 0x6f, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x32, 0xee, 0x0b, 0x0a, 0x02, 0x6d, 0x65, 0x12, 0x84, 0x01, 0x0a, 0x0d, 0x46, 0x69, 0x6e, 0x64,
+	0x32, 0xfc, 0x0c, 0x0a, 0x02, 0x6d, 0x65, 0x12, 0x84, 0x01, 0x0a, 0x0d, 0x46, 0x69, 0x6e, 0x64,
 	0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x55, 0x49, 0x44, 0x12, 0x28, 0x2e, 0x76, 0x32, 0x2e, 0x73,
 	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x46,
 	0x69, 0x6e, 0x64, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x65, 0x71, 0x75,
@@ -130,10 +130,19 @@ var file_proto_service_service_proto_rawDesc = []byte{
 	0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
 	0x20, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1a, 0x2a, 0x18, 0x2f, 0x76, 0x32, 0x2f, 0x64, 0x65, 0x6c,
 	0x65, 0x74, 0x65, 0x2d, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2d, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
-	0x74, 0x42, 0x2f, 0x5a, 0x2d, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x64, 0x74, 0x63, 0x30, 0x33, 0x30, 0x31, 0x32, 0x2f, 0x6d, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x74, 0x12, 0x8b, 0x01, 0x0a, 0x0e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x50, 0x6f, 0x73, 0x74,
+	0x4c, 0x69, 0x73, 0x74, 0x12, 0x29, 0x2e, 0x76, 0x32, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68,
+	0x50, 0x6f, 0x73, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x2a, 0x2e, 0x76, 0x32, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x50, 0x6f, 0x73, 0x74, 0x4c,
+	0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x22, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x1c, 0x12, 0x1a, 0x2f, 0x76, 0x32, 0x2f, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x2d,
+	0x62, 0x6f, 0x61, 0x72, 0x64, 0x2d, 0x70, 0x6f, 0x73, 0x74, 0x2d, 0x6c, 0x69, 0x73, 0x74, 0x42,
+	0x2f, 0x5a, 0x2d, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x74,
+	0x63, 0x30, 0x33, 0x30, 0x31, 0x32, 0x2f, 0x6d, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_proto_service_service_proto_goTypes = []interface{}{
@@ -148,17 +157,19 @@ var file_proto_service_service_proto_goTypes = []interface{}{
 	(*message.LeaveCommentRequest)(nil),          // 8: v2.service.message.LeaveCommentRequest
 	(*message.FetchCommentListRequest)(nil),      // 9: v2.service.message.FetchCommentListRequest
 	(*message.DeleteCommentRequest)(nil),         // 10: v2.service.message.DeleteCommentRequest
-	(*message.FindAdminUUIDResponse)(nil),        // 11: v2.service.message.FindAdminUUIDResponse
-	(*message.InsertAdminUUIDResponse)(nil),      // 12: v2.service.message.InsertAdminUUIDResponse
-	(*message.LoginAdminResponse)(nil),           // 13: v2.service.message.LoginAdminResponse
-	(*message.FetchDistrictWeatherResponse)(nil), // 14: v2.service.message.FetchDistrictWeatherResponse
-	(*message.UploadPostResponse)(nil),           // 15: v2.service.message.UploadPostResponse
-	(*message.FetchPostListResponse)(nil),        // 16: v2.service.message.FetchPostListResponse
-	(*message.FetchPostResponse)(nil),            // 17: v2.service.message.FetchPostResponse
-	(*message.IncrementViewResponse)(nil),        // 18: v2.service.message.IncrementViewResponse
-	(*message.LeaveCommentResponse)(nil),         // 19: v2.service.message.LeaveCommentResponse
-	(*message.FetchCommentListResponse)(nil),     // 20: v2.service.message.FetchCommentListResponse
-	(*message.DeleteCommentResponse)(nil),        // 21: v2.service.message.DeleteCommentResponse
+	(*message.SearchPostListRequest)(nil),        // 11: v2.service.message.SearchPostListRequest
+	(*message.FindAdminUUIDResponse)(nil),        // 12: v2.service.message.FindAdminUUIDResponse
+	(*message.InsertAdminUUIDResponse)(nil),      // 13: v2.service.message.InsertAdminUUIDResponse
+	(*message.LoginAdminResponse)(nil),           // 14: v2.service.message.LoginAdminResponse
+	(*message.FetchDistrictWeatherResponse)(nil), // 15: v2.service.message.FetchDistrictWeatherResponse
+	(*message.UploadPostResponse)(nil),           // 16: v2.service.message.UploadPostResponse
+	(*message.FetchPostListResponse)(nil),        // 17: v2.service.message.FetchPostListResponse
+	(*message.FetchPostResponse)(nil),            // 18: v2.service.message.FetchPostResponse
+	(*message.IncrementViewResponse)(nil),        // 19: v2.service.message.IncrementViewResponse
+	(*message.LeaveCommentResponse)(nil),         // 20: v2.service.message.LeaveCommentResponse
+	(*message.FetchCommentListResponse)(nil),     // 21: v2.service.message.FetchCommentListResponse
+	(*message.DeleteCommentResponse)(nil),        // 22: v2.service.message.DeleteCommentResponse
+	(*message.SearchPostListResponse)(nil),       // 23: v2.service.message.SearchPostListResponse
 }
 var file_proto_service_service_proto_depIdxs = []int32{
 	0,  // 0: v2.service.me.FindAdminUUID:input_type -> v2.service.message.FindAdminUUIDRequest
@@ -172,19 +183,21 @@ var file_proto_service_service_proto_depIdxs = []int32{
 	8,  // 8: v2.service.me.LeaveComment:input_type -> v2.service.message.LeaveCommentRequest
 	9,  // 9: v2.service.me.FetchCommentList:input_type -> v2.service.message.FetchCommentListRequest
 	10, // 10: v2.service.me.DeleteComment:input_type -> v2.service.message.DeleteCommentRequest
-	11, // 11: v2.service.me.FindAdminUUID:output_type -> v2.service.message.FindAdminUUIDResponse
-	12, // 12: v2.service.me.InsertAdminUUID:output_type -> v2.service.message.InsertAdminUUIDResponse
-	13, // 13: v2.service.me.LoginAdmin:output_type -> v2.service.message.LoginAdminResponse
-	14, // 14: v2.service.me.FetchDistrictWeather:output_type -> v2.service.message.FetchDistrictWeatherResponse
-	15, // 15: v2.service.me.UploadPost:output_type -> v2.service.message.UploadPostResponse
-	16, // 16: v2.service.me.FetchPostList:output_type -> v2.service.message.FetchPostListResponse
-	17, // 17: v2.service.me.FetchPost:output_type -> v2.service.message.FetchPostResponse
-	18, // 18: v2.service.me.IncrementView:output_type -> v2.service.message.IncrementViewResponse
-	19, // 19: v2.service.me.LeaveComment:output_type -> v2.service.message.LeaveCommentResponse
-	20, // 20: v2.service.me.FetchCommentList:output_type -> v2.service.message.FetchCommentListResponse
-	21, // 21: v2.service.me.DeleteComment:output_type -> v2.service.message.DeleteCommentResponse
-	11, // [11:22] is the sub-list for method output_type
-	0,  // [0:11] is the sub-list for method input_type
+	11, // 11: v2.service.me.SearchPostList:input_type -> v2.service.message.SearchPostListRequest
+	12, // 12: v2.service.me.FindAdminUUID:output_type -> v2.service.message.FindAdminUUIDResponse
+	13, // 13: v2.service.me.InsertAdminUUID:output_type -> v2.service.message.InsertAdminUUIDResponse
+	14, // 14: v2.service.me.LoginAdmin:output_type -> v2.service.message.LoginAdminResponse
+	15, // 15: v2.service.me.FetchDistrictWeather:output_type -> v2.service.message.FetchDistrictWeatherResponse
+	16, // 16: v2.service.me.UploadPost:output_type -> v2.service.message.UploadPostResponse
+	17, // 17: v2.service.me.FetchPostList:output_type -> v2.service.message.FetchPostListResponse
+	18, // 18: v2.service.me.FetchPost:output_type -> v2.service.message.FetchPostResponse
+	19, // 19: v2.service.me.IncrementView:output_type -> v2.service.message.IncrementViewResponse
+	20, // 20: v2.service.me.LeaveComment:output_type -> v2.service.message.LeaveCommentResponse
+	21, // 21: v2.service.me.FetchCommentList:output_type -> v2.service.message.FetchCommentListResponse
+	22, // 22: v2.service.me.DeleteComment:output_type -> v2.service.message.DeleteCommentResponse
+	23, // 23: v2.service.me.SearchPostList:output_type -> v2.service.message.SearchPostListResponse
+	12, // [12:24] is the sub-list for method output_type
+	0,  // [0:12] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

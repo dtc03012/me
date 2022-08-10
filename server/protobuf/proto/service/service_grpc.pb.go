@@ -34,6 +34,7 @@ type MeClient interface {
 	LeaveComment(ctx context.Context, in *message.LeaveCommentRequest, opts ...grpc.CallOption) (*message.LeaveCommentResponse, error)
 	FetchCommentList(ctx context.Context, in *message.FetchCommentListRequest, opts ...grpc.CallOption) (*message.FetchCommentListResponse, error)
 	DeleteComment(ctx context.Context, in *message.DeleteCommentRequest, opts ...grpc.CallOption) (*message.DeleteCommentResponse, error)
+	SearchPostList(ctx context.Context, in *message.SearchPostListRequest, opts ...grpc.CallOption) (*message.SearchPostListResponse, error)
 }
 
 type meClient struct {
@@ -143,6 +144,15 @@ func (c *meClient) DeleteComment(ctx context.Context, in *message.DeleteCommentR
 	return out, nil
 }
 
+func (c *meClient) SearchPostList(ctx context.Context, in *message.SearchPostListRequest, opts ...grpc.CallOption) (*message.SearchPostListResponse, error) {
+	out := new(message.SearchPostListResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/SearchPostList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MeServer is the server API for Me service.
 // All implementations must embed UnimplementedMeServer
 // for forward compatibility
@@ -158,6 +168,7 @@ type MeServer interface {
 	LeaveComment(context.Context, *message.LeaveCommentRequest) (*message.LeaveCommentResponse, error)
 	FetchCommentList(context.Context, *message.FetchCommentListRequest) (*message.FetchCommentListResponse, error)
 	DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error)
+	SearchPostList(context.Context, *message.SearchPostListRequest) (*message.SearchPostListResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
 
@@ -197,6 +208,9 @@ func (UnimplementedMeServer) FetchCommentList(context.Context, *message.FetchCom
 }
 func (UnimplementedMeServer) DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
+}
+func (UnimplementedMeServer) SearchPostList(context.Context, *message.SearchPostListRequest) (*message.SearchPostListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchPostList not implemented")
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
@@ -409,6 +423,24 @@ func _Me_DeleteComment_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Me_SearchPostList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.SearchPostListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).SearchPostList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/SearchPostList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).SearchPostList(ctx, req.(*message.SearchPostListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Me_ServiceDesc is the grpc.ServiceDesc for Me service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -459,6 +491,10 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteComment",
 			Handler:    _Me_DeleteComment_Handler,
+		},
+		{
+			MethodName: "SearchPostList",
+			Handler:    _Me_SearchPostList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

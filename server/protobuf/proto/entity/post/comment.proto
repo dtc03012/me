@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package v2.entity.post;
+
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/entity/post";

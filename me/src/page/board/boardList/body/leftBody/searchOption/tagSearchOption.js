@@ -4,7 +4,7 @@ import {Chip, Grid, IconButton} from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CustomInput from "../../../../../components/customInput";
 import {useDispatch, useSelector} from "react-redux";
-import { setSelectedTag, setInputTag } from "../../../../../../redux/reducers/board/tagOptionReducer";
+import { setSelectedTag, setInputTag } from "../../../../../../redux/reducers/board/BoardOptionReducer";
 
 class TagSearchOption extends React.Component {
 
@@ -118,8 +118,8 @@ class TagSearchOption extends React.Component {
 
 export default () => {
     const dispatch = useDispatch();
-    const selectedTag = useSelector((state) => state.tagOptionReducer.selectedTag);
-    const inputTag = useSelector((state) => state.tagOptionReducer.inputTag)
+    const selectedTag = useSelector((state) => state.boardOptionReducer.selectedTag);
+    const inputTag = useSelector((state) => state.boardOptionReducer.inputTag)
     return (
         <TagSearchOption
             selectedTag={selectedTag}

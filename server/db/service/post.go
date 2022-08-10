@@ -7,7 +7,6 @@ import (
 	"github.com/dtc03012/me/db/option"
 	"github.com/dtc03012/me/protobuf/proto/entity/post"
 	"github.com/jmoiron/sqlx"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error {
@@ -16,7 +15,7 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 		return errors.New("upload post db service error: postData is nil")
 	}
 
-	post := &entity.Post{
+	p := &entity.Post{
 		Title:            postData.GetTitle(),
 		Writer:           postData.GetWriter(),
 		Content:          postData.GetContent(),
@@ -29,7 +28,7 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 		tags = append(tags, tag)
 	}
 
-	err := dbs.PostRepo.InsertPost(ctx, tx, post, tags)
+	err := dbs.PostRepo.InsertPost(ctx, tx, p, tags)
 
 	return err
 }
@@ -42,32 +41,15 @@ func (dbs *dbService) FetchPostList(ctx context.Context, tx *sqlx.Tx, row int, s
 
 	postList, err := dbs.PostRepo.GetBulkPost(ctx, tx, &option.PostOption{
 		SizeRange: &option.RangeOption{
-			Row:  int32(row),
-			Size: int32(size),
+			Row:  row,
+			Size: size,
 		},
 	})
-
 	if err != nil {
 		return nil, err
 	}
 
-	convertPostList := make([]*post.Data, 0, len(postList))
-
-	for _, p := range postList {
-		convertPost := &post.Data{
-			Id:               p.Id,
-			Title:            p.Title,
-			Writer:           p.Writer,
-			Content:          p.Content,
-			Tags:             p.Tags,
-			Views:            p.Views,
-			TimeToReadMinute: p.TimeToReadMinute,
-			LikeCnt:          p.LikeCnt,
-			CreateAt:         timestamppb.New(p.CreateAt),
-		}
-
-		convertPostList = append(convertPostList, convertPost)
-	}
+	convertPostList := convertEntityPostList(postList)
 
 	return convertPostList, nil
 }
@@ -79,38 +61,22 @@ func (dbs *dbService) FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*
 	}
 
 	p, err := dbs.PostRepo.GetPost(ctx, tx, int32(postId))
-
 	if err != nil {
 		return nil, err
 	}
 
-	convertPost := &post.Data{
-		Id:               p.Id,
-		Title:            p.Title,
-		Writer:           p.Writer,
-		Content:          p.Content,
-		Tags:             p.Tags,
-		Views:            p.Views,
-		TimeToReadMinute: p.TimeToReadMinute,
-		LikeCnt:          p.LikeCnt,
-		CreateAt:         timestamppb.New(p.CreateAt),
-	}
+	convertPost := convertEntityPost(p)
 
 	return convertPost, nil
 }
 
-func (dbs *dbService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int) error {
+func (dbs *dbService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error {
 
-	if postId <= 0 {
-		return errors.New("fetch posts db service error: pid is out of range")
+	if postId <= 0 || uuid == "" {
+		return errors.New("fetch posts db service error: pid or uuid is out of range")
 	}
 
-	views, err := dbs.PostRepo.GetViews(ctx, tx, int32(postId))
-	if err != nil {
-		return err
-	}
-
-	err = dbs.PostRepo.UpdateViews(ctx, tx, int32(views+1), int32(postId))
+	err := dbs.PostRepo.InsertViews(ctx, tx, int32(postId), uuid)
 
 	return err
 }
@@ -134,37 +100,18 @@ func (dbs *dbService) LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *po
 	return err
 }
 
-func (dbs *dbService) FetchCommentList(ctx context.Context, tx *sqlx.Tx, postId int, row int, size int) ([]*post.Comment, error) {
+func (dbs *dbService) FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*post.Comment, error) {
 
-	if postId <= 0 {
-		return nil, errors.New("leave comment db service error: comment is nil")
+	if opt == nil {
+		return nil, errors.New("leave comment db service error: option is nil")
 	}
 
-	commentList, err := dbs.PostRepo.GetBulkComment(ctx, tx, &option.CommentOption{
-		SizeRange: &option.RangeOption{
-			Row:  int32(row),
-			Size: int32(size),
-		},
-		PostId: postId,
-	})
+	commentList, err := dbs.PostRepo.GetBulkComment(ctx, tx, opt)
 	if err != nil {
 		return nil, err
 	}
 
-	convertCommentList := make([]*post.Comment, 0, len(commentList))
-	for _, c := range commentList {
-		convertComment := &post.Comment{
-			Id:       c.Id,
-			PostId:   c.PostId,
-			Writer:   c.Writer,
-			Password: c.Password,
-			Comment:  c.Comment,
-			LikeCnt:  c.LikeCnt,
-			CreateAt: timestamppb.New(c.CreateAt),
-		}
-
-		convertCommentList = append(convertCommentList, convertComment)
-	}
+	convertCommentList := convertEntityCommentList(commentList)
 
 	return convertCommentList, nil
 }
@@ -182,4 +129,25 @@ func (dbs *dbService) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int
 	err := dbs.PostRepo.DeleteComment(ctx, tx, postId, commentId)
 
 	return err
+}
+
+func (dbs *dbService) QueryPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error) {
+
+	var (
+		postList []*entity.Post
+		err      error
+	)
+	if opt == nil {
+		return nil, errors.New("query post list db service error: option is nil")
+	}
+	if opt.QueryType != option.Comment {
+		postList, err = dbs.PostRepo.QueryBulkPost(ctx, tx, opt)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	convertPostList := convertEntityPostList(postList)
+
+	return convertPostList, nil
 }
