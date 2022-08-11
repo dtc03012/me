@@ -61,7 +61,7 @@ export default function PostContent(props) {
     }
 
     const reviseContent = (content) => {
-        content = content.replaceAll('<img', '<img width="80%" height="80%"')
+        content = content.replaceAll('<img', '<img width="100%" height="100%"')
         return content
     }
 
@@ -175,7 +175,7 @@ export default function PostContent(props) {
                     }}>
                     </Box>
                 </Grid>
-                <Grid item minWidth="60%" minHeight="600px" sx={{
+                <Grid item width="60%" minHeight="600px" sx={{
                     mt: 3,
                 }}>
                     <div>
