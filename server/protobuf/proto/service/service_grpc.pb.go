@@ -35,6 +35,8 @@ type MeClient interface {
 	FetchCommentList(ctx context.Context, in *message.FetchCommentListRequest, opts ...grpc.CallOption) (*message.FetchCommentListResponse, error)
 	DeleteComment(ctx context.Context, in *message.DeleteCommentRequest, opts ...grpc.CallOption) (*message.DeleteCommentResponse, error)
 	SearchPostList(ctx context.Context, in *message.SearchPostListRequest, opts ...grpc.CallOption) (*message.SearchPostListResponse, error)
+	IncrementLikeCnt(ctx context.Context, in *message.IncrementLikeCntRequest, opts ...grpc.CallOption) (*message.IncrementLikeCntResponse, error)
+	DecrementLikeCnt(ctx context.Context, in *message.DecrementLikeCntRequest, opts ...grpc.CallOption) (*message.DecrementLikeCntResponse, error)
 }
 
 type meClient struct {
@@ -153,6 +155,24 @@ func (c *meClient) SearchPostList(ctx context.Context, in *message.SearchPostLis
 	return out, nil
 }
 
+func (c *meClient) IncrementLikeCnt(ctx context.Context, in *message.IncrementLikeCntRequest, opts ...grpc.CallOption) (*message.IncrementLikeCntResponse, error) {
+	out := new(message.IncrementLikeCntResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/IncrementLikeCnt", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) DecrementLikeCnt(ctx context.Context, in *message.DecrementLikeCntRequest, opts ...grpc.CallOption) (*message.DecrementLikeCntResponse, error) {
+	out := new(message.DecrementLikeCntResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/DecrementLikeCnt", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MeServer is the server API for Me service.
 // All implementations must embed UnimplementedMeServer
 // for forward compatibility
@@ -169,6 +189,8 @@ type MeServer interface {
 	FetchCommentList(context.Context, *message.FetchCommentListRequest) (*message.FetchCommentListResponse, error)
 	DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error)
 	SearchPostList(context.Context, *message.SearchPostListRequest) (*message.SearchPostListResponse, error)
+	IncrementLikeCnt(context.Context, *message.IncrementLikeCntRequest) (*message.IncrementLikeCntResponse, error)
+	DecrementLikeCnt(context.Context, *message.DecrementLikeCntRequest) (*message.DecrementLikeCntResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
 
@@ -211,6 +233,12 @@ func (UnimplementedMeServer) DeleteComment(context.Context, *message.DeleteComme
 }
 func (UnimplementedMeServer) SearchPostList(context.Context, *message.SearchPostListRequest) (*message.SearchPostListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchPostList not implemented")
+}
+func (UnimplementedMeServer) IncrementLikeCnt(context.Context, *message.IncrementLikeCntRequest) (*message.IncrementLikeCntResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrementLikeCnt not implemented")
+}
+func (UnimplementedMeServer) DecrementLikeCnt(context.Context, *message.DecrementLikeCntRequest) (*message.DecrementLikeCntResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecrementLikeCnt not implemented")
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
@@ -441,6 +469,42 @@ func _Me_SearchPostList_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Me_IncrementLikeCnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.IncrementLikeCntRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).IncrementLikeCnt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/IncrementLikeCnt",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).IncrementLikeCnt(ctx, req.(*message.IncrementLikeCntRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_DecrementLikeCnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.DecrementLikeCntRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).DecrementLikeCnt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/DecrementLikeCnt",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).DecrementLikeCnt(ctx, req.(*message.DecrementLikeCntRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Me_ServiceDesc is the grpc.ServiceDesc for Me service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -495,6 +559,14 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchPostList",
 			Handler:    _Me_SearchPostList_Handler,
+		},
+		{
+			MethodName: "IncrementLikeCnt",
+			Handler:    _Me_IncrementLikeCnt_Handler,
+		},
+		{
+			MethodName: "DecrementLikeCnt",
+			Handler:    _Me_DecrementLikeCnt_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

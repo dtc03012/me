@@ -19,11 +19,16 @@ type Post interface {
 	GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Post, error)
 	GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error)
 	InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, tags []string) error
+	GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int, error)
+
 	GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error)
 	InsertViews(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error
+
 	GetBulkComment(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*entity.Comment, error)
 	InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.Comment) error
 	DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error
+	GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error)
+
 	QueryBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error)
 }
 

@@ -101,6 +101,48 @@ func (_m *Post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Po
 	return r0, r1
 }
 
+// GetTotalCommentCount provides a mock function with given fields: ctx, tx, pid
+func (_m *Post) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error) {
+	ret := _m.Called(ctx, tx, pid)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32) int); ok {
+		r0 = rf(ctx, tx, pid)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int32) error); ok {
+		r1 = rf(ctx, tx, pid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTotalPostCount provides a mock function with given fields: ctx, tx
+func (_m *Post) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int, error) {
+	ret := _m.Called(ctx, tx)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx) int); ok {
+		r0 = rf(ctx, tx)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx) error); ok {
+		r1 = rf(ctx, tx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetViews provides a mock function with given fields: ctx, tx, pid
 func (_m *Post) GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error) {
 	ret := _m.Called(ctx, tx, pid)

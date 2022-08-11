@@ -1,8 +1,8 @@
 import React from 'react';
 import Box from "@mui/material/Box";
-import PostContent from "./postContent/postContent";
+import PostContent from "../common/postContent/postContent";
 import Header from "../common/header/header";
-import {Grid} from "@mui/material";
+import Footer from "../common/footer/footer";
 
 class ViewPost extends React.Component {
 
@@ -11,14 +11,9 @@ class ViewPost extends React.Component {
             <Box minHeight="1000px" sx={{
                 backgroundColor: '#f5f5f5',
             }}>
-                <Grid container direction="column">
-                    <Grid item>
-                        <Header/>
-                    </Grid>
-                    <Grid item>
-                        <PostContent/>
-                    </Grid>
-                </Grid>
+                <Header/>
+                <PostContent/>
+                <Footer/>
             </Box>
         )
     }

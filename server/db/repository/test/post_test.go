@@ -165,11 +165,11 @@ func TestPost_GetBulkComment(t *testing.T) {
 	assert.NoError(t, err)
 
 	currentTime := time.Now()
-	expectedSQL := fmt.Sprintf("SELECT * FROM board_comment WHERE pid = ? ORDER BY cid LIMIT ?, ?")
+	expectedSQL := fmt.Sprintf("SELECT * FROM board_comment WHERE pid = ? ORDER BY parent_cid DESC, cid ASC LIMIT ?, ?")
 	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(1, 0, 2).
-		WillReturnRows(sqlmock.NewRows([]string{"cid", "pid", "writer", "password", "comment", "like_cnt", "create_at"}).AddRow(
-			1, 1, "writer1", "password1", "comment1", 5, currentTime).AddRow(
-			2, 1, "writer2", "password2", "comment2", 5, currentTime))
+		WillReturnRows(sqlmock.NewRows([]string{"cid", "pid", "parent_cid", "is_exist", "writer", "password", "comment", "like_cnt", "create_at"}).AddRow(
+			1, 1, 1, true, "writer1", "password1", "comment1", 5, currentTime).AddRow(
+			2, 1, 1, true, "writer2", "password2", "comment2", 5, currentTime))
 
 	postRepo := repository.NewPostRepo()
 	comments, err := postRepo.GetBulkComment(ctx, tx, &option.CommentOption{
@@ -202,16 +202,18 @@ func TestPost_InsertComment(t *testing.T) {
 	assert.NoError(t, err)
 
 	comment := &entity.Comment{
-		Id:       1,
-		PostId:   1,
-		Writer:   "writer1",
-		Password: "password1",
-		Comment:  "comment1",
-		LikeCnt:  3,
+		Id:              1,
+		PostId:          1,
+		ParentCommentId: 1,
+		IsExist:         true,
+		Writer:          "writer1",
+		Password:        "password1",
+		Comment:         "comment1",
+		LikeCnt:         3,
 	}
 
-	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_comment(pid, writer, password, comment, like_cnt) VALUES(?, ?, ?, ?, ?)")
-	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(comment.PostId, comment.Writer, comment.Password, comment.Comment, comment.LikeCnt).WillReturnResult(sqlmock.NewResult(1, 1))
+	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_comment(pid, writer, parent_cid, is_exist, password, comment, like_cnt) VALUES(?, ?, ?, ?, ?, ?, ?)")
+	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(comment.PostId, comment.Writer, comment.ParentCommentId, comment.IsExist, comment.Password, comment.Comment, comment.LikeCnt).WillReturnResult(sqlmock.NewResult(1, 1))
 
 	postRepo := repository.NewPostRepo()
 	err = postRepo.InsertComment(ctx, tx, comment)
@@ -230,7 +232,7 @@ func TestPost_DeleteComment(t *testing.T) {
 	ctx, tx, mock, err := db.SetupMock()
 	assert.NoError(t, err)
 
-	expectedSQL := fmt.Sprintf("DELETE FROM board_comment WHERE pid = ? and cid = ?")
+	expectedSQL := fmt.Sprintf("UPDATE board_comment SET is_exist = false WHERE pid = ? and cid = ?")
 	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(1, 1).WillReturnResult(sqlmock.NewResult(1, 1))
 
 	postRepo := repository.NewPostRepo()

@@ -70,6 +70,16 @@ func (dbs *dbService) FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*
 	return convertPost, nil
 }
 
+func (dbs *dbService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32, error) {
+
+	totalCount, err := dbs.PostRepo.GetTotalPostCount(ctx, tx)
+	if err != nil {
+		return 0, err
+	}
+
+	return int32(totalCount), nil
+}
+
 func (dbs *dbService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error {
 
 	if postId <= 0 || uuid == "" {
@@ -88,11 +98,13 @@ func (dbs *dbService) LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *po
 	}
 
 	convertComment := &entity.Comment{
-		PostId:   comment.PostId,
-		Writer:   comment.Writer,
-		Password: comment.Comment,
-		Comment:  comment.Comment,
-		LikeCnt:  comment.LikeCnt,
+		PostId:          comment.PostId,
+		Writer:          comment.Writer,
+		ParentCommentId: comment.ParentCid,
+		IsExist:         comment.IsExist,
+		Password:        comment.Comment,
+		Comment:         comment.Comment,
+		LikeCnt:         comment.LikeCnt,
 	}
 
 	err := dbs.PostRepo.InsertComment(ctx, tx, convertComment)
@@ -131,12 +143,27 @@ func (dbs *dbService) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int
 	return err
 }
 
+func (dbs *dbService) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int) (int32, error) {
+
+	if pid <= 0 {
+		return 0, errors.New("get total comment count db service error: pid is out of range")
+	}
+
+	totalCount, err := dbs.PostRepo.GetTotalCommentCount(ctx, tx, int32(pid))
+	if err != nil {
+		return 0, err
+	}
+
+	return int32(totalCount), nil
+}
+
 func (dbs *dbService) QueryPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error) {
 
 	var (
 		postList []*entity.Post
 		err      error
 	)
+
 	if opt == nil {
 		return nil, errors.New("query post list db service error: option is nil")
 	}

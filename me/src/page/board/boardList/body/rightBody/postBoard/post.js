@@ -65,7 +65,7 @@ export default function Post(props) {
                                         fontWeight: 900,
                                         fontFamily: "Elice Digital Baeum",
                                     }}>
-                                        <Link href={"/board/post/"+props.postInfo.id} color="inherit" className="title-link" underline="none">
+                                        <Link href={"/board/post?postId="+props.postInfo.id} color="inherit" className="title-link" underline="none">
                                             {props.postInfo.title}
                                         </Link>
                                     </Typography>

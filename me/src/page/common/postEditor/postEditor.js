@@ -214,14 +214,14 @@ export default function PostEditor(props) {
                     </Box>
                 </Grid>
                 <Grid item>
-                    <Button variant="contained" color="success" sx={{
-                        fontSize: 15,
-                        fontFamily: "Elice Digital Baeum",
-                    }} onClick={() => uploadPost()}>
-                        <Link href="/board" underline="none" color="inherit">
+                    <Link href="/board" underline="none" color="inherit">
+                        <Button variant="contained" color="success" sx={{
+                            fontSize: 15,
+                            fontFamily: "Elice Digital Baeum",
+                        }} onClick={() => uploadPost()}>
                             완료
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
                 </Grid>
             </Grid>
         </Box>

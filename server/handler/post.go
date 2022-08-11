@@ -34,13 +34,14 @@ func (m *MeServer) FetchPostList(ctx context.Context, req *message.FetchPostList
 	defer tx.Rollback()
 
 	posts, err := m.db.FetchPostList(ctx, tx, int(req.Row), int(req.Size))
-
 	if err != nil {
 		return nil, err
 	}
 
+	totalPostCount, err := m.db.GetTotalPostCount(ctx, tx)
+
 	tx.Commit()
-	return &message.FetchPostListResponse{Data: posts}, nil
+	return &message.FetchPostListResponse{Data: posts, TotalPostCount: totalPostCount}, nil
 }
 
 func (m *MeServer) FetchPost(ctx context.Context, req *message.FetchPostRequest) (*message.FetchPostResponse, error) {
@@ -118,9 +119,14 @@ func (m *MeServer) FetchCommentList(ctx context.Context, req *message.FetchComme
 		return nil, err
 	}
 
-	tx.Commit()
+	totalCommentCount, err := m.db.GetTotalCommentCount(ctx, tx, int(req.GetPostId()))
+	if err != nil {
+		return nil, err
+	}
+
 	return &message.FetchCommentListResponse{
-		Data: commentList,
+		CommentList:  commentList,
+		TotalCommentCount: totalCommentCount,
 	}, nil
 }
 

@@ -97,4 +97,16 @@ service me {
       get: "/v2/search-board-post-list"
     };
   }
+
+  rpc IncrementLikeCnt(service.message.IncrementLikeCntRequest) returns (service.message.IncrementLikeCntResponse) {
+    option (google.api.http) = {
+      put: "/v2/increment-board-like-cnt"
+    };
+  }
+
+  rpc DecrementLikeCnt(service.message.DecrementLikeCntRequest) returns (service.message.DecrementLikeCntResponse) {
+    option (google.api.http) = {
+      put: "/v2/decrement-board-like-cnt"
+    };
+  }
 }

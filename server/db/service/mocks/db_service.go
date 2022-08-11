@@ -168,6 +168,48 @@ func (_m *DBService) FindAdminUUID(ctx context.Context, tx *sqlx.Tx, uuid string
 	return r0, r1
 }
 
+// GetTotalCommentCount provides a mock function with given fields: ctx, tx, pid
+func (_m *DBService) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int) (int32, error) {
+	ret := _m.Called(ctx, tx, pid)
+
+	var r0 int32
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int) int32); ok {
+		r0 = rf(ctx, tx, pid)
+	} else {
+		r0 = ret.Get(0).(int32)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int) error); ok {
+		r1 = rf(ctx, tx, pid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTotalPostCount provides a mock function with given fields: ctx, tx
+func (_m *DBService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32, error) {
+	ret := _m.Called(ctx, tx)
+
+	var r0 int32
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx) int32); ok {
+		r0 = rf(ctx, tx)
+	} else {
+		r0 = ret.Get(0).(int32)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx) error); ok {
+		r1 = rf(ctx, tx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // IncrementViews provides a mock function with given fields: ctx, tx, postId, uuid
 func (_m *DBService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error {
 	ret := _m.Called(ctx, tx, postId, uuid)

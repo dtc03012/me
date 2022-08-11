@@ -1,7 +1,8 @@
 import React from 'react';
-import PostEditor from "./postEditor/postEditor";
+import PostEditor from "../common/postEditor/postEditor";
 import Header from "../common/header/header";
 import Box from "@mui/material/Box";
+import Footer from "../common/footer/footer";
 
 
 class WritePost extends React.Component {
@@ -13,6 +14,7 @@ class WritePost extends React.Component {
             }}>
                 <Header/>
                 <PostEditor/>
+                <Footer/>
             </Box>
         )
     }

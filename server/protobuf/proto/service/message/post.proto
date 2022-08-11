@@ -22,6 +22,7 @@ message FetchPostListRequest {
 
 message FetchPostListResponse {
   repeated entity.post.data data = 1;
+  int32 totalPostCount = 2;
 }
 
 message FetchPostRequest {
@@ -54,7 +55,8 @@ message FetchCommentListRequest {
 }
 
 message FetchCommentListResponse {
-  repeated entity.post.comment data = 1;
+  repeated entity.post.comment comment_list = 1;
+  int32 totalCommentCount = 2;
 }
 
 message DeleteCommentRequest {
@@ -73,4 +75,20 @@ message SearchPostListRequest {
 
 message SearchPostListResponse {
   repeated entity.post.data data = 1;
+}
+
+message IncrementLikeCntRequest {
+  int32 id = 1;
+  string uuid = 2;
+}
+
+message IncrementLikeCntResponse {
+}
+
+message DecrementLikeCntRequest {
+  int32 id = 1;
+  string uuid = 2;
+}
+
+message DecrementLikeCntResponse {
 }

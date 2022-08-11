@@ -1,26 +1,21 @@
 import React, {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
-import {Grid, Typography, unstable_useId} from "@mui/material";
+import {Button, Grid, Typography} from "@mui/material";
 import createDOMPurify from 'dompurify'
 import axios from "axios";
-import {createTheme, ThemeProvider} from "@mui/material/styles";
 import {setCookie, getCookie} from "../../../util/cookie";
 import {v4} from 'uuid';
+import Comment from "./comment";
+import ReplyComment from "./replyComment";
 
 const DOMPurify = createDOMPurify(window)
 
-const theme = createTheme({
-    image: {
-        flex: 1,
-        height: undefined,
-        width: "50px",
-    }
-})
-
 export default function PostContent(props) {
 
+    const numOfPage = 5
+    const numOfComment = 8
+
     const isIncrement = false
-    const [id, setId] = useState("")
     const [title, setTitle] = useState("")
     const [writer, setWriter] = useState("")
     const [content, setContent] = useState("")
@@ -29,36 +24,55 @@ export default function PostContent(props) {
     const [tags, setTags] = useState([])
     const [views, setViews] = useState(0)
     const [createAt, setCreateAt] = useState("")
+    const [commentList, setCommentList] = useState([])
+    const [totalCommentCount, setTotalCommentCount] = useState(0)
+
+    const search = window.location.search
+    const urlSearchParams = new URLSearchParams(search)
+    let paramPostId = urlSearchParams.get("postId");
+    let paramCommentPageId= urlSearchParams.get("commentPage");
+
+    let commentPageId = 1
+    if(paramCommentPageId != null && !isNaN(Number(paramCommentPageId))) {
+        commentPageId = parseInt(paramCommentPageId)
+    }
+
+    let postId = 1
+    if(paramPostId != null && !isNaN(Number(paramPostId))) {
+        postId = parseInt(paramPostId)
+    }
 
     function addLeadingZeros(num, totalLength) {
         return String(num).padStart(totalLength, '0');
     }
 
     const convertTimeStampToDate = (timestamp) => {
+        if(timestamp === "") {
+            return "Loading..."
+        }
+
         let date = new Date(timestamp)
         let year = date.getUTCFullYear()
         let month = date.getUTCMonth() + 1
-        let day = date.getUTCDay()
+        let day = date.getUTCDate()
         let hour = date.getUTCHours()
         let minute = date.getUTCMinutes()
         return String(year) + ". " + String(month) + ". " + String(day) + ". " + addLeadingZeros(hour,2) + ":" + addLeadingZeros(minute,2)
     }
 
     const reviseContent = (content) => {
-        content = content.replaceAll('<img', '<img width="100%" height="100%"')
+        content = content.replaceAll('<img', '<img width="80%" height="80%"')
         return content
     }
 
     useEffect(() => {
         let href = window.location.href
-        let id = href.substring(href.lastIndexOf('/')+1)
-        let url = "/v2/fetch-board-post?id=" + id
+        let url = "/v2/fetch-board-post?id=" + postId
+
         axios.get(url).then(
             response => {
-                console.log("haha")
                 response.data.data.content = reviseContent(response.data.data.content)
 
-                setId(response.data.data.id)
                 setTitle(response.data.data.title)
                 setWriter(response.data.data.writer)
                 setContent(response.data.data.content)
@@ -77,10 +91,22 @@ export default function PostContent(props) {
             setCookie("uuid", uuid)
         }
 
-        url = "/v2/increment-board-view?id=" + id + "&uuid=" + getCookie("uuid")
+        url = "/v2/increment-board-view?id=" + postId + "&uuid=" + getCookie("uuid")
         axios.put(url).then(
         ).catch( err => {
             console.log(err)
+        })
+
+        url = "/v2/fetch-board-comment-list?post_id=" + postId + "&row=" + commentPageId.toString() + "&size=" + numOfComment.toString()
+        axios.get(url).then(
+            response => {
+                if(response.data.commentList) {
+                    setCommentList(response.data.commentList.reverse())
+                }
+                setTotalCommentCount(response.data.totalCommentCount)
+            }
+        ).catch( err => {
+            console.log("bad")
         })
     }, [])
 
@@ -149,12 +175,62 @@ export default function PostContent(props) {
                     }}>
                     </Box>
                 </Grid>
-                <Grid item width="60%" minHeight="600px" sx={{
+                <Grid item minWidth="60%" minHeight="600px" sx={{
                     mt: 3,
                 }}>
                     <div>
                         { <div className="article" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} /> }
                     </div>
+                </Grid>
+                <Grid item minWidth="60%" sx={{
+                    mt: 3,
+                }}>
+                    <Box sx={{
+                        backgroundColor: `#d3d3d3`,
+                        width: '100%',
+                        height: '3px',
+                    }}>
+                    </Box>
+                </Grid>
+                <Grid item minWidth="60%" sx={{
+                    mt: 3,
+
+                }}>
+                    <Typography sx={{
+                        fontSize: 30,
+                        fontWeight: 600,
+                        fontFamily: "Elice Digital Baeum",
+                    }}>
+                        전체 댓글 ({totalCommentCount})
+                    </Typography>
+                </Grid>
+                <Grid item minWidth="60%">
+                    {commentList.map((comment) => (
+                        <Grid item>
+                            <Comment commentInfo={comment}/>
+                        </Grid>
+                    ))}
+                </Grid>
+                <Grid container item justifyContent={"center"} sx={{
+                    mt: 2,
+                }}>
+                    {[...Array(Math.min(numOfPage,Math.floor((Math.max(((totalCommentCount-1)/numOfComment)+1, 1))))).keys()].map( e => (
+                        <Grid item>
+                            <Button title={(e+1).toString()} sx={{
+                                fontSize: 18,
+                                fontFamily: "Elice Digital Baeum",
+                                fontWeight: 900,
+                                color: (e+1 === commentPageId ? 'red' : 'black'),
+                            }} href={"/board/post?postId="+postId+"&commentPage="+(e+1).toString()}>
+                                {(e+1).toString()}
+                            </Button>
+                        </Grid>
+                    ))}
+                </Grid>
+                <Grid item minWidth="60%"  sx={{
+                    mt: 3,
+                }}>
+                    <ReplyComment postId={postId} parerntCid={0}/>
                 </Grid>
             </Grid>
         </Box>
