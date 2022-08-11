@@ -154,9 +154,7 @@ func (a *post) GetBulkComment(ctx context.Context, tx *sqlx.Tx, opt *option.Comm
 		return nil, err
 	}
 
-	fmt.Printf("%d %d %d\n", opt.PostId, n, m)
 	err = tx.SelectContext(ctx, &commentList, "SELECT * FROM board_comment WHERE pid = ? ORDER BY parent_cid DESC, cid ASC LIMIT ?, ?", opt.PostId, n, m)
-	fmt.Println(len(commentList))
 
 	if err != nil {
 		return nil, err
