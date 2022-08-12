@@ -52,8 +52,6 @@ class PostBoard extends React.Component {
             })
         }
 
-        console.log(url)
-
         axios.get(url).then(
             response => {
                 let newPostInfo = []
@@ -75,7 +73,7 @@ class PostBoard extends React.Component {
                         createAt: data.createAt,
                     }]
                 })
-
+                
                 this.setState({
                     postInfo: newPostInfo,
                     totalPostCount: response.data.totalPostCount

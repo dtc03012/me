@@ -125,7 +125,7 @@ func (m *MeServer) FetchCommentList(ctx context.Context, req *message.FetchComme
 	}
 
 	return &message.FetchCommentListResponse{
-		CommentList:  commentList,
+		CommentList:       commentList,
 		TotalCommentCount: totalCommentCount,
 	}, nil
 }
@@ -170,5 +170,10 @@ func (m *MeServer) SearchPostList(ctx context.Context, req *message.SearchPostLi
 		return nil, err
 	}
 
-	return &message.SearchPostListResponse{Data: postList}, nil
+	totalPostList, err := m.db.GetTotalPostCount(ctx, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &message.SearchPostListResponse{Data: postList, TotalPostCount: totalPostList}, nil
 }

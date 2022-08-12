@@ -75,6 +75,7 @@ message SearchPostListRequest {
 
 message SearchPostListResponse {
   repeated entity.post.data data = 1;
+  int32 totalPostCount = 2;
 }
 
 message IncrementLikeCntRequest {

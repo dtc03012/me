@@ -29,10 +29,10 @@ class MenuWindow extends React.Component {
         return (
             <Box sx={{ display: { md: 'flex'},  paddingRight: 10 }}>
                 {CreateMenuButton('Home')}
-                {CreateMenuButton('Diary')}
+                {/*{CreateMenuButton('Diary')}*/}
                 {CreateMenuButton('Board')}
-                {CreateMenuButton('Projects')}
-                {CreateMenuButton('Photo')}
+                {/*{CreateMenuButton('Projects')}*/}
+                {/*{CreateMenuButton('Photo')}*/}
                 <Admin/>
             </Box>
         )
