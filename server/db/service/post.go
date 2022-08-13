@@ -79,7 +79,7 @@ func (dbs *dbService) FetchPostList(ctx context.Context, tx *sqlx.Tx, opt *optio
 		}
 	}
 
-	convertPostList := convertEntityPostList(postList)
+	convertPostList := convertEntityPostList(validPostList)
 
 	return convertPostList, nil
 }
