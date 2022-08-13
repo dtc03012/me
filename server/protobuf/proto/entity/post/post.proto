@@ -10,11 +10,12 @@ message data {
   string writer = 2;
   string title = 3;
   string content = 4;
-  int32 like_cnt = 5;
+  int32 likes = 5;
   bool is_notice = 6;
   int32 time_to_read_minute = 7;
   int32 views = 8;
-  repeated string tags = 9;
+  bool is_like = 9;
+  repeated string tags = 10;
 
-  google.protobuf.Timestamp create_at = 10;
+  google.protobuf.Timestamp create_at = 11;
 }

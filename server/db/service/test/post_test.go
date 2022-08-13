@@ -22,7 +22,7 @@ func TestDBService_UploadPost(t *testing.T) {
 		Title:            "title1",
 		Content:          "content1",
 		Tags:             []string{"tag1"},
-		LikeCnt:          3,
+		Likes:            3,
 		Views:            1,
 		TimeToReadMinute: 1,
 	}
@@ -62,7 +62,7 @@ func TestDBService_FetchPostList(t *testing.T) {
 		Title:            "title1",
 		Content:          "content1",
 		Tags:             []string{"tag1", "tag"},
-		LikeCnt:          3,
+		Likes:            3,
 		TimeToReadMinute: 1,
 	}
 
@@ -71,7 +71,7 @@ func TestDBService_FetchPostList(t *testing.T) {
 		Title:            "title2",
 		Content:          "content2",
 		Tags:             []string{"tag2", "tag"},
-		LikeCnt:          3,
+		Likes:            3,
 		TimeToReadMinute: 1,
 	}
 
@@ -103,7 +103,7 @@ func TestDBService_FetchPost(t *testing.T) {
 		Title:            "title1",
 		Content:          "content1",
 		Tags:             []string{"tag1"},
-		LikeCnt:          3,
+		Likes:            3,
 		Views:            1,
 		TimeToReadMinute: 1,
 	}
@@ -118,7 +118,7 @@ func TestDBService_FetchPost(t *testing.T) {
 	assert.Equal(t, "content1", fetchPost.Content)
 	assert.Equal(t, []string{"tag1"}, fetchPost.Tags)
 	assert.Equal(t, int32(1), fetchPost.Views)
-	assert.Equal(t, int32(3), fetchPost.LikeCnt)
+	assert.Equal(t, int32(3), fetchPost.Likes)
 	assert.Equal(t, int32(1), fetchPost.TimeToReadMinute)
 
 	_, err = svc.FetchPost(ctx, tx, 0)

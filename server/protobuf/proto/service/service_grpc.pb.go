@@ -34,8 +34,8 @@ type MeClient interface {
 	LeaveComment(ctx context.Context, in *message.LeaveCommentRequest, opts ...grpc.CallOption) (*message.LeaveCommentResponse, error)
 	FetchCommentList(ctx context.Context, in *message.FetchCommentListRequest, opts ...grpc.CallOption) (*message.FetchCommentListResponse, error)
 	DeleteComment(ctx context.Context, in *message.DeleteCommentRequest, opts ...grpc.CallOption) (*message.DeleteCommentResponse, error)
-	IncrementLikeCnt(ctx context.Context, in *message.IncrementLikeCntRequest, opts ...grpc.CallOption) (*message.IncrementLikeCntResponse, error)
-	DecrementLikeCnt(ctx context.Context, in *message.DecrementLikeCntRequest, opts ...grpc.CallOption) (*message.DecrementLikeCntResponse, error)
+	IncrementLike(ctx context.Context, in *message.IncrementLikeRequest, opts ...grpc.CallOption) (*message.IncrementLikeResponse, error)
+	DecrementLike(ctx context.Context, in *message.DecrementLikeRequest, opts ...grpc.CallOption) (*message.DecrementLikeResponse, error)
 }
 
 type meClient struct {
@@ -145,18 +145,18 @@ func (c *meClient) DeleteComment(ctx context.Context, in *message.DeleteCommentR
 	return out, nil
 }
 
-func (c *meClient) IncrementLikeCnt(ctx context.Context, in *message.IncrementLikeCntRequest, opts ...grpc.CallOption) (*message.IncrementLikeCntResponse, error) {
-	out := new(message.IncrementLikeCntResponse)
-	err := c.cc.Invoke(ctx, "/v2.service.me/IncrementLikeCnt", in, out, opts...)
+func (c *meClient) IncrementLike(ctx context.Context, in *message.IncrementLikeRequest, opts ...grpc.CallOption) (*message.IncrementLikeResponse, error) {
+	out := new(message.IncrementLikeResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/IncrementLike", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *meClient) DecrementLikeCnt(ctx context.Context, in *message.DecrementLikeCntRequest, opts ...grpc.CallOption) (*message.DecrementLikeCntResponse, error) {
-	out := new(message.DecrementLikeCntResponse)
-	err := c.cc.Invoke(ctx, "/v2.service.me/DecrementLikeCnt", in, out, opts...)
+func (c *meClient) DecrementLike(ctx context.Context, in *message.DecrementLikeRequest, opts ...grpc.CallOption) (*message.DecrementLikeResponse, error) {
+	out := new(message.DecrementLikeResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/DecrementLike", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -178,8 +178,8 @@ type MeServer interface {
 	LeaveComment(context.Context, *message.LeaveCommentRequest) (*message.LeaveCommentResponse, error)
 	FetchCommentList(context.Context, *message.FetchCommentListRequest) (*message.FetchCommentListResponse, error)
 	DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error)
-	IncrementLikeCnt(context.Context, *message.IncrementLikeCntRequest) (*message.IncrementLikeCntResponse, error)
-	DecrementLikeCnt(context.Context, *message.DecrementLikeCntRequest) (*message.DecrementLikeCntResponse, error)
+	IncrementLike(context.Context, *message.IncrementLikeRequest) (*message.IncrementLikeResponse, error)
+	DecrementLike(context.Context, *message.DecrementLikeRequest) (*message.DecrementLikeResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
 
@@ -220,11 +220,11 @@ func (UnimplementedMeServer) FetchCommentList(context.Context, *message.FetchCom
 func (UnimplementedMeServer) DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
 }
-func (UnimplementedMeServer) IncrementLikeCnt(context.Context, *message.IncrementLikeCntRequest) (*message.IncrementLikeCntResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IncrementLikeCnt not implemented")
+func (UnimplementedMeServer) IncrementLike(context.Context, *message.IncrementLikeRequest) (*message.IncrementLikeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrementLike not implemented")
 }
-func (UnimplementedMeServer) DecrementLikeCnt(context.Context, *message.DecrementLikeCntRequest) (*message.DecrementLikeCntResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DecrementLikeCnt not implemented")
+func (UnimplementedMeServer) DecrementLike(context.Context, *message.DecrementLikeRequest) (*message.DecrementLikeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecrementLike not implemented")
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
@@ -437,38 +437,38 @@ func _Me_DeleteComment_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Me_IncrementLikeCnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(message.IncrementLikeCntRequest)
+func _Me_IncrementLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.IncrementLikeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MeServer).IncrementLikeCnt(ctx, in)
+		return srv.(MeServer).IncrementLike(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v2.service.me/IncrementLikeCnt",
+		FullMethod: "/v2.service.me/IncrementLike",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MeServer).IncrementLikeCnt(ctx, req.(*message.IncrementLikeCntRequest))
+		return srv.(MeServer).IncrementLike(ctx, req.(*message.IncrementLikeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Me_DecrementLikeCnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(message.DecrementLikeCntRequest)
+func _Me_DecrementLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.DecrementLikeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MeServer).DecrementLikeCnt(ctx, in)
+		return srv.(MeServer).DecrementLike(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v2.service.me/DecrementLikeCnt",
+		FullMethod: "/v2.service.me/DecrementLike",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MeServer).DecrementLikeCnt(ctx, req.(*message.DecrementLikeCntRequest))
+		return srv.(MeServer).DecrementLike(ctx, req.(*message.DecrementLikeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -525,12 +525,12 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Me_DeleteComment_Handler,
 		},
 		{
-			MethodName: "IncrementLikeCnt",
-			Handler:    _Me_IncrementLikeCnt_Handler,
+			MethodName: "IncrementLike",
+			Handler:    _Me_IncrementLike_Handler,
 		},
 		{
-			MethodName: "DecrementLikeCnt",
-			Handler:    _Me_DecrementLikeCnt_Handler,
+			MethodName: "DecrementLike",
+			Handler:    _Me_DecrementLike_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

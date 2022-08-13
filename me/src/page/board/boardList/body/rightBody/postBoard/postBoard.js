@@ -4,6 +4,8 @@ import Post from "./post";
 import {Button, Grid} from "@mui/material";
 import {deepOrange} from "@mui/material/colors";
 import axios from "axios";
+import {getCookie, setCookie} from "../../../../../../util/cookie";
+import {v4} from "uuid";
 
 
 class PostBoard extends React.Component {
@@ -40,6 +42,11 @@ class PostBoard extends React.Component {
 
     componentDidMount() {
 
+        if(getCookie("uuid") === ""){
+            let uuid = v4()
+            setCookie("uuid", uuid)
+        }
+
         let url = ""
         url = "/v2/fetch-board-post-list?row=" + this.pageId.toString()
         url += "&size=" + this.numOfPost.toString()
@@ -62,6 +69,8 @@ class PostBoard extends React.Component {
             url += "&option.tags=" + tag
         })
 
+        url += "&uuid=" + getCookie("uuid")
+
         axios.get(url).then(
             response => {
                 let newPostInfo = []
@@ -76,8 +85,9 @@ class PostBoard extends React.Component {
                         },
                         title: post.title,
                         content: post.content,
-                        likeCnt: post.likeCnt,
+                        likes: post.likes,
                         isNotice: post.isNotice,
+                        isLike: post.isLike,
                         timeToReadMinute: post.timeToReadMinute,
                         tags: post.tags,
                         views: post.views,
@@ -91,7 +101,7 @@ class PostBoard extends React.Component {
                 })
             }
         ).catch((err) => {
-            console.log("bad")
+            console.log(err)
         })
     }
 

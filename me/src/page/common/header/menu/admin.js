@@ -29,14 +29,19 @@ class Admin extends React.Component {
     }
 
     login = (event) => {
-        let uuid = v4()
+        if(getCookie("uuid") === "") {
+            let uuid = v4()
+            setCookie("uuid", uuid)
+        }
+
+        let uuid = getCookie("uuid")
+
         axios.post('/v2/login-admin', {
             password: this.state.loginID,
             uuid: uuid,
         }).then(
             response => {
                 if(response.data.isAdmin){
-                    setCookie('uuid', uuid)
                     this.setState({
                         isAdmin: true,
                         isOpen: false,
@@ -60,6 +65,11 @@ class Admin extends React.Component {
     }
 
     checkAdminLogin = (event) =>  {
+
+        if(this.state.isAdmin) {
+            return;
+        }
+
         let uuid = getCookie('uuid')
         if(uuid) {
             axios.post('/v2/find-admin-uuid', {

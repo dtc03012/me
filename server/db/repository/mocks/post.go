@@ -18,6 +18,27 @@ type Post struct {
 	mock.Mock
 }
 
+// CheckUserLike provides a mock function with given fields: ctx, tx, pid, uuid
+func (_m *Post) CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) (bool, error) {
+	ret := _m.Called(ctx, tx, pid, uuid)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32, string) bool); ok {
+		r0 = rf(ctx, tx, pid, uuid)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int32, string) error); ok {
+		r1 = rf(ctx, tx, pid, uuid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // DeleteComment provides a mock function with given fields: ctx, tx, postId, commentId
 func (_m *Post) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
 	ret := _m.Called(ctx, tx, postId, commentId)
@@ -25,6 +46,20 @@ func (_m *Post) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, comm
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int) error); ok {
 		r0 = rf(ctx, tx, postId, commentId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeleteLike provides a mock function with given fields: ctx, tx, pid, uuid
+func (_m *Post) DeleteLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error {
+	ret := _m.Called(ctx, tx, pid, uuid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32, string) error); ok {
+		r0 = rf(ctx, tx, pid, uuid)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -194,6 +229,20 @@ func (_m *Post) InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *entity.Comment) error); ok {
 		r0 = rf(ctx, tx, comment)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// InsertLike provides a mock function with given fields: ctx, tx, pid, uuid
+func (_m *Post) InsertLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error {
+	ret := _m.Called(ctx, tx, pid, uuid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32, string) error); ok {
+		r0 = rf(ctx, tx, pid, uuid)
 	} else {
 		r0 = ret.Error(0)
 	}

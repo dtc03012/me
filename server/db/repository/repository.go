@@ -30,6 +30,10 @@ type Post interface {
 	InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.Comment) error
 	DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error
 	GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error)
+
+	CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) (bool, error)
+	InsertLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error
+	DeleteLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error
 }
 
 func NewAdminRepo() Admin {

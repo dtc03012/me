@@ -33,7 +33,7 @@ func (m *MeServer) FetchPostList(ctx context.Context, req *message.FetchPostList
 
 	defer tx.Rollback()
 
-	posts, err := m.db.FetchPostList(ctx, tx, &option.PostOption{
+	postList, err := m.db.FetchPostList(ctx, tx, &option.PostOption{
 		SizeRange: &option.RangeOption{
 			Row:  int(req.GetRow()),
 			Size: int(req.GetSize()),
@@ -48,8 +48,15 @@ func (m *MeServer) FetchPostList(ctx context.Context, req *message.FetchPostList
 
 	totalPostCount, err := m.db.GetTotalPostCount(ctx, tx)
 
+	for _, post := range postList {
+		post.IsLike, err = m.db.CheckUserLike(ctx, tx, int(post.Id), req.GetUuid())
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	tx.Commit()
-	return &message.FetchPostListResponse{PostList: posts, TotalPostCount: totalPostCount}, nil
+	return &message.FetchPostListResponse{PostList: postList, TotalPostCount: totalPostCount}, nil
 }
 
 func (m *MeServer) FetchPost(ctx context.Context, req *message.FetchPostRequest) (*message.FetchPostResponse, error) {
@@ -154,4 +161,40 @@ func (m *MeServer) DeleteComment(ctx context.Context, req *message.DeleteComment
 
 	tx.Commit()
 	return &message.DeleteCommentResponse{}, nil
+}
+
+func (m *MeServer) IncrementLike(ctx context.Context, req *message.IncrementLikeRequest) (*message.IncrementLikeResponse, error) {
+
+	tx, err := m.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer tx.Rollback()
+
+	err = m.db.IncrementLike(ctx, tx, int(req.GetPostId()), req.GetUuid())
+	if err != nil {
+		return nil, err
+	}
+
+	tx.Commit()
+	return &message.IncrementLikeResponse{}, nil
+}
+
+func (m *MeServer) DecrementLike(ctx context.Context, req *message.DecrementLikeRequest) (*message.DecrementLikeResponse, error) {
+
+	tx, err := m.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer tx.Rollback()
+
+	err = m.db.DecrementLike(ctx, tx, int(req.GetPostId()), req.GetUuid())
+	if err != nil {
+		return nil, err
+	}
+
+	tx.Commit()
+	return &message.DecrementLikeResponse{}, nil
 }

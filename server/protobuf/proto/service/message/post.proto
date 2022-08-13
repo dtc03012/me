@@ -19,6 +19,7 @@ message FetchPostListRequest {
   int32 row = 1;
   int32 size = 2;
   entity.post.option option = 3;
+  string uuid = 4;
 }
 
 message FetchPostListResponse {
@@ -28,6 +29,7 @@ message FetchPostListResponse {
 
 message FetchPostRequest {
   int32 id = 1;
+  string uuid = 2;
 }
 
 message FetchPostResponse {
@@ -68,18 +70,18 @@ message DeleteCommentRequest {
 message DeleteCommentResponse {
 }
 
-message IncrementLikeCntRequest {
-  int32 id = 1;
+message IncrementLikeRequest {
+  int32 post_id = 1;
   string uuid = 2;
 }
 
-message IncrementLikeCntResponse {
+message IncrementLikeResponse {
 }
 
-message DecrementLikeCntRequest {
-  int32 id = 1;
+message DecrementLikeRequest {
+  int32 post_id = 1;
   string uuid = 2;
 }
 
-message DecrementLikeCntResponse {
+message DecrementLikeResponse {
 }

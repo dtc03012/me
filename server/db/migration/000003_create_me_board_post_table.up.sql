@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS board_post(
     title VARCHAR(100) NOT NULL,
     content MEDIUMTEXT NOT NULL,
     is_notice boolean NOT NULL,
-    like_cnt INT,
     time_to_read_minute INT,
     create_at DATETIME DEFAULT current_timestamp,
 

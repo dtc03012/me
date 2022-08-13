@@ -14,13 +14,23 @@ import (
 type post struct {
 }
 
+var mysql = goqu.Dialect("mysql")
+
 func (a *post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Post, error) {
 
 	var post []*entity.Post
 	post = make([]*entity.Post, 0)
 
-	err := tx.SelectContext(ctx, &post, "SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid WHERE bp.pid = ? GROUP BY bp.pid", pid)
+	query := mysql.Select("bp.pid", "bp.writer", "bp.title", "bp.content", goqu.COUNT(goqu.I("bl.uuid").Distinct()).As("likes"), "bp.time_to_read_minute", "bp.create_at", goqu.COUNT(goqu.I("bv.uuid").Distinct()).As("views")).
+		From(goqu.T("board_post").As("bp")).
+		LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid")))).
+		LeftOuterJoin(goqu.T("board_likes").As("bl"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bl.pid")))).
+		Where(goqu.Ex{"bp.pid": pid}).
+		GroupBy("bp.pid")
 
+	sql, _, err := query.ToSQL()
+
+	err = tx.SelectContext(ctx, &post, sql)
 	if err != nil {
 		return nil, err
 	}
@@ -31,12 +41,6 @@ func (a *post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Pos
 
 	if len(post) > 1 {
 		return nil, errors.New("post db repository error: duplicate file id. it is caused by server error")
-	}
-
-	err = tx.SelectContext(ctx, &post[0].Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", pid)
-
-	if err != nil {
-		return nil, err
 	}
 
 	return post[0], nil
@@ -53,9 +57,10 @@ func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOpt
 		return nil, err
 	}
 
-	query := goqu.Dialect("mysql").Select("bp.pid", "bp.writer", "bp.title", "bp.content", "bp.like_cnt", "bp.time_to_read_minute", "bp.create_at", goqu.COUNT("*").As("views")).
+	query := mysql.Select("bp.pid", "bp.writer", "bp.title", "bp.content", goqu.COUNT(goqu.I("bl.uuid").Distinct()).As("likes"), "bp.time_to_read_minute", "bp.create_at", goqu.COUNT(goqu.I("bv.uuid").Distinct()).As("views")).
 		From(goqu.T("board_post").As("bp")).
-		LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid"))))
+		LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid")))).
+		LeftOuterJoin(goqu.T("board_likes").As("bl"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bl.pid"))))
 
 	qs := fmt.Sprintf("%%%s%%", opt.Query)
 
@@ -107,8 +112,6 @@ func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOpt
 		return nil, err
 	}
 
-	fmt.Println(sql)
-
 	err = tx.SelectContext(ctx, &postList, sql)
 
 	if err != nil {
@@ -122,11 +125,11 @@ func (a *post) GetBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) ([]string
 
 	var tagList []string
 
-	query := goqu.Dialect("mysql").Select("value").
+	query := mysql.Select("value").
 		From("board_tag").
 		Where(goqu.I("board_tag.tid").
 			In(
-				goqu.Dialect("mysql").Select("board_post_tag.tid").
+				mysql.Select("board_post_tag.tid").
 					From("board_post_tag").
 					Where(goqu.Ex{"board_post_tag.pid": pid})))
 
@@ -148,7 +151,7 @@ func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, t
 		return errors.New("post db repository error: post is nil")
 	}
 
-	postResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_post(writer, title, content, like_cnt, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.LikeCnt, post.IsNotice, post.TimeToReadMinute)
+	postResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_post(writer, title, content, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.IsNotice, post.TimeToReadMinute)
 	if err != nil {
 		return err
 	}
@@ -296,4 +299,52 @@ func (a *post) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int32)
 	}
 
 	return totalCount[0], nil
+}
+
+func (a *post) CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) (bool, error) {
+
+	var likeList []int
+
+	query := mysql.Select(goqu.COUNT("*")).From("board_likes").Where(goqu.Ex{
+		"pid":  pid,
+		"uuid": uuid,
+	})
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
+		return false, err
+	}
+
+	err = tx.SelectContext(ctx, &likeList, sql)
+	if err != nil {
+		return false, err
+	}
+
+	if len(likeList) != 1 {
+		return false, errors.New("check user like db repository error: unexpected error")
+	}
+
+	return likeList[0] == 1, nil
+}
+
+func (a *post) InsertLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error {
+
+	_, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_likes VALUES (?, ?)", pid, uuid)
+	return err
+}
+
+func (a *post) DeleteLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error {
+
+	query := mysql.Delete("board_likes").Where(goqu.Ex{
+		"pid":  pid,
+		"uuid": uuid,
+	})
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.ExecContext(ctx, sql)
+	return err
 }

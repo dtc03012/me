@@ -40,6 +40,10 @@ type DBService interface {
 	FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*post.Comment, error)
 	DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error
 	GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int) (int32, error)
+
+	CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) (bool, error)
+	IncrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error
+	DecrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error
 }
 
 type dbService struct {

@@ -15,7 +15,7 @@ func convertEntityPost(p *entity.Post) *post.Data {
 		Content:          p.Content,
 		Tags:             p.Tags,
 		TimeToReadMinute: p.TimeToReadMinute,
-		LikeCnt:          p.LikeCnt,
+		Likes:            p.Likes,
 		IsNotice:         p.IsNotice,
 		Views:            p.Views,
 		CreateAt:         timestamppb.New(p.CreateAt),

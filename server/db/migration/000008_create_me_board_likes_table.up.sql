@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS board_like (
+CREATE TABLE IF NOT EXISTS board_likes (
     pid INT NOT NULL,
     uuid VARCHAR(50) NOT NULL,
 

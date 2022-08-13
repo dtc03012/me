@@ -115,7 +115,6 @@ export default function PostEditor(props) {
     }
 
     const uploadPost = () => {
-        console.log(noticeCheck)
         axios.post("/v2/upload-board-post",{
             data: {
                 title: title,

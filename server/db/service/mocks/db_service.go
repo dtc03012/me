@@ -64,6 +64,41 @@ func (_m *DBService) CheckAdminPassword(ctx context.Context, tx *sqlx.Tx, passwo
 	return r0, r1
 }
 
+// CheckUserLike provides a mock function with given fields: ctx, tx, pid, uuid
+func (_m *DBService) CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) (bool, error) {
+	ret := _m.Called(ctx, tx, pid, uuid)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, string) bool); ok {
+		r0 = rf(ctx, tx, pid, uuid)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int, string) error); ok {
+		r1 = rf(ctx, tx, pid, uuid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DecrementLike provides a mock function with given fields: ctx, tx, pid, uuid
+func (_m *DBService) DecrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error {
+	ret := _m.Called(ctx, tx, pid, uuid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, string) error); ok {
+		r0 = rf(ctx, tx, pid, uuid)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // DeleteComment provides a mock function with given fields: ctx, tx, postId, commentId
 func (_m *DBService) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
 	ret := _m.Called(ctx, tx, postId, commentId)
@@ -124,13 +159,13 @@ func (_m *DBService) FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*p
 	return r0, r1
 }
 
-// FetchPostList provides a mock function with given fields: ctx, tx, row, size
-func (_m *DBService) FetchPostList(ctx context.Context, tx *sqlx.Tx, row int, size int) ([]*post.Data, error) {
-	ret := _m.Called(ctx, tx, row, size)
+// FetchPostList provides a mock function with given fields: ctx, tx, opt
+func (_m *DBService) FetchPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error) {
+	ret := _m.Called(ctx, tx, opt)
 
 	var r0 []*post.Data
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int) []*post.Data); ok {
-		r0 = rf(ctx, tx, row, size)
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *option.PostOption) []*post.Data); ok {
+		r0 = rf(ctx, tx, opt)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*post.Data)
@@ -138,8 +173,8 @@ func (_m *DBService) FetchPostList(ctx context.Context, tx *sqlx.Tx, row int, si
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int, int) error); ok {
-		r1 = rf(ctx, tx, row, size)
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, *option.PostOption) error); ok {
+		r1 = rf(ctx, tx, opt)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -210,6 +245,20 @@ func (_m *DBService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32,
 	return r0, r1
 }
 
+// IncrementLike provides a mock function with given fields: ctx, tx, pid, uuid
+func (_m *DBService) IncrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error {
+	ret := _m.Called(ctx, tx, pid, uuid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, string) error); ok {
+		r0 = rf(ctx, tx, pid, uuid)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // IncrementViews provides a mock function with given fields: ctx, tx, postId, uuid
 func (_m *DBService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error {
 	ret := _m.Called(ctx, tx, postId, uuid)
@@ -250,29 +299,6 @@ func (_m *DBService) LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *pos
 	}
 
 	return r0
-}
-
-// QueryPostList provides a mock function with given fields: ctx, tx, opt
-func (_m *DBService) QueryPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error) {
-	ret := _m.Called(ctx, tx, opt)
-
-	var r0 []*post.Data
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *option.PostOption) []*post.Data); ok {
-		r0 = rf(ctx, tx, opt)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*post.Data)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, *option.PostOption) error); ok {
-		r1 = rf(ctx, tx, opt)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
 }
 
 // UploadPost provides a mock function with given fields: ctx, tx, postData

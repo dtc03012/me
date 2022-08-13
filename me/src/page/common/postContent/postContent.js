@@ -106,7 +106,7 @@ export default function PostContent(props) {
                 setTotalCommentCount(response.data.totalCommentCount)
             }
         ).catch( err => {
-            console.log("bad")
+            console.log(err)
         })
     }, [])
 

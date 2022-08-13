@@ -1,9 +1,15 @@
-import React from 'react';
-import {Avatar, Chip, Grid, Link, Paper, Typography} from "@mui/material";
+import React, {useState} from 'react';
+import {Avatar, Chip, Grid, IconButton, Link, Paper, Typography} from "@mui/material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import "./post.css";
+import {getCookie, setCookie} from "../../../../../../util/cookie";
+import {v4} from "uuid";
+import axios from "axios";
 
 export default function Post(props) {
+
+    const [likes, setLikes] = useState(props.postInfo.likes)
+    const [isLike, setIsLike] = useState(props.postInfo.isLike)
 
     const createAvatar = () => {
         if(props.postInfo.avatarInfo.avatarImgUrl !== "") {
@@ -11,8 +17,6 @@ export default function Post(props) {
         }
         return <Avatar sx={{bgcolor: props.postInfo.avatarInfo.avatarBgColor, width: 50, height: 50 }}> {props.postInfo.avatarInfo.avatarInitial} </Avatar>
     }
-
-    console.log(props)
 
     const createTagList = () => {
         return (props.postInfo.tags.map( (tag) => (
@@ -26,6 +30,38 @@ export default function Post(props) {
                 </Grid>
             )
         ))
+    }
+
+    const handleLikeIconClick = (event) => {
+
+        if(getCookie("uuid") === "") {
+            let uuid = v4()
+            setCookie("uuid", uuid)
+        }
+
+        let uuid = getCookie("uuid")
+
+        if(isLike) {
+            let url = "/v2/decrement-board-like?postId=" + props.postInfo.id
+            url += "&uuid=" + uuid
+
+            axios.delete(url).then( response => {
+                setIsLike(!isLike)
+                setLikes(likes-1)
+            }).catch( err => {
+                console.log(err)
+            })
+        } else {
+            let url = "/v2/increment-board-like?postId=" + props.postInfo.id
+            url += "&uuid=" + uuid
+
+            axios.put(url).then( response => {
+                setIsLike(!isLike)
+                setLikes(likes+1)
+            }).catch( err => {
+                console.log(err)
+            })
+        }
     }
 
     const convertTimeStampToReadableTime = (timeStamp) => {
@@ -83,6 +119,7 @@ export default function Post(props) {
                             <Grid container direction="column" spacing={0.5}>
                                 <Grid item>
                                     <Typography sx={{
+                                        pl: 1,
                                         fontSize: 13,
                                         fontWeight: 600,
                                         fontFamily: "Elice Digital Baeum",
@@ -92,6 +129,7 @@ export default function Post(props) {
                                 </Grid>
                                 <Grid item>
                                     <Typography sx={{
+                                        pl: 1,
                                         fontSize: 13,
                                         fontWeight: 600,
                                         fontFamily: "Elice Digital Baeum",
@@ -101,6 +139,7 @@ export default function Post(props) {
                                 </Grid>
                                 <Grid item>
                                     <Typography sx={{
+                                        pl: 1,
                                         fontSize: 13,
                                         fontWeight: 600,
                                         fontFamily: "Elice Digital Baeum",
@@ -111,9 +150,11 @@ export default function Post(props) {
                                 <Grid item>
                                     <Grid container direction="row" spacing="5" alignItems="center">
                                         <Grid item>
-                                            <FavoriteIcon style={{
-                                                color: 'red'
-                                            }}/>
+                                            <IconButton type="button" onClick={handleLikeIconClick}>
+                                                <FavoriteIcon style={{
+                                                    color: (isLike ? 'red' : 'black')
+                                                }}/>
+                                            </IconButton>
                                         </Grid>
                                         <Grid item>
                                             <Typography sx={{
@@ -121,7 +162,7 @@ export default function Post(props) {
                                                 fontWeight: 600,
                                                 fontFamily: "Elice Digital Baeum",
                                             }}>
-                                                {props.postInfo.likeCnt}
+                                                {likes}
                                             </Typography>
                                         </Grid>
                                     </Grid>

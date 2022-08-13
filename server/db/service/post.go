@@ -20,7 +20,7 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 		Writer:           postData.GetWriter(),
 		Content:          postData.GetContent(),
 		IsNotice:         postData.GetIsNotice(),
-		LikeCnt:          postData.GetLikeCnt(),
+		Likes:            postData.GetLikes(),
 		TimeToReadMinute: postData.GetTimeToReadMinute(),
 	}
 
@@ -96,6 +96,11 @@ func (dbs *dbService) FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*
 		return nil, err
 	}
 
+	p.Tags, err = dbs.PostRepo.GetBulkTag(ctx, tx, int32(postId))
+	if err != nil {
+		return nil, err
+	}
+
 	convertPost := convertEntityPost(p)
 
 	return convertPost, nil
@@ -113,7 +118,7 @@ func (dbs *dbService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32
 
 func (dbs *dbService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error {
 
-	if postId <= 0 || uuid == "" {
+	if postId <= 0 || len(uuid) == 0 {
 		return errors.New("fetch posts db service error: pid or uuid is out of range")
 	}
 
@@ -186,4 +191,34 @@ func (dbs *dbService) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid
 	}
 
 	return int32(totalCount), nil
+}
+
+func (dbs *dbService) CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) (bool, error) {
+
+	if pid <= 0 || len(uuid) == 0 {
+		return false, errors.New("increment like db service error: pid or uuid is out of range")
+	}
+
+	check, err := dbs.PostRepo.CheckUserLike(ctx, tx, int32(pid), uuid)
+	return check, err
+}
+
+func (dbs *dbService) IncrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error {
+
+	if pid <= 0 || len(uuid) == 0 {
+		return errors.New("increment like db service error: pid or uuid is out of range")
+	}
+
+	err := dbs.PostRepo.InsertLike(ctx, tx, int32(pid), uuid)
+	return err
+}
+
+func (dbs *dbService) DecrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error {
+
+	if pid <= 0 || len(uuid) == 0 {
+		return errors.New("decrement like db service error: pid or uuid is out of range")
+	}
+
+	err := dbs.PostRepo.DeleteLike(ctx, tx, int32(pid), uuid)
+	return err
 }

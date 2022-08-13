@@ -40,21 +40,18 @@ func (f *FileServer) GetFileFromDrive(ctx context.Context, driveSrv *drive.Servi
 
 	fileId, err := f.db.GetFileId(ctx, tx, fileName)
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil, err
 	}
 	fmt.Printf("file Id: %s\n", fileId)
 
 	res, err := driveSrv.Files.Get(fileId).Download()
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil, err
 	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil, fmt.Errorf("error reading download %v", err)
 	}
 

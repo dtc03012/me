@@ -40,7 +40,7 @@ func TestPost_GetPost(t *testing.T) {
 	assert.Equal(t, "writer1", post.Writer)
 	assert.Equal(t, "title1", post.Title)
 	assert.Equal(t, "content1", post.Content)
-	assert.Equal(t, int32(3), post.LikeCnt)
+	assert.Equal(t, int32(3), post.Likes)
 	assert.Equal(t, int32(1), post.TimeToReadMinute)
 	assert.Equal(t, currentTime, post.CreateAt)
 
@@ -127,9 +127,10 @@ func TestPost_GetBulkPost(t *testing.T) {
 			n, m, err := option.CalculateDBRange(tc.opt.SizeRange)
 			assert.NoError(t, err)
 
-			query := goqu.Dialect("mysql").Select("bp.pid", "bp.writer", "bp.title", "bp.content", "bp.like_cnt", "bp.time_to_read_minute", "bp.create_at", goqu.COUNT("*").As("views")).
+			query := goqu.Dialect("mysql").Select("bp.pid", "bp.writer", "bp.title", "bp.content", goqu.COUNT(goqu.C("bl.uuid").Distinct()).As("likes"), "bp.time_to_read_minute", "bp.create_at", goqu.COUNT(goqu.C("bv.uuid").Distinct()).As("views")).
 				From(goqu.T("board_post").As("bp")).
-				LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid"))))
+				LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid")))).
+				LeftOuterJoin(goqu.T("board_likes").As("bl"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bl.pid"))))
 
 			qs := fmt.Sprintf("%%%s%%", tc.opt.Query)
 
@@ -194,7 +195,7 @@ func TestPost_GetBulkPost(t *testing.T) {
 			assert.Equal(t, "writer1", postList[0].Writer)
 			assert.Equal(t, "title1", postList[0].Title)
 			assert.Equal(t, "content1", postList[0].Content)
-			assert.Equal(t, int32(5), postList[0].LikeCnt)
+			assert.Equal(t, int32(5), postList[0].Likes)
 			assert.Equal(t, int32(1), postList[0].TimeToReadMinute)
 			assert.Equal(t, currentTime, postList[0].CreateAt)
 			assert.Equal(t, int32(1), postList[0].Views)
@@ -215,15 +216,15 @@ func TestPost_InsertPost(t *testing.T) {
 		Writer:           "writer1",
 		Title:            "title1",
 		Content:          "content1",
-		LikeCnt:          3,
+		Likes:            3,
 		IsNotice:         false,
 		TimeToReadMinute: 1,
 	}
 
 	tags := []string{"tag1"}
 
-	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_post(writer, title, content, like_cnt, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?, ?)")
-	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(post.Writer, post.Title, post.Content, post.LikeCnt, post.IsNotice, post.TimeToReadMinute).WillReturnResult(sqlmock.NewResult(1, 1))
+	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_post(writer, title, content, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?)")
+	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(post.Writer, post.Title, post.Content, post.IsNotice, post.TimeToReadMinute).WillReturnResult(sqlmock.NewResult(1, 1))
 
 	expectedSQL = fmt.Sprintf("INSERT IGNORE INTO board_tag(value) VALUES (?)")
 	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(tags[0]).WillReturnResult(sqlmock.NewResult(1, 1))

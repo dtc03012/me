@@ -57,33 +57,6 @@ func UploadFileHandler(w http.ResponseWriter, r *http.Request) {
 
 	uploadFileName := fmt.Sprintf("%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename))
 
-	//// Create the uploads folder if it doesn't
-	//// already exist
-	//err = os.MkdirAll("./uploads", os.ModePerm)
-	//if err != nil {
-	//	http.Error(w, err.Error(), http.StatusInternalServerError)
-	//	return
-	//}
-	//
-	//// Create a new file in the uploads directory
-	//
-	//uploadFileName := fmt.Sprintf("%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename))
-	//dst, err := os.Create(fmt.Sprintf("./uploads/%s", uploadFileName))
-	//if err != nil {
-	//	http.Error(w, err.Error(), http.StatusInternalServerError)
-	//	return
-	//}
-	//
-	//defer dst.Close()
-	//
-	//// Copy the uploaded file to the filesystem
-	//// at the specified destination
-	//_, err = io.Copy(dst, file)
-	//if err != nil {
-	//	http.Error(w, err.Error(), http.StatusInternalServerError)
-	//	return
-	//}
-
 	err = fileSrv.UploadFileToDrive(ctx, driveSrv, file, uploadFileName)
 	if err != nil {
 		return
