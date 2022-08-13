@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Box from "@mui/material/Box";
-import {Button, Chip, Grid, Link, TextField} from "@mui/material";
+import {Button, Checkbox, Chip, FormControlLabel, FormGroup, Grid, Link, TextField, Typography} from "@mui/material";
 import "./postEditor.css"
 import axios from "axios";
 
@@ -50,6 +50,8 @@ export default function PostEditor(props) {
     const [inputTag, setInputTag] = useState("")
     const [likeCnt, setLikeCnt] = useState(0)
     const [timeToReadMinute, setTimeToReadMinute] = useState(0)
+    const [noticeCheck, setNoticeCheck] = useState(false)
+    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const createTagList = () => {
         return (tags.map( (tag) => (
@@ -67,6 +69,10 @@ export default function PostEditor(props) {
 
     const handleTitleChange = (event) => {
         setTitle(event.target.value)
+    }
+
+    const handleNoticeCheckChange = (event) => {
+        setNoticeCheck(!noticeCheck)
     }
 
     const addInputTagToTags = () => {
@@ -109,11 +115,12 @@ export default function PostEditor(props) {
     }
 
     const uploadPost = () => {
+        console.log(noticeCheck)
         axios.post("/v2/upload-board-post",{
             data: {
                 title: title,
                 writer: 'admin',
-                isNotice: false,
+                isNotice: noticeCheck,
                 content: editorContent,
                 timeToReadMinute: timeToReadMinute,
                 likeCnt: likeCnt,
@@ -212,6 +219,21 @@ export default function PostEditor(props) {
                     </Box>
                 </Grid>
                 <Grid item>
+                    <Box sx={{
+                        pl: 1,
+                        mt: 1,
+                        display: 'flex'
+                    }} alignContent={"center"}>
+                        <FormGroup>
+                            <FormControlLabel control={<Checkbox {...label} onChange={handleNoticeCheckChange}/>} label="공지 여부"
+                                              componentsProps={{ typography: { fontFamily: "Elice Digital Baeum",
+                                                      fontWeight: 500, } }}/>
+                        </FormGroup>
+                    </Box>
+                </Grid>
+                <Grid item sx={{
+                    ml: 0.5,
+                }}>
                     <Link href="/board" underline="none" color="inherit">
                         <Button variant="contained" color="success" sx={{
                             fontSize: 15,

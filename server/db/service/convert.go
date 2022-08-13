@@ -16,6 +16,7 @@ func convertEntityPost(p *entity.Post) *post.Data {
 		Tags:             p.Tags,
 		TimeToReadMinute: p.TimeToReadMinute,
 		LikeCnt:          p.LikeCnt,
+		IsNotice:         p.IsNotice,
 		Views:            p.Views,
 		CreateAt:         timestamppb.New(p.CreateAt),
 	}
@@ -28,19 +29,7 @@ func convertEntityPostList(postList []*entity.Post) []*post.Data {
 	convertPostList := make([]*post.Data, 0, len(postList))
 
 	for _, p := range postList {
-		convertPost := &post.Data{
-			Id:               p.Id,
-			Title:            p.Title,
-			Writer:           p.Writer,
-			Content:          p.Content,
-			Tags:             p.Tags,
-			TimeToReadMinute: p.TimeToReadMinute,
-			LikeCnt:          p.LikeCnt,
-			Views:            p.Views,
-			CreateAt:         timestamppb.New(p.CreateAt),
-		}
-
-		convertPostList = append(convertPostList, convertPost)
+		convertPostList = append(convertPostList, convertEntityPost(p))
 	}
 
 	return convertPostList
@@ -63,17 +52,7 @@ func convertEntityCommentList(commentList []*entity.Comment) []*post.Comment {
 
 	convertCommentList := make([]*post.Comment, 0, len(commentList))
 	for _, c := range commentList {
-		convertComment := &post.Comment{
-			Id:       c.Id,
-			PostId:   c.PostId,
-			Writer:   c.Writer,
-			Password: c.Password,
-			Comment:  c.Comment,
-			LikeCnt:  c.LikeCnt,
-			CreateAt: timestamppb.New(c.CreateAt),
-		}
-
-		convertCommentList = append(convertCommentList, convertComment)
+		convertCommentList = append(convertCommentList, convertEntityComment(c))
 	}
 
 	return convertCommentList

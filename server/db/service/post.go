@@ -19,6 +19,7 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 		Title:            postData.GetTitle(),
 		Writer:           postData.GetWriter(),
 		Content:          postData.GetContent(),
+		IsNotice:         postData.GetIsNotice(),
 		LikeCnt:          postData.GetLikeCnt(),
 		TimeToReadMinute: postData.GetTimeToReadMinute(),
 	}

@@ -216,13 +216,14 @@ func TestPost_InsertPost(t *testing.T) {
 		Title:            "title1",
 		Content:          "content1",
 		LikeCnt:          3,
+		IsNotice:         false,
 		TimeToReadMinute: 1,
 	}
 
 	tags := []string{"tag1"}
 
-	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_post(writer, title, content, like_cnt, time_to_read_minute) VALUES (?, ?, ?, ?, ?)")
-	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(post.Writer, post.Title, post.Content, post.LikeCnt, post.TimeToReadMinute).WillReturnResult(sqlmock.NewResult(1, 1))
+	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_post(writer, title, content, like_cnt, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?, ?)")
+	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(post.Writer, post.Title, post.Content, post.LikeCnt, post.IsNotice, post.TimeToReadMinute).WillReturnResult(sqlmock.NewResult(1, 1))
 
 	expectedSQL = fmt.Sprintf("INSERT IGNORE INTO board_tag(value) VALUES (?)")
 	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(tags[0]).WillReturnResult(sqlmock.NewResult(1, 1))
