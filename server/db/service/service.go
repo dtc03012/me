@@ -31,7 +31,7 @@ type DBService interface {
 	FindAdminUUID(ctx context.Context, tx *sqlx.Tx, uuid string) (bool, error)
 
 	UploadPost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error
-	FetchPostList(ctx context.Context, tx *sqlx.Tx, row int, size int) ([]*post.Data, error)
+	FetchPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error)
 	FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*post.Data, error)
 	IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error
 	GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32, error)
@@ -40,8 +40,6 @@ type DBService interface {
 	FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*post.Comment, error)
 	DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error
 	GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int) (int32, error)
-
-	QueryPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error)
 }
 
 type dbService struct {

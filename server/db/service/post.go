@@ -33,20 +33,50 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 	return err
 }
 
-func (dbs *dbService) FetchPostList(ctx context.Context, tx *sqlx.Tx, row int, size int) ([]*post.Data, error) {
+func (dbs *dbService) FetchPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error) {
 
-	if row <= 0 || size <= 0 {
+	var (
+		validPostList []*entity.Post
+		postList      []*entity.Post
+		err           error
+	)
+
+	if opt == nil {
+		return nil, errors.New("query post list db service error: option is nil")
+	}
+
+	if opt.SizeRange.Size <= 0 || opt.SizeRange.Row <= 0 {
 		return nil, errors.New("fetch posts db service error: row or size is out of range")
 	}
 
-	postList, err := dbs.PostRepo.GetBulkPost(ctx, tx, &option.PostOption{
-		SizeRange: &option.RangeOption{
-			Row:  row,
-			Size: size,
-		},
-	})
+	postList, err = dbs.PostRepo.GetBulkPost(ctx, tx, opt)
 	if err != nil {
 		return nil, err
+	}
+
+	for i, _ := range postList {
+		postList[i].Tags, err = dbs.PostRepo.GetBulkTag(ctx, tx, postList[i].Id)
+		if err != nil {
+			return nil, err
+		}
+
+		suc := true
+		for _, tag := range opt.Tags {
+			check := false
+			for _, postTag := range postList[i].Tags {
+				if postTag == tag {
+					check = true
+				}
+			}
+
+			if check == false {
+				suc = false
+			}
+		}
+
+		if suc == true {
+			validPostList = append(validPostList, postList[i])
+		}
 	}
 
 	convertPostList := convertEntityPostList(postList)
@@ -155,26 +185,4 @@ func (dbs *dbService) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid
 	}
 
 	return int32(totalCount), nil
-}
-
-func (dbs *dbService) QueryPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error) {
-
-	var (
-		postList []*entity.Post
-		err      error
-	)
-
-	if opt == nil {
-		return nil, errors.New("query post list db service error: option is nil")
-	}
-	if opt.QueryType != option.Comment {
-		postList, err = dbs.PostRepo.QueryBulkPost(ctx, tx, opt)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	convertPostList := convertEntityPostList(postList)
-
-	return convertPostList, nil
 }

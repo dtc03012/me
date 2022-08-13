@@ -4,17 +4,24 @@ package v2.entity.post;
 
 option go_package = "github.com/dtc03012/me/protobuf/proto/entity/post";
 
-enum search_option {
+enum query_option {
   Undefined = 0;
-  TitleAndContent = 1;
+  TitleOrContent = 1;
   Title = 2;
   Content = 3;
   Writer = 4;
   Comment = 5;
 }
 
+enum classification_option {
+  All = 0;
+  Popular = 1;
+  Notice = 2;
+}
+
 message option {
-  search_option search_option = 1;
-  string search_query = 2;
-  repeated string tags = 3;
+  query_option query_option = 1;
+  classification_option classification_option = 2;
+  string query = 3;
+  repeated string tags = 4;
 }

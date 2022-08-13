@@ -17,6 +17,7 @@ class PostBoard extends React.Component {
     pageId = 1;
     queryOption = this.urlSearchParams.get("queryOption")
     queryString = this.urlSearchParams.get("queryString")
+    classificationOption = this.urlSearchParams.get("classificationOption")
     tags = [...this.urlSearchParams.getAll("tags")]
 
     constructor(props) {
@@ -30,47 +31,57 @@ class PostBoard extends React.Component {
             this.pageId = parseInt(this.paramPageId)
         }
 
-        if(this.pageId === null || isNaN(Number(this.pageId))) this.pageId = 1
+        if(this.pageId == null || isNaN(Number(this.pageId))) this.pageId = 1
         if(this.queryString === null) this.queryString = ""
         if(this.queryOption === null) this.queryOption = ""
+        if(this.classificationOption == null) this.classificationOption = ""
     }
 
 
     componentDidMount() {
 
         let url = ""
+        url = "/v2/fetch-board-post-list?row=" + this.pageId.toString()
+        url += "&size=" + this.numOfPost.toString()
 
-        if(this.queryOption === "") {
-            url = "/v2/fetch-board-post-list?row=" + this.pageId.toString() + "&size=" + this.numOfPost.toString()
+        if(this.queryOption === ""){
+            url += "&option.query_option=Undefined"
         }else {
-            url = "/v2/search-board-post-list?row=" + this.pageId.toString()
-            url += "&size=" + this.numOfPost.toString()
-            url += "&option.search_option="+this.queryOption
-            url += "&option.search_query="+this.queryString
-            this.tags.forEach((tag) => {
-                url += "&option.tags=" + tag
-            })
+            url += "&option.query_option="+this.queryOption
         }
+
+        url += "&option.query="+this.queryString
+
+        if(this.classificationOption === "") {
+            url += "&option.classification_option=All"
+        }else {
+            url += "&option.classification_option=" + this.classificationOption
+        }
+
+        this.tags.forEach((tag) => {
+            url += "&option.tags=" + tag
+        })
 
         axios.get(url).then(
             response => {
                 let newPostInfo = []
-                response.data.data.forEach((data) => {
+                response.data.postList.forEach((post) => {
                     newPostInfo = [...newPostInfo, {
-                        id: data.id,
-                        writer: data.writer,
+                        id: post.id,
+                        writer: post.writer,
                         avatarInfo: {
                             avatarImgUrl: "",
                             avatarInitial: 'A',
                             avatarBgColor: deepOrange[500],
                         },
-                        title: data.title,
-                        content: data.content,
-                        likeCnt: data.likeCnt,
-                        timeToReadMinute: data.timeToReadMinute,
-                        tags: data.tags,
-                        views: data.views,
-                        createAt: data.createAt,
+                        title: post.title,
+                        content: post.content,
+                        likeCnt: post.likeCnt,
+                        isNotice: post.isNotice,
+                        timeToReadMinute: post.timeToReadMinute,
+                        tags: post.tags,
+                        views: post.views,
+                        createAt: post.createAt,
                     }]
                 })
                 

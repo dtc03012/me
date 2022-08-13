@@ -3,6 +3,8 @@ package test
 import (
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/doug-martin/goqu/v9"
+	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
 	"github.com/dtc03012/me/db"
 	"github.com/dtc03012/me/db/entity"
 	"github.com/dtc03012/me/db/option"
@@ -52,38 +54,155 @@ func TestPost_GetPost(t *testing.T) {
 func TestPost_GetBulkPost(t *testing.T) {
 	t.Parallel()
 
-	ctx, tx, mock, err := db.SetupMock()
-	assert.NoError(t, err)
+	var testCase = []struct {
+		description string
+		opt         *option.PostOption
+		postList    []*entity.Post
+	}{
+		{
+			description: "check title and Content",
+			opt: &option.PostOption{
+				SizeRange: &option.RangeOption{
+					Row:  1,
+					Size: 1,
+				},
+				QueryType: option.QueryTitleOrContent,
+				Query:     "tc1",
+			},
+		},
+		{
+			description: "check title",
+			opt: &option.PostOption{
+				SizeRange: &option.RangeOption{
+					Row:  1,
+					Size: 1,
+				},
+				QueryType: option.QueryTitle,
+				Query:     "t1",
+			},
+		},
+		{
+			description: "check content",
+			opt: &option.PostOption{
+				SizeRange: &option.RangeOption{
+					Row:  1,
+					Size: 1,
+				},
+				QueryType: option.QueryContent,
+				Query:     "c1",
+			},
+		},
+		{
+			description: "check writer",
+			opt: &option.PostOption{
+				SizeRange: &option.RangeOption{
+					Row:  1,
+					Size: 1,
+				},
+				QueryType: option.QueryWriter,
+				Query:     "w1",
+			},
+		},
+		{
+			description: "classification and title check",
+			opt: &option.PostOption{
+				SizeRange: &option.RangeOption{
+					Row:  1,
+					Size: 1,
+				},
+				QueryType:          option.QueryTitle,
+				Query:              "t1",
+				ClassificationType: option.ClassificationPopular,
+			},
+		},
+	}
 
-	currentTime := time.Now()
-	expectedSQL := fmt.Sprintf("SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid GROUP BY bp.pid ORDER BY pid DESC LIMIT ?, ?")
-	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(0, 1).
-		WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "like_cnt", "time_to_read_minute", "create_at", "views"}).AddRow(1, "writer1", "title1", "content1", 3, 1, currentTime, 1))
+	for _, tc := range testCase {
+		t.Run(tc.description, func(t *testing.T) {
+			ctx, tx, mock, err := db.SetupMock()
+			assert.NoError(t, err)
 
-	expectedSQL = fmt.Sprintf("SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)")
-	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(1).
-		WillReturnRows(sqlmock.NewRows([]string{"value"}).AddRow("tag1"))
+			currentTime := time.Now()
 
-	postRepo := repository.NewPostRepo()
-	post, err := postRepo.GetBulkPost(ctx, tx, &option.PostOption{SizeRange: &option.RangeOption{Row: 1, Size: 1}})
-	assert.NoError(t, err)
-	assert.NotNil(t, post)
-	assert.Len(t, post, 1)
-	assert.NotNil(t, post[0].Tags)
+			n, m, err := option.CalculateDBRange(tc.opt.SizeRange)
+			assert.NoError(t, err)
 
-	assert.Equal(t, int32(1), post[0].Id)
-	assert.Equal(t, "writer1", post[0].Writer)
-	assert.Equal(t, "title1", post[0].Title)
-	assert.Equal(t, "content1", post[0].Content)
-	assert.Equal(t, int32(3), post[0].LikeCnt)
-	assert.Equal(t, int32(1), post[0].TimeToReadMinute)
-	assert.Equal(t, currentTime, post[0].CreateAt)
+			query := goqu.Dialect("mysql").Select("bp.pid", "bp.writer", "bp.title", "bp.content", "bp.like_cnt", "bp.time_to_read_minute", "bp.create_at", goqu.COUNT("*").As("views")).
+				From(goqu.T("board_post").As("bp")).
+				LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid"))))
 
-	assert.Len(t, post[0].Tags, 1)
-	assert.Equal(t, "tag1", post[0].Tags[0])
+			qs := fmt.Sprintf("%%%s%%", tc.opt.Query)
 
-	err = mock.ExpectationsWereMet()
-	assert.NoError(t, err)
+			if tc.opt.QueryType == option.QueryTitleOrContent {
+				query = query.Where(
+					goqu.ExOr{
+						"bp.title":   goqu.Op{"like": qs},
+						"bp.content": goqu.Op{"like": qs},
+					},
+				)
+			} else if tc.opt.QueryType == option.QueryTitle {
+				query = query.Where(
+					goqu.Ex{
+						"bp.title": goqu.Op{"like": qs},
+					},
+				)
+			} else if tc.opt.QueryType == option.QueryContent {
+				query = query.Where(
+					goqu.Ex{
+						"bp.content": goqu.Op{"like": qs},
+					},
+				)
+			} else if tc.opt.QueryType == option.QueryWriter {
+				query = query.Where(
+					goqu.Ex{
+						"bp.writer": goqu.Op{"like": qs},
+					},
+				)
+			}
+
+			if tc.opt.ClassificationType == option.ClassificationNotice {
+				query = query.Where(goqu.I("bp.is_notice").Eq(true))
+			} else {
+				query = query.Where(goqu.I("bp.is_notice").Eq(false))
+			}
+
+			query = query.GroupBy("bp.pid")
+
+			if tc.opt.ClassificationType == option.ClassificationALL || tc.opt.ClassificationType == option.ClassificationNotice {
+				query = query.Order(goqu.I("bp.pid").Desc())
+			} else if tc.opt.ClassificationType == option.ClassificationPopular {
+				query = query.Order(goqu.I("views").Desc(), goqu.I("bp.pid").Desc())
+			}
+
+			query = query.Limit(uint(m - n + 1)).Offset(uint(n))
+
+			expectedSQL, _, err := query.ToSQL()
+			assert.NoError(t, err)
+
+			mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs().
+				WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "like_cnt", "time_to_read_minute", "create_at", "views"}).AddRow(
+					1, "writer1", "title1", "content1", 5, 1, currentTime, 1))
+
+			postRepo := repository.NewPostRepo()
+			postList, err := postRepo.GetBulkPost(ctx, tx, tc.opt)
+
+			assert.NoError(t, err)
+			assert.NotNil(t, postList)
+			assert.Len(t, postList, 1)
+
+			assert.Equal(t, int32(1), postList[0].Id)
+			assert.Equal(t, "writer1", postList[0].Writer)
+			assert.Equal(t, "title1", postList[0].Title)
+			assert.Equal(t, "content1", postList[0].Content)
+			assert.Equal(t, int32(5), postList[0].LikeCnt)
+			assert.Equal(t, int32(1), postList[0].TimeToReadMinute)
+			assert.Equal(t, currentTime, postList[0].CreateAt)
+			assert.Equal(t, int32(1), postList[0].Views)
+
+			err = mock.ExpectationsWereMet()
+			assert.NoError(t, err)
+		})
+	}
 }
 
 func TestPost_InsertPost(t *testing.T) {
@@ -241,116 +360,4 @@ func TestPost_DeleteComment(t *testing.T) {
 
 	err = mock.ExpectationsWereMet()
 	assert.NoError(t, err)
-}
-
-func TestPost_QueryBulkPost(t *testing.T) {
-	t.Parallel()
-
-	var testCase = []struct {
-		description string
-		opt         *option.PostOption
-		postList    []*entity.Post
-	}{
-		{
-			description: "check title and Content",
-			opt: &option.PostOption{
-				SizeRange: &option.RangeOption{
-					Row:  1,
-					Size: 1,
-				},
-				QueryType: option.TitleAndContent,
-				Query:     "tc1",
-				Tags:      []string{"tag1"},
-			},
-		},
-		{
-			description: "check title",
-			opt: &option.PostOption{
-				SizeRange: &option.RangeOption{
-					Row:  1,
-					Size: 1,
-				},
-				QueryType: option.Title,
-				Query:     "t1",
-				Tags:      []string{"tag1"},
-			},
-		},
-		{
-			description: "check content",
-			opt: &option.PostOption{
-				SizeRange: &option.RangeOption{
-					Row:  1,
-					Size: 1,
-				},
-				QueryType: option.Content,
-				Query:     "c1",
-				Tags:      []string{"tag1"},
-			},
-		},
-		{
-			description: "check writer",
-			opt: &option.PostOption{
-				SizeRange: &option.RangeOption{
-					Row:  1,
-					Size: 1,
-				},
-				QueryType: option.Writer,
-				Query:     "w1",
-				Tags:      []string{"tag1"},
-			},
-		},
-	}
-
-	for _, tc := range testCase {
-		t.Run(tc.description, func(t *testing.T) {
-			ctx, tx, mock, err := db.SetupMock()
-			assert.NoError(t, err)
-
-			currentTime := time.Now()
-
-			n, m, err := option.CalculateDBRange(tc.opt.SizeRange)
-			assert.NoError(t, err)
-
-			expectedSQL := "SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid "
-			if tc.opt.QueryType == option.TitleAndContent {
-				expectedSQL += fmt.Sprintf("WHERE bp.title LIKE '%%%s%%' AND bp.content LIKE '%%%s%%' ", tc.opt.Query, tc.opt.Query)
-			} else if tc.opt.QueryType == option.Title {
-				expectedSQL += fmt.Sprintf("WHERE bp.title LIKE '%%%s%%' ", tc.opt.Query)
-			} else if tc.opt.QueryType == option.Content {
-				expectedSQL += fmt.Sprintf("WHERE bp.content LIKE '%%%s%%' ", tc.opt.Query)
-			} else if tc.opt.QueryType == option.Writer {
-				expectedSQL += fmt.Sprintf("WHERE bp.writer LIKE '%%%s%%' ", tc.opt.Query)
-			}
-			expectedSQL += fmt.Sprintf("GROUP BY bp.pid ORDER BY pid DESC LIMIT %d, %d", n, m)
-
-			mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs().
-				WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "like_cnt", "time_to_read_minute", "create_at", "views"}).AddRow(
-					1, "writer1", "title1", "content1", 5, 1, currentTime, 1))
-
-			expectedSQL = fmt.Sprintf("SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)")
-			mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(1).
-				WillReturnRows(sqlmock.NewRows([]string{"value"}).AddRow("tag1"))
-
-			postRepo := repository.NewPostRepo()
-			postList, err := postRepo.QueryBulkPost(ctx, tx, tc.opt)
-
-			assert.NoError(t, err)
-			assert.NotNil(t, postList)
-			assert.Len(t, postList, 1)
-			assert.Len(t, postList[0].Tags, 1)
-
-			assert.Equal(t, int32(1), postList[0].Id)
-			assert.Equal(t, "writer1", postList[0].Writer)
-			assert.Equal(t, "title1", postList[0].Title)
-			assert.Equal(t, "content1", postList[0].Content)
-			assert.Equal(t, int32(5), postList[0].LikeCnt)
-			assert.Equal(t, int32(1), postList[0].TimeToReadMinute)
-			assert.Equal(t, currentTime, postList[0].CreateAt)
-			assert.Equal(t, int32(1), postList[0].Views)
-			assert.Equal(t, tc.opt.Tags, postList[0].Tags)
-
-			err = mock.ExpectationsWereMet()
-			assert.NoError(t, err)
-		})
-	}
 }

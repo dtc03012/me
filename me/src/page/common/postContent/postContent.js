@@ -71,16 +71,16 @@ export default function PostContent(props) {
 
         axios.get(url).then(
             response => {
-                response.data.data.content = reviseContent(response.data.data.content)
+                response.data.post.content = reviseContent(response.data.post.content)
 
-                setTitle(response.data.data.title)
-                setWriter(response.data.data.writer)
-                setContent(response.data.data.content)
-                setLikeCnt(response.data.data.likeCnt)
-                setTimeToReadMinute(response.data.data.timeToReadMinute)
-                setTags(response.data.data.tags)
-                setViews(response.data.data.views)
-                setCreateAt(response.data.data.createAt)
+                setTitle(response.data.post.title)
+                setWriter(response.data.post.writer)
+                setContent(response.data.post.content)
+                setLikeCnt(response.data.post.likeCnt)
+                setTimeToReadMinute(response.data.post.timeToReadMinute)
+                setTags(response.data.post.tags)
+                setViews(response.data.post.views)
+                setCreateAt(response.data.post.createAt)
             }
         ).catch( err => {
             console.log(err)

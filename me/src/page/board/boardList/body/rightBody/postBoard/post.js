@@ -12,6 +12,8 @@ export default function Post(props) {
         return <Avatar sx={{bgcolor: props.postInfo.avatarInfo.avatarBgColor, width: 50, height: 50 }}> {props.postInfo.avatarInfo.avatarInitial} </Avatar>
     }
 
+    console.log(props)
+
     const createTagList = () => {
         return (props.postInfo.tags.map( (tag) => (
                 <Grid item>

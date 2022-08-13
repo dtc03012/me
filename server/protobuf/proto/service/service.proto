@@ -92,12 +92,6 @@ service me {
     };
   }
 
-  rpc SearchPostList(service.message.SearchPostListRequest) returns (service.message.SearchPostListResponse) {
-    option (google.api.http) = {
-      get: "/v2/search-board-post-list"
-    };
-  }
-
   rpc IncrementLikeCnt(service.message.IncrementLikeCntRequest) returns (service.message.IncrementLikeCntResponse) {
     option (google.api.http) = {
       put: "/v2/increment-board-like-cnt"

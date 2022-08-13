@@ -7,7 +7,7 @@ import Footer from "../common/footer/footer";
 class Board extends React.Component {
     render() {
         return (
-            <Box minHeight="1000px" sx={{
+            <Box sx={{
                 backgroundColor: '#f5f5f5',
             }}>
                 <Header/>

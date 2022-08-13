@@ -18,10 +18,11 @@ message UploadPostResponse {
 message FetchPostListRequest {
   int32 row = 1;
   int32 size = 2;
+  entity.post.option option = 3;
 }
 
 message FetchPostListResponse {
-  repeated entity.post.data data = 1;
+  repeated entity.post.data post_list = 1;
   int32 totalPostCount = 2;
 }
 
@@ -30,7 +31,7 @@ message FetchPostRequest {
 }
 
 message FetchPostResponse {
-  entity.post.data data = 1;
+  entity.post.data post = 1;
 }
 
 message IncrementViewRequest{
@@ -65,17 +66,6 @@ message DeleteCommentRequest {
 }
 
 message DeleteCommentResponse {
-}
-
-message SearchPostListRequest {
-  entity.post.option option = 1;
-  int32 row = 2;
-  int32 size = 3;
-}
-
-message SearchPostListResponse {
-  repeated entity.post.data data = 1;
-  int32 totalPostCount = 2;
 }
 
 message IncrementLikeCntRequest {

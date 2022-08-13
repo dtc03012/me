@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS board_like (
     uuid VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (pid, uuid),
-    FOREIGN KEY (pid) REFERENCES board_post(pid) on UPDATE CASCADE on DELETE RESTRICT
+    FOREIGN KEY (pid) REFERENCES board_post(pid) on UPDATE CASCADE on DELETE CASCADE
 );

@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/doug-martin/goqu/v9"
+	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
 	"github.com/dtc03012/me/db/entity"
 	"github.com/dtc03012/me/db/option"
 	"github.com/jmoiron/sqlx"
@@ -43,6 +45,7 @@ func (a *post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Pos
 func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error) {
 
 	var postList []*entity.Post
+
 	postList = make([]*entity.Post, 0)
 
 	n, m, err := option.CalculateDBRange(opt.SizeRange)
@@ -50,21 +53,94 @@ func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOpt
 		return nil, err
 	}
 
-	err = tx.SelectContext(ctx, &postList, "SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid GROUP BY bp.pid ORDER BY pid DESC LIMIT ?, ?", n, m)
+	query := goqu.Dialect("mysql").Select("bp.pid", "bp.writer", "bp.title", "bp.content", "bp.like_cnt", "bp.time_to_read_minute", "bp.create_at", goqu.COUNT("*").As("views")).
+		From(goqu.T("board_post").As("bp")).
+		LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid"))))
 
+	qs := fmt.Sprintf("%%%s%%", opt.Query)
+
+	if opt.QueryType == option.QueryTitleOrContent {
+		query = query.Where(
+			goqu.ExOr{
+				"bp.title":   goqu.Op{"like": qs},
+				"bp.content": goqu.Op{"like": qs},
+			},
+		)
+	} else if opt.QueryType == option.QueryTitle {
+		query = query.Where(
+			goqu.Ex{
+				"bp.title": goqu.Op{"like": qs},
+			},
+		)
+	} else if opt.QueryType == option.QueryContent {
+		query = query.Where(
+			goqu.Ex{
+				"bp.content": goqu.Op{"like": qs},
+			},
+		)
+	} else if opt.QueryType == option.QueryWriter {
+		query = query.Where(
+			goqu.Ex{
+				"bp.writer": goqu.Op{"like": qs},
+			},
+		)
+	}
+
+	if opt.ClassificationType == option.ClassificationNotice {
+		query = query.Where(goqu.I("bp.is_notice").Eq(true))
+	} else {
+		query = query.Where(goqu.I("bp.is_notice").Eq(false))
+	}
+
+	query = query.GroupBy("bp.pid")
+
+	if opt.ClassificationType == option.ClassificationALL || opt.ClassificationType == option.ClassificationNotice {
+		query = query.Order(goqu.I("bp.pid").Desc())
+	} else if opt.ClassificationType == option.ClassificationPopular {
+		query = query.Order(goqu.I("views").Desc(), goqu.I("bp.pid").Desc())
+	}
+
+	query = query.Limit(uint(m - n + 1)).Offset(uint(n))
+
+	sql, _, err := query.ToSQL()
 	if err != nil {
 		return nil, err
 	}
 
-	for _, post := range postList {
-		err = tx.SelectContext(ctx, &post.Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", post.Id)
-	}
+	fmt.Println(sql)
+
+	err = tx.SelectContext(ctx, &postList, sql)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return postList, nil
+}
+
+func (a *post) GetBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) ([]string, error) {
+
+	var tagList []string
+
+	query := goqu.Dialect("mysql").Select("value").
+		From("board_tag").
+		Where(goqu.I("board_tag.tid").
+			In(
+				goqu.Dialect("mysql").Select("board_post_tag.tid").
+					From("board_post_tag").
+					Where(goqu.Ex{"board_post_tag.pid": pid})))
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
+		return nil, err
+	}
+
+	err = tx.SelectContext(ctx, &tagList, sql)
+	if err != nil {
+		return nil, err
+	}
+
+	return tagList, nil
 }
 
 func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, tags []string) error {
@@ -220,60 +296,4 @@ func (a *post) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int32)
 	}
 
 	return totalCount[0], nil
-}
-
-func (a *post) QueryBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error) {
-
-	var (
-		candPostList  []*entity.Post
-		validPostList []*entity.Post
-	)
-
-	candPostList = make([]*entity.Post, 0)
-
-	n, m, err := option.CalculateDBRange(opt.SizeRange)
-	if err != nil {
-		return nil, err
-	}
-
-	query := "SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid "
-	if opt.QueryType == option.TitleAndContent {
-		query += fmt.Sprintf("WHERE bp.title LIKE '%%%s%%' AND bp.content LIKE '%%%s%%' ", opt.Query, opt.Query)
-	} else if opt.QueryType == option.Title {
-		query += fmt.Sprintf("WHERE bp.title LIKE '%%%s%%' ", opt.Query)
-	} else if opt.QueryType == option.Content {
-		query += fmt.Sprintf("WHERE bp.content LIKE '%%%s%%' ", opt.Query)
-	} else if opt.QueryType == option.Writer {
-		query += fmt.Sprintf("WHERE bp.writer LIKE '%%%s%%' ", opt.Query)
-	}
-
-	query += fmt.Sprintf("GROUP BY bp.pid ORDER BY pid DESC LIMIT %d, %d", n, m)
-
-	err = tx.SelectContext(ctx, &candPostList, query)
-	if err != nil {
-		return nil, err
-	}
-
-	validPostList = make([]*entity.Post, 0)
-
-	for _, post := range candPostList {
-		err = tx.SelectContext(ctx, &post.Tags, "SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)", post.Id)
-		var suc = true
-		for _, tag := range opt.Tags {
-			var check = false
-			for _, pTag := range post.Tags {
-				if pTag == tag {
-					check = true
-				}
-			}
-			if check == false {
-				suc = false
-			}
-		}
-		if suc {
-			validPostList = append(validPostList, post)
-		}
-	}
-
-	return validPostList, nil
 }

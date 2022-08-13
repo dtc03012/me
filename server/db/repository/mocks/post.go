@@ -78,6 +78,29 @@ func (_m *Post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOp
 	return r0, r1
 }
 
+// GetBulkTag provides a mock function with given fields: ctx, tx, pid
+func (_m *Post) GetBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) ([]string, error) {
+	ret := _m.Called(ctx, tx, pid)
+
+	var r0 []string
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32) []string); ok {
+		r0 = rf(ctx, tx, pid)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int32) error); ok {
+		r1 = rf(ctx, tx, pid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetPost provides a mock function with given fields: ctx, tx, pid
 func (_m *Post) GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Post, error) {
 	ret := _m.Called(ctx, tx, pid)
@@ -204,29 +227,6 @@ func (_m *Post) InsertViews(ctx context.Context, tx *sqlx.Tx, pid int32, uuid st
 	}
 
 	return r0
-}
-
-// QueryBulkPost provides a mock function with given fields: ctx, tx, opt
-func (_m *Post) QueryBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error) {
-	ret := _m.Called(ctx, tx, opt)
-
-	var r0 []*entity.Post
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *option.PostOption) []*entity.Post); ok {
-		r0 = rf(ctx, tx, opt)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entity.Post)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, *option.PostOption) error); ok {
-		r1 = rf(ctx, tx, opt)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
 }
 
 type mockConstructorTestingTNewPost interface {

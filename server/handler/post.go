@@ -33,7 +33,15 @@ func (m *MeServer) FetchPostList(ctx context.Context, req *message.FetchPostList
 
 	defer tx.Rollback()
 
-	posts, err := m.db.FetchPostList(ctx, tx, int(req.Row), int(req.Size))
+	posts, err := m.db.FetchPostList(ctx, tx, &option.PostOption{
+		SizeRange: &option.RangeOption{
+			Row:  int(req.GetRow()),
+			Size: int(req.GetSize()),
+		},
+		ClassificationType: option.ClassificationTypeMap[req.GetOption().GetClassificationOption().String()],
+		QueryType:          option.QueryTypeMap[req.GetOption().GetQueryOption().String()],
+		Query:              req.GetOption().GetQuery(),
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +49,7 @@ func (m *MeServer) FetchPostList(ctx context.Context, req *message.FetchPostList
 	totalPostCount, err := m.db.GetTotalPostCount(ctx, tx)
 
 	tx.Commit()
-	return &message.FetchPostListResponse{Data: posts, TotalPostCount: totalPostCount}, nil
+	return &message.FetchPostListResponse{PostList: posts, TotalPostCount: totalPostCount}, nil
 }
 
 func (m *MeServer) FetchPost(ctx context.Context, req *message.FetchPostRequest) (*message.FetchPostResponse, error) {
@@ -60,7 +68,7 @@ func (m *MeServer) FetchPost(ctx context.Context, req *message.FetchPostRequest)
 	}
 
 	tx.Commit()
-	return &message.FetchPostResponse{Data: post}, nil
+	return &message.FetchPostResponse{Post: post}, nil
 }
 
 func (m *MeServer) IncrementView(ctx context.Context, req *message.IncrementViewRequest) (*message.IncrementViewResponse, error) {
@@ -146,34 +154,4 @@ func (m *MeServer) DeleteComment(ctx context.Context, req *message.DeleteComment
 
 	tx.Commit()
 	return &message.DeleteCommentResponse{}, nil
-}
-
-func (m *MeServer) SearchPostList(ctx context.Context, req *message.SearchPostListRequest) (*message.SearchPostListResponse, error) {
-
-	tx, err := m.db.BeginTx(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	defer tx.Rollback()
-
-	postList, err := m.db.QueryPostList(ctx, tx, &option.PostOption{
-		SizeRange: &option.RangeOption{
-			Row:  int(req.GetRow()),
-			Size: int(req.GetSize()),
-		},
-		QueryType: option.QueryTypeMap[req.GetOption().GetSearchOption().String()],
-		Query:     req.GetOption().GetSearchQuery(),
-		Tags:      req.GetOption().GetTags(),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	totalPostList, err := m.db.GetTotalPostCount(ctx, tx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &message.SearchPostListResponse{Data: postList, TotalPostCount: totalPostList}, nil
 }

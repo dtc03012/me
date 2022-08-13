@@ -34,7 +34,6 @@ type MeClient interface {
 	LeaveComment(ctx context.Context, in *message.LeaveCommentRequest, opts ...grpc.CallOption) (*message.LeaveCommentResponse, error)
 	FetchCommentList(ctx context.Context, in *message.FetchCommentListRequest, opts ...grpc.CallOption) (*message.FetchCommentListResponse, error)
 	DeleteComment(ctx context.Context, in *message.DeleteCommentRequest, opts ...grpc.CallOption) (*message.DeleteCommentResponse, error)
-	SearchPostList(ctx context.Context, in *message.SearchPostListRequest, opts ...grpc.CallOption) (*message.SearchPostListResponse, error)
 	IncrementLikeCnt(ctx context.Context, in *message.IncrementLikeCntRequest, opts ...grpc.CallOption) (*message.IncrementLikeCntResponse, error)
 	DecrementLikeCnt(ctx context.Context, in *message.DecrementLikeCntRequest, opts ...grpc.CallOption) (*message.DecrementLikeCntResponse, error)
 }
@@ -146,15 +145,6 @@ func (c *meClient) DeleteComment(ctx context.Context, in *message.DeleteCommentR
 	return out, nil
 }
 
-func (c *meClient) SearchPostList(ctx context.Context, in *message.SearchPostListRequest, opts ...grpc.CallOption) (*message.SearchPostListResponse, error) {
-	out := new(message.SearchPostListResponse)
-	err := c.cc.Invoke(ctx, "/v2.service.me/SearchPostList", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *meClient) IncrementLikeCnt(ctx context.Context, in *message.IncrementLikeCntRequest, opts ...grpc.CallOption) (*message.IncrementLikeCntResponse, error) {
 	out := new(message.IncrementLikeCntResponse)
 	err := c.cc.Invoke(ctx, "/v2.service.me/IncrementLikeCnt", in, out, opts...)
@@ -188,7 +178,6 @@ type MeServer interface {
 	LeaveComment(context.Context, *message.LeaveCommentRequest) (*message.LeaveCommentResponse, error)
 	FetchCommentList(context.Context, *message.FetchCommentListRequest) (*message.FetchCommentListResponse, error)
 	DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error)
-	SearchPostList(context.Context, *message.SearchPostListRequest) (*message.SearchPostListResponse, error)
 	IncrementLikeCnt(context.Context, *message.IncrementLikeCntRequest) (*message.IncrementLikeCntResponse, error)
 	DecrementLikeCnt(context.Context, *message.DecrementLikeCntRequest) (*message.DecrementLikeCntResponse, error)
 	mustEmbedUnimplementedMeServer()
@@ -230,9 +219,6 @@ func (UnimplementedMeServer) FetchCommentList(context.Context, *message.FetchCom
 }
 func (UnimplementedMeServer) DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
-}
-func (UnimplementedMeServer) SearchPostList(context.Context, *message.SearchPostListRequest) (*message.SearchPostListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchPostList not implemented")
 }
 func (UnimplementedMeServer) IncrementLikeCnt(context.Context, *message.IncrementLikeCntRequest) (*message.IncrementLikeCntResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IncrementLikeCnt not implemented")
@@ -451,24 +437,6 @@ func _Me_DeleteComment_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Me_SearchPostList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(message.SearchPostListRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MeServer).SearchPostList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/v2.service.me/SearchPostList",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MeServer).SearchPostList(ctx, req.(*message.SearchPostListRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Me_IncrementLikeCnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(message.IncrementLikeCntRequest)
 	if err := dec(in); err != nil {
@@ -555,10 +523,6 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteComment",
 			Handler:    _Me_DeleteComment_Handler,
-		},
-		{
-			MethodName: "SearchPostList",
-			Handler:    _Me_SearchPostList_Handler,
 		},
 		{
 			MethodName: "IncrementLikeCnt",

@@ -1,50 +1,18 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import {Button, Link, Tab, Tabs, Typography} from "@mui/material";
+import {Button, Link} from "@mui/material";
 
 class PostOption extends React.Component {
 
+    search = window.location.search;
+    urlSearchParams = new URLSearchParams(this.search)
+    classificationOption = this.urlSearchParams.get("classificationOption")
+
     constructor(props) {
         super(props);
-        this.state = {
-            option: "",
-        }
 
-        this.handleChange = this.handleChange.bind(this)
+        if(this.classificationOption == null) this.classificationOption = "All"
     }
-
-    TabPanel(props) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
-    }
-
-    a11yProps(index) {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        };
-    }
-
-    handleChange = (event, newValue) => {
-        this.setState({
-            option: newValue
-        })
-    };
 
     render() {
         return (
@@ -55,23 +23,21 @@ class PostOption extends React.Component {
                 pt: 4,
             }} justifyContent="space-between">
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={this.state.value} onChange={this.handleChange} aria-label="basic tabs example">
-                        <Tab label="전체" {...this.a11yProps(0)} style={{
-                            fontSize: 18,
-                            fontWeight: 900,
-                            fontFamily: "Elice Digital Baeum",
-                        }}/>
-                        <Tab label="인기글" {...this.a11yProps(1)} style={{
-                            fontSize: 18,
-                            fontWeight: 900,
-                            fontFamily: "Elice Digital Baeum",
-                        }}/>
-                        <Tab label="공지" {...this.a11yProps(2)} style={{
-                            fontSize: 18,
-                            fontWeight: 900,
-                            fontFamily: "Elice Digital Baeum",
-                        }}/>
-                    </Tabs>
+                    <Button variant={this.classificationOption === "All" ? "contained" : ""} href={"/board?classificationOption=All"} sx={{
+                        fontSize: 18,
+                        fontWeight: 900,
+                        fontFamily: "Elice Digital Baeum",
+                    }}>전체</Button>
+                    <Button variant={this.classificationOption === "Popular" ? "contained" : ""} href={"/board?classificationOption=Popular"} sx={{
+                        fontSize: 18,
+                        fontWeight: 900,
+                        fontFamily: "Elice Digital Baeum",
+                    }}>인기글</Button>
+                    <Button variant={this.classificationOption === "Notice" ? "contained" : ""} href={"/board?classificationOption=Notice"} sx={{
+                        fontSize: 18,
+                        fontWeight: 900,
+                        fontFamily: "Elice Digital Baeum",
+                    }}>공지</Button>
                 </Box>
                 <Link href="/board/write" underline="none" color="inherit">
                     <Button variant="contained" color="success" sx={{

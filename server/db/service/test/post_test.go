@@ -46,18 +46,31 @@ func TestDBService_FetchPostList(t *testing.T) {
 	ctx, tx, _, err := db.SetupMock()
 	assert.NoError(t, err)
 
+	postOption := &option.PostOption{
+		SizeRange: &option.RangeOption{
+			Size: 2,
+			Row:  1,
+		},
+		QueryType:          option.QueryUndefined,
+		Query:              "",
+		ClassificationType: option.ClassificationALL,
+		Tags:               []string{"tag"},
+	}
+
 	postData1 := &entity.Post{
+		Id:               1,
 		Title:            "title1",
 		Content:          "content1",
-		Tags:             []string{"tag1"},
+		Tags:             []string{"tag1", "tag"},
 		LikeCnt:          3,
 		TimeToReadMinute: 1,
 	}
 
 	postData2 := &entity.Post{
+		Id:               2,
 		Title:            "title2",
 		Content:          "content2",
-		Tags:             []string{"tag2"},
+		Tags:             []string{"tag2", "tag"},
 		LikeCnt:          3,
 		TimeToReadMinute: 1,
 	}
@@ -68,17 +81,15 @@ func TestDBService_FetchPostList(t *testing.T) {
 
 	svc, m := service.NewMockDBService()
 	m.PostRepo.On("GetBulkPost", mock.Anything, mock.Anything, mock.Anything).Return(posts, nil).Once()
+	m.PostRepo.On("GetBulkTag", mock.Anything, mock.Anything, int32(1)).Return([]string{"tag", "tag1"}, nil).Once()
+	m.PostRepo.On("GetBulkTag", mock.Anything, mock.Anything, int32(2)).Return([]string{"tag", "tag2"}, nil).Once()
 
-	fetchPosts, err := svc.FetchPostList(ctx, tx, 1, 2)
+	fetchPosts, err := svc.FetchPostList(ctx, tx, postOption)
 	assert.NoError(t, err)
 	assert.Len(t, fetchPosts, 2)
 	assert.Equal(t, "title1", fetchPosts[0].Title)
 	assert.Equal(t, "title2", fetchPosts[1].Title)
 
-	_, err = svc.FetchPostList(ctx, tx, 0, 2)
-	assert.Error(t, err)
-
-	m.PostRepo.AssertNumberOfCalls(t, "GetBulkPost", 1)
 	m.PostRepo.AssertExpectations(t)
 }
 
@@ -218,49 +229,6 @@ func TestDBService_DeleteComment(t *testing.T) {
 
 	err = svc.DeleteComment(ctx, tx, 1, 0)
 	assert.Error(t, err)
-
-	m.PostRepo.AssertExpectations(t)
-}
-
-func TestDBService_QueryPostList(t *testing.T) {
-
-	t.Parallel()
-
-	ctx, tx, _, err := db.SetupMock()
-	assert.NoError(t, err)
-
-	svc, m := service.NewMockDBService()
-	m.PostRepo.On("QueryBulkPost", mock.Anything, mock.Anything, mock.Anything).Return([]*entity.Post{
-		{
-			Id:               1,
-			Title:            "title1",
-			Content:          "content1",
-			LikeCnt:          1,
-			TimeToReadMinute: 1,
-			Writer:           "writer1",
-			Tags:             []string{"tag1"},
-		},
-	}, nil)
-
-	postList, err := svc.QueryPostList(ctx, tx, &option.PostOption{
-		SizeRange: &option.RangeOption{
-			Size: 1,
-			Row:  1,
-		},
-		QueryType: option.Title,
-		Query:     "title1",
-		Tags:      []string{},
-	})
-
-	assert.NoError(t, err)
-	assert.NotNil(t, postList)
-	assert.Len(t, postList, 1)
-	assert.Len(t, postList[0].Tags, 1)
-
-	assert.Equal(t, int32(1), postList[0].Id)
-	assert.Equal(t, "title1", postList[0].Title)
-	assert.Equal(t, "writer1", postList[0].Writer)
-	assert.Equal(t, "content1", postList[0].Content)
 
 	m.PostRepo.AssertExpectations(t)
 }

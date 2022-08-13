@@ -113,17 +113,15 @@ export default function PostEditor(props) {
             data: {
                 title: title,
                 writer: 'admin',
+                isNotice: false,
                 content: editorContent,
                 timeToReadMinute: timeToReadMinute,
                 likeCnt: likeCnt,
                 tags: tags,
             }
         }).then(
-            response => {
-                console.log("good")
-            }
         ).catch((err) => {
-            console.log("bad")
+            console.log(err)
         })
     }
 

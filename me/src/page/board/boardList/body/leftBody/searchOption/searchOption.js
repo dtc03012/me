@@ -8,8 +8,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     setSelectedTag,
     setInputTag,
-    setUrlParam,
-    setQueryOption, setQueryString
 } from "../../../../../../redux/reducers/board/BoardOptionReducer";
 
 const Theme = createTheme({
@@ -34,6 +32,10 @@ const Theme = createTheme({
 
 class SearchOption extends React.Component {
 
+    search = window.location.search;
+    urlSearchParams = new URLSearchParams(this.search)
+    classificationOption = this.urlSearchParams.get("classificationOption")
+
     constructor(props) {
         super(props);
         this.state = {
@@ -41,6 +43,8 @@ class SearchOption extends React.Component {
             option: "",
             searchURL: "",
         }
+
+        if(this.classificationOption == null) this.classificationOption = "All"
 
         this.handleInitButtonClick = this.handleInitButtonClick.bind(this)
     }
@@ -75,7 +79,7 @@ class SearchOption extends React.Component {
     }
 
     optionMap = {
-        "제목+내용": "TitleAndContent",
+        "제목+내용": "TitleOrContent",
         "제목": "Title",
         "내용": "Content",
         "작성자": "Writer",
@@ -90,6 +94,8 @@ class SearchOption extends React.Component {
         if(this.state.text !== ""){
             url += "&queryString=" + this.state.text
         }
+
+        url += "&classificationOption=" + this.classificationOption
 
         this.props.selectedTag.map((tag) => {
             url += "&tags=" + tag
