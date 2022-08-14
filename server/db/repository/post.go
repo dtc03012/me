@@ -102,7 +102,7 @@ func (a *post) GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOpt
 	if opt.ClassificationType == option.ClassificationALL || opt.ClassificationType == option.ClassificationNotice {
 		query = query.Order(goqu.I("bp.pid").Desc())
 	} else if opt.ClassificationType == option.ClassificationPopular {
-		query = query.Order(goqu.I("views").Desc(), goqu.I("bp.pid").Desc())
+		query = query.Order(goqu.I("likes").Desc(), goqu.I("views").Desc(), goqu.I("bp.pid").Desc())
 	}
 
 	query = query.Limit(uint(m - n + 1)).Offset(uint(n))

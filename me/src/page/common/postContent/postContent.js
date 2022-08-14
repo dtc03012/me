@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
-import {Button, Grid, Typography} from "@mui/material";
+import {Button, Grid, IconButton, Typography} from "@mui/material";
 import createDOMPurify from 'dompurify'
 import axios from "axios";
 import {setCookie, getCookie} from "../../../util/cookie";
 import {v4} from 'uuid';
 import Comment from "./comment";
 import ReplyComment from "./replyComment";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const DOMPurify = createDOMPurify(window)
 
@@ -19,13 +20,14 @@ export default function PostContent(props) {
     const [title, setTitle] = useState("")
     const [writer, setWriter] = useState("")
     const [content, setContent] = useState("")
-    const [likeCnt, setLikeCnt] = useState(0)
+    const [likes, setLikes] = useState(0)
     const [timeToReadMinute, setTimeToReadMinute] = useState(0)
     const [tags, setTags] = useState([])
     const [views, setViews] = useState(0)
     const [createAt, setCreateAt] = useState("")
     const [commentList, setCommentList] = useState([])
     const [totalCommentCount, setTotalCommentCount] = useState(0)
+    const [isLike, setIsLike] = useState(false)
 
     const search = window.location.search
     const urlSearchParams = new URLSearchParams(search)
@@ -65,9 +67,56 @@ export default function PostContent(props) {
         return content
     }
 
+    const handleLikeIconClick = (event) => {
+
+        if(getCookie("uuid") === "") {
+            let uuid = v4()
+            setCookie("uuid", uuid)
+        }
+
+        let uuid = getCookie("uuid")
+
+        if(isLike) {
+            let url = "/v2/decrement-board-like?postId=" + postId
+            url += "&uuid=" + uuid
+
+            axios.delete(url).then( response => {
+                setIsLike(!isLike)
+                setLikes(likes-1)
+            }).catch( err => {
+                console.log(err)
+            })
+        } else {
+            let url = "/v2/increment-board-like?postId=" + postId
+            url += "&uuid=" + uuid
+
+            axios.put(url).then( response => {
+                setIsLike(!isLike)
+                setLikes(likes+1)
+            }).catch( err => {
+                console.log(err)
+            })
+        }
+    }
+
     useEffect(() => {
         let href = window.location.href
-        let url = "/v2/fetch-board-post?id=" + postId
+
+        if(getCookie("uuid") === "") {
+            let uuid = v4()
+            setCookie("uuid", uuid)
+        }
+
+        let uuid = getCookie("uuid")
+
+        let url = "/v2/increment-board-view?id=" + postId + "&uuid=" + uuid
+        axios.put(url).then(
+        ).catch( err => {
+            console.log(err)
+        })
+
+        url = "/v2/fetch-board-post?id=" + postId
+        url += "&uuid=" + uuid
 
         axios.get(url).then(
             response => {
@@ -76,10 +125,11 @@ export default function PostContent(props) {
                 setTitle(response.data.post.title)
                 setWriter(response.data.post.writer)
                 setContent(response.data.post.content)
-                setLikeCnt(response.data.post.likeCnt)
+                setLikes(response.data.post.likes)
                 setTimeToReadMinute(response.data.post.timeToReadMinute)
                 setTags(response.data.post.tags)
                 setViews(response.data.post.views)
+                setIsLike(response.data.post.isLike)
                 setCreateAt(response.data.post.createAt)
             }
         ).catch( err => {
@@ -90,12 +140,6 @@ export default function PostContent(props) {
             let uuid = v4()
             setCookie("uuid", uuid)
         }
-
-        url = "/v2/increment-board-view?id=" + postId + "&uuid=" + getCookie("uuid")
-        axios.put(url).then(
-        ).catch( err => {
-            console.log(err)
-        })
 
         url = "/v2/fetch-board-comment-list?post_id=" + postId + "&row=" + commentPageId.toString() + "&size=" + numOfComment.toString()
         axios.get(url).then(
@@ -192,9 +236,33 @@ export default function PostContent(props) {
                     }}>
                     </Box>
                 </Grid>
+                <Grid item minWidth="60%">
+                    <Grid container justifyContent={"center"} alignItems="center" sx={{
+                        mt: 3,
+                    }}>
+                        <Grid item>
+                            <IconButton type="button" onClick={handleLikeIconClick}>
+                                <FavoriteIcon sx={{
+                                    fontSize: "40px"
+                                }} style={{
+                                    color: (isLike ? 'red' : 'black')
+                                }}/>
+                            </IconButton>
+                        </Grid>
+                        <Grid item>
+                            <Typography sx={{
+                                fontSize: "25px",
+                                ml: 1,
+                                fontWeight: 600,
+                                fontFamily: "Elice Digital Baeum",
+                            }}>
+                                {likes}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Grid>
                 <Grid item minWidth="60%" sx={{
-                    mt: 3,
-
+                    mt: 4,
                 }}>
                     <Typography sx={{
                         fontSize: 30,
@@ -211,21 +279,25 @@ export default function PostContent(props) {
                         </Grid>
                     ))}
                 </Grid>
-                <Grid container item justifyContent={"center"} sx={{
+                <Grid item sx={{
                     mt: 2,
                 }}>
-                    {[...Array(Math.min(numOfPage,Math.floor((Math.max(((totalCommentCount-1)/numOfComment)+1, 1))))).keys()].map( e => (
-                        <Grid item>
-                            <Button title={(e+1).toString()} sx={{
-                                fontSize: 18,
-                                fontFamily: "Elice Digital Baeum",
-                                fontWeight: 900,
-                                color: (e+1 === commentPageId ? 'red' : 'black'),
-                            }} href={"/board/post?postId="+postId+"&commentPage="+(e+1).toString()}>
-                                {(e+1).toString()}
-                            </Button>
-                        </Grid>
-                    ))}
+                    <Grid container justifyContent={"center"} sx={{
+                        mt: 2,
+                    }}>
+                        {[...Array(Math.min(numOfPage,Math.floor((Math.max(((totalCommentCount-1)/numOfComment)+1, 1))))).keys()].map( e => (
+                            <Grid item>
+                                <Button title={(e+1).toString()} sx={{
+                                    fontSize: 18,
+                                    fontFamily: "Elice Digital Baeum",
+                                    fontWeight: 900,
+                                    color: (e+1 === commentPageId ? 'red' : 'black'),
+                                }} href={"/board/post?postId="+postId+"&commentPage="+(e+1).toString()}>
+                                    {(e+1).toString()}
+                                </Button>
+                            </Grid>
+                        ))}
+                    </Grid>
                 </Grid>
                 <Grid item minWidth="60%"  sx={{
                     mt: 3,

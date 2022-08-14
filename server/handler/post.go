@@ -74,6 +74,11 @@ func (m *MeServer) FetchPost(ctx context.Context, req *message.FetchPostRequest)
 		return nil, err
 	}
 
+	post.IsLike, err = m.db.CheckUserLike(ctx, tx, int(post.Id), req.GetUuid())
+	if err != nil {
+		return nil, err
+	}
+
 	tx.Commit()
 	return &message.FetchPostResponse{Post: post}, nil
 }

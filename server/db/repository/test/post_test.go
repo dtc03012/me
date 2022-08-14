@@ -127,7 +127,7 @@ func TestPost_GetBulkPost(t *testing.T) {
 			n, m, err := option.CalculateDBRange(tc.opt.SizeRange)
 			assert.NoError(t, err)
 
-			query := goqu.Dialect("mysql").Select("bp.pid", "bp.writer", "bp.title", "bp.content", goqu.COUNT(goqu.C("bl.uuid").Distinct()).As("likes"), "bp.time_to_read_minute", "bp.create_at", goqu.COUNT(goqu.C("bv.uuid").Distinct()).As("views")).
+			query := goqu.Dialect("mysql").Select("bp.pid", "bp.writer", "bp.title", "bp.content", goqu.COUNT(goqu.I("bl.uuid").Distinct()).As("likes"), "bp.time_to_read_minute", "bp.create_at", goqu.COUNT(goqu.I("bv.uuid").Distinct()).As("views")).
 				From(goqu.T("board_post").As("bp")).
 				LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid")))).
 				LeftOuterJoin(goqu.T("board_likes").As("bl"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bl.pid"))))
@@ -172,7 +172,7 @@ func TestPost_GetBulkPost(t *testing.T) {
 			if tc.opt.ClassificationType == option.ClassificationALL || tc.opt.ClassificationType == option.ClassificationNotice {
 				query = query.Order(goqu.I("bp.pid").Desc())
 			} else if tc.opt.ClassificationType == option.ClassificationPopular {
-				query = query.Order(goqu.I("views").Desc(), goqu.I("bp.pid").Desc())
+				query = query.Order(goqu.I("likes").Desc(), goqu.I("views").Desc(), goqu.I("bp.pid").Desc())
 			}
 
 			query = query.Limit(uint(m - n + 1)).Offset(uint(n))
@@ -181,8 +181,8 @@ func TestPost_GetBulkPost(t *testing.T) {
 			assert.NoError(t, err)
 
 			mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs().
-				WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "like_cnt", "time_to_read_minute", "create_at", "views"}).AddRow(
-					1, "writer1", "title1", "content1", 5, 1, currentTime, 1))
+				WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "time_to_read_minute", "create_at", "views"}).AddRow(
+					1, "writer1", "title1", "content1", 1, currentTime, 1))
 
 			postRepo := repository.NewPostRepo()
 			postList, err := postRepo.GetBulkPost(ctx, tx, tc.opt)
@@ -195,7 +195,6 @@ func TestPost_GetBulkPost(t *testing.T) {
 			assert.Equal(t, "writer1", postList[0].Writer)
 			assert.Equal(t, "title1", postList[0].Title)
 			assert.Equal(t, "content1", postList[0].Content)
-			assert.Equal(t, int32(5), postList[0].Likes)
 			assert.Equal(t, int32(1), postList[0].TimeToReadMinute)
 			assert.Equal(t, currentTime, postList[0].CreateAt)
 			assert.Equal(t, int32(1), postList[0].Views)

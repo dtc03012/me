@@ -39,9 +39,12 @@ class PostBoard extends React.Component {
         if(this.classificationOption == null) this.classificationOption = ""
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("h1")
+    }
 
     componentDidMount() {
-
+        console.log("h2")
         if(getCookie("uuid") === ""){
             let uuid = v4()
             setCookie("uuid", uuid)

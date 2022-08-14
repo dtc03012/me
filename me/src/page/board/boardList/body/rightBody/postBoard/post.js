@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Avatar, Chip, Grid, IconButton, Link, Paper, Typography} from "@mui/material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import "./post.css";
@@ -8,8 +8,8 @@ import axios from "axios";
 
 export default function Post(props) {
 
-    const [likes, setLikes] = useState(props.postInfo.likes)
-    const [isLike, setIsLike] = useState(props.postInfo.isLike)
+    const [likes, setLikes] = useState(0)
+    const [isLike, setIsLike] = useState(false)
 
     const createAvatar = () => {
         if(props.postInfo.avatarInfo.avatarImgUrl !== "") {
@@ -63,6 +63,11 @@ export default function Post(props) {
             })
         }
     }
+
+    useEffect(() => {
+        setLikes(props.postInfo.likes)
+        setIsLike(props.postInfo.isLike)
+    }, [])
 
     const convertTimeStampToReadableTime = (timeStamp) => {
         const date = new Date(timeStamp)
