@@ -41,8 +41,10 @@ func convertEntityComment(c *entity.Comment) *post.Comment {
 		PostId:   c.PostId,
 		Writer:   c.Writer,
 		Password: c.Comment,
+		IsExist:  c.IsExist,
 		Comment:  c.Comment,
 		LikeCnt:  c.LikeCnt,
+		CreateAt: timestamppb.New(c.CreateAt),
 	}
 
 	return convertComment
