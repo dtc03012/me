@@ -1,4 +1,3 @@
-# Hello, This is page for myself
+# Frontend
 
-I will introduce myself with this page
-Thank you for everyone!
+* Use React to consist the components and Redux to manage the states
