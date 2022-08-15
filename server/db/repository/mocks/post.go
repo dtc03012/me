@@ -39,6 +39,20 @@ func (_m *Post) CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid 
 	return r0, r1
 }
 
+// DeleteBulkTag provides a mock function with given fields: ctx, tx, pid
+func (_m *Post) DeleteBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) error {
+	ret := _m.Called(ctx, tx, pid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32) error); ok {
+		r0 = rf(ctx, tx, pid)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // DeleteComment provides a mock function with given fields: ctx, tx, postId, commentId
 func (_m *Post) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
 	ret := _m.Called(ctx, tx, postId, commentId)
@@ -60,6 +74,20 @@ func (_m *Post) DeleteLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid str
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32, string) error); ok {
 		r0 = rf(ctx, tx, pid, uuid)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeletePost provides a mock function with given fields: ctx, tx, pid
+func (_m *Post) DeletePost(ctx context.Context, tx *sqlx.Tx, pid int32) error {
+	ret := _m.Called(ctx, tx, pid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32) error); ok {
+		r0 = rf(ctx, tx, pid)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -222,6 +250,20 @@ func (_m *Post) GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, erro
 	return r0, r1
 }
 
+// InsertBulkTag provides a mock function with given fields: ctx, tx, pid, tags
+func (_m *Post) InsertBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32, tags []string) error {
+	ret := _m.Called(ctx, tx, pid, tags)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32, []string) error); ok {
+		r0 = rf(ctx, tx, pid, tags)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // InsertComment provides a mock function with given fields: ctx, tx, comment
 func (_m *Post) InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.Comment) error {
 	ret := _m.Called(ctx, tx, comment)
@@ -250,18 +292,25 @@ func (_m *Post) InsertLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid str
 	return r0
 }
 
-// InsertPost provides a mock function with given fields: ctx, tx, post, tags
-func (_m *Post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, tags []string) error {
-	ret := _m.Called(ctx, tx, post, tags)
+// InsertPost provides a mock function with given fields: ctx, tx, post
+func (_m *Post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) (int, error) {
+	ret := _m.Called(ctx, tx, post)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *entity.Post, []string) error); ok {
-		r0 = rf(ctx, tx, post, tags)
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *entity.Post) int); ok {
+		r0 = rf(ctx, tx, post)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(int)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, *entity.Post) error); ok {
+		r1 = rf(ctx, tx, post)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // InsertViews provides a mock function with given fields: ctx, tx, pid, uuid
@@ -271,6 +320,20 @@ func (_m *Post) InsertViews(ctx context.Context, tx *sqlx.Tx, pid int32, uuid st
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32, string) error); ok {
 		r0 = rf(ctx, tx, pid, uuid)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UpdatePost provides a mock function with given fields: ctx, tx, post
+func (_m *Post) UpdatePost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) error {
+	ret := _m.Called(ctx, tx, post)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *entity.Post) error); ok {
+		r0 = rf(ctx, tx, post)
 	} else {
 		r0 = ret.Error(0)
 	}

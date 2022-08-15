@@ -146,20 +146,74 @@ func (a *post) GetBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) ([]string
 	return tagList, nil
 }
 
-func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, tags []string) error {
+func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) (int, error) {
 	if post == nil {
-		return errors.New("post db repository error: post is nil")
+		return 0, errors.New("post db repository error: post is nil")
 	}
 
 	postResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_post(writer, title, content, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.IsNotice, post.TimeToReadMinute)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	pid, err := postResult.LastInsertId()
 	if err != nil {
+		return 0, err
+	}
+
+	return int(pid), nil
+}
+
+func (a *post) DeletePost(ctx context.Context, tx *sqlx.Tx, pid int32) error {
+
+	query := mysql.Delete("board_post").Where(goqu.Ex{
+		"pid": pid,
+	})
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
 		return err
 	}
+
+	_, err = tx.ExecContext(ctx, sql)
+	return err
+}
+
+func (a *post) UpdatePost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) error {
+
+	query := mysql.Update("board_post").Set(entity.Post{
+		Title:   post.Title,
+		Content: post.Content,
+	}).Where(goqu.Ex{
+		"pid": post.Id,
+	})
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.ExecContext(ctx, sql)
+	return err
+}
+
+func (a *post) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int, error) {
+
+	var totalCount []int
+
+	err := tx.SelectContext(ctx, &totalCount, "SELECT COUNT(*) FROM board_post")
+	if err != nil {
+		return 0, err
+	}
+
+	if len(totalCount) != 1 {
+		return 0, errors.New("get total post count db repository error: unexpected error")
+	}
+
+	return totalCount[0], nil
+}
+
+func (a *post) InsertBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32, tags []string) error {
 
 	for _, tag := range tags {
 		tagResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_tag(value) VALUES (?)", tag)
@@ -181,20 +235,19 @@ func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, t
 	return nil
 }
 
-func (a *post) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int, error) {
+func (a *post) DeleteBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) error {
 
-	var totalCount []int
+	query := mysql.Delete("board_post_tag").Where(goqu.Ex{
+		"pid": pid,
+	})
 
-	err := tx.SelectContext(ctx, &totalCount, "SELECT COUNT(*) FROM board_post")
+	sql, _, err := query.ToSQL()
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	if len(totalCount) != 1 {
-		return 0, errors.New("get total post count db repository error: unexpected error")
-	}
-
-	return totalCount[0], nil
+	_, err = tx.ExecContext(ctx, sql)
+	return err
 }
 
 func (a *post) GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error) {
@@ -347,4 +400,34 @@ func (a *post) DeleteLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid stri
 
 	_, err = tx.ExecContext(ctx, sql)
 	return err
+}
+
+func (a *post) CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int32, password string) (bool, error) {
+
+	var pidList []int
+
+	query := mysql.Select("pid").From("board_post").Where(goqu.Ex{
+		"pid":      pid,
+		"password": password,
+	})
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
+		return false, err
+	}
+
+	err = tx.SelectContext(ctx, &pidList, sql)
+	if err != nil {
+		return false, err
+	}
+
+	if len(pidList) > 1 {
+		return false, errors.New("check post password repository error: unexpected error")
+	}
+
+	if len(pidList) == 0 {
+		return false, nil
+	}
+
+	return true, nil
 }

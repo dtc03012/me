@@ -9,7 +9,7 @@ import "proto/entity/post/option.proto";
 option go_package = "github.com/dtc03012/me/protobuf/proto/service/message";
 
 message UploadPostRequest {
-  entity.post.data data = 1;
+  entity.post.data post = 1;
 }
 
 message UploadPostResponse {
@@ -28,7 +28,7 @@ message FetchPostListResponse {
 }
 
 message FetchPostRequest {
-  int32 id = 1;
+  int32 post_id = 1;
   string uuid = 2;
 }
 
@@ -36,8 +36,31 @@ message FetchPostResponse {
   entity.post.data post = 1;
 }
 
+message DeletePostRequest {
+  int32 post_id = 1;
+}
+
+message DeletePostResponse {
+}
+
+message UpdatePostRequest {
+  entity.post.data post = 1;
+}
+
+message UpdatePostResponse {
+}
+
+message CheckPostPasswordRequest {
+  int32 post_id = 1;
+  string password = 2;
+}
+
+message CheckPostPasswordResponse {
+  bool success = 1;
+}
+
 message IncrementViewRequest{
-  int32 id = 1;
+  int32 post_id = 1;
   string uuid = 2;
 }
 

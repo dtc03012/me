@@ -67,6 +67,24 @@ service me {
     };
   }
 
+  rpc DeletePost(service.message.DeletePostRequest) returns (service.message.DeletePostResponse) {
+    option (google.api.http) = {
+      delete: "/v2/delete-board-post"
+    };
+  }
+
+  rpc UpdatePost(service.message.UpdatePostRequest) returns (service.message.UpdatePostResponse) {
+    option (google.api.http) = {
+      post: "/v2/update-board-post"
+    };
+  }
+
+  rpc CheckPostPassword(service.message.CheckPostPasswordRequest) returns (service.message.CheckPostPasswordResponse) {
+    option (google.api.http) = {
+      post: "/v2/check-board-post-password"
+    };
+  }
+
   rpc IncrementView(service.message.IncrementViewRequest) returns (service.message.IncrementViewResponse) {
     option (google.api.http) = {
       put: "/v2/increment-board-view"

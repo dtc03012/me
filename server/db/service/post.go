@@ -29,7 +29,12 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 		tags = append(tags, tag)
 	}
 
-	err := dbs.PostRepo.InsertPost(ctx, tx, p, tags)
+	pid, err := dbs.PostRepo.InsertPost(ctx, tx, p)
+	if err != nil {
+		return err
+	}
+
+	err = dbs.PostRepo.InsertBulkTag(ctx, tx, int32(pid), tags)
 
 	return err
 }
@@ -104,6 +109,37 @@ func (dbs *dbService) FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*
 	convertPost := convertEntityPost(p)
 
 	return convertPost, nil
+}
+
+func (dbs *dbService) UpdatePost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error {
+
+	if postData == nil {
+		return errors.New("update post db service error: post is nil")
+	}
+
+	p := &entity.Post{
+		Title:            postData.GetTitle(),
+		Writer:           postData.GetWriter(),
+		Content:          postData.GetContent(),
+		IsNotice:         postData.GetIsNotice(),
+		Likes:            postData.GetLikes(),
+		TimeToReadMinute: postData.GetTimeToReadMinute(),
+	}
+
+	err := dbs.PostRepo.UpdatePost(ctx, tx, p)
+
+	return err
+}
+
+func (dbs *dbService) DeletePost(ctx context.Context, tx *sqlx.Tx, postId int) error {
+
+	if postId <= 0 {
+		return errors.New("delete post db service error: postId is out of range")
+	}
+
+	err := dbs.PostRepo.DeletePost(ctx, tx, int32(postId))
+
+	return err
 }
 
 func (dbs *dbService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32, error) {
@@ -221,4 +257,18 @@ func (dbs *dbService) DecrementLike(ctx context.Context, tx *sqlx.Tx, pid int, u
 
 	err := dbs.PostRepo.DeleteLike(ctx, tx, int32(pid), uuid)
 	return err
+}
+
+func (dbs *dbService) CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int, password string) (bool, error) {
+
+	if pid <= 0 {
+		return false, errors.New("check post password db service error: pid is out of range")
+	}
+
+	check, err := dbs.PostRepo.CheckUserLike(ctx, tx, int32(pid), password)
+	if err != nil {
+		return false, err
+	}
+
+	return check, err
 }

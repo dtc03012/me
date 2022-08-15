@@ -64,6 +64,27 @@ func (_m *DBService) CheckAdminPassword(ctx context.Context, tx *sqlx.Tx, passwo
 	return r0, r1
 }
 
+// CheckPostPassword provides a mock function with given fields: ctx, tx, pid, password
+func (_m *DBService) CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int, password string) (bool, error) {
+	ret := _m.Called(ctx, tx, pid, password)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, string) bool); ok {
+		r0 = rf(ctx, tx, pid, password)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int, string) error); ok {
+		r1 = rf(ctx, tx, pid, password)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CheckUserLike provides a mock function with given fields: ctx, tx, pid, uuid
 func (_m *DBService) CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) (bool, error) {
 	ret := _m.Called(ctx, tx, pid, uuid)
@@ -106,6 +127,20 @@ func (_m *DBService) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int,
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int) error); ok {
 		r0 = rf(ctx, tx, postId, commentId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeletePost provides a mock function with given fields: ctx, tx, postId
+func (_m *DBService) DeletePost(ctx context.Context, tx *sqlx.Tx, postId int) error {
+	ret := _m.Called(ctx, tx, postId)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int) error); ok {
+		r0 = rf(ctx, tx, postId)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -294,6 +329,20 @@ func (_m *DBService) LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *pos
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *post.Comment) error); ok {
 		r0 = rf(ctx, tx, comment)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UpdatePost provides a mock function with given fields: ctx, tx, postData
+func (_m *DBService) UpdatePost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error {
+	ret := _m.Called(ctx, tx, postData)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *post.Data) error); ok {
+		r0 = rf(ctx, tx, postData)
 	} else {
 		r0 = ret.Error(0)
 	}

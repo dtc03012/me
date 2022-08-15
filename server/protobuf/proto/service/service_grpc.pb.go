@@ -30,6 +30,9 @@ type MeClient interface {
 	UploadPost(ctx context.Context, in *message.UploadPostRequest, opts ...grpc.CallOption) (*message.UploadPostResponse, error)
 	FetchPostList(ctx context.Context, in *message.FetchPostListRequest, opts ...grpc.CallOption) (*message.FetchPostListResponse, error)
 	FetchPost(ctx context.Context, in *message.FetchPostRequest, opts ...grpc.CallOption) (*message.FetchPostResponse, error)
+	DeletePost(ctx context.Context, in *message.DeletePostRequest, opts ...grpc.CallOption) (*message.DeletePostResponse, error)
+	UpdatePost(ctx context.Context, in *message.UpdatePostRequest, opts ...grpc.CallOption) (*message.UpdatePostResponse, error)
+	CheckPostPassword(ctx context.Context, in *message.CheckPostPasswordRequest, opts ...grpc.CallOption) (*message.CheckPostPasswordResponse, error)
 	IncrementView(ctx context.Context, in *message.IncrementViewRequest, opts ...grpc.CallOption) (*message.IncrementViewResponse, error)
 	LeaveComment(ctx context.Context, in *message.LeaveCommentRequest, opts ...grpc.CallOption) (*message.LeaveCommentResponse, error)
 	FetchCommentList(ctx context.Context, in *message.FetchCommentListRequest, opts ...grpc.CallOption) (*message.FetchCommentListResponse, error)
@@ -109,6 +112,33 @@ func (c *meClient) FetchPost(ctx context.Context, in *message.FetchPostRequest, 
 	return out, nil
 }
 
+func (c *meClient) DeletePost(ctx context.Context, in *message.DeletePostRequest, opts ...grpc.CallOption) (*message.DeletePostResponse, error) {
+	out := new(message.DeletePostResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/DeletePost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) UpdatePost(ctx context.Context, in *message.UpdatePostRequest, opts ...grpc.CallOption) (*message.UpdatePostResponse, error) {
+	out := new(message.UpdatePostResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/UpdatePost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meClient) CheckPostPassword(ctx context.Context, in *message.CheckPostPasswordRequest, opts ...grpc.CallOption) (*message.CheckPostPasswordResponse, error) {
+	out := new(message.CheckPostPasswordResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/CheckPostPassword", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *meClient) IncrementView(ctx context.Context, in *message.IncrementViewRequest, opts ...grpc.CallOption) (*message.IncrementViewResponse, error) {
 	out := new(message.IncrementViewResponse)
 	err := c.cc.Invoke(ctx, "/v2.service.me/IncrementView", in, out, opts...)
@@ -174,6 +204,9 @@ type MeServer interface {
 	UploadPost(context.Context, *message.UploadPostRequest) (*message.UploadPostResponse, error)
 	FetchPostList(context.Context, *message.FetchPostListRequest) (*message.FetchPostListResponse, error)
 	FetchPost(context.Context, *message.FetchPostRequest) (*message.FetchPostResponse, error)
+	DeletePost(context.Context, *message.DeletePostRequest) (*message.DeletePostResponse, error)
+	UpdatePost(context.Context, *message.UpdatePostRequest) (*message.UpdatePostResponse, error)
+	CheckPostPassword(context.Context, *message.CheckPostPasswordRequest) (*message.CheckPostPasswordResponse, error)
 	IncrementView(context.Context, *message.IncrementViewRequest) (*message.IncrementViewResponse, error)
 	LeaveComment(context.Context, *message.LeaveCommentRequest) (*message.LeaveCommentResponse, error)
 	FetchCommentList(context.Context, *message.FetchCommentListRequest) (*message.FetchCommentListResponse, error)
@@ -207,6 +240,15 @@ func (UnimplementedMeServer) FetchPostList(context.Context, *message.FetchPostLi
 }
 func (UnimplementedMeServer) FetchPost(context.Context, *message.FetchPostRequest) (*message.FetchPostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchPost not implemented")
+}
+func (UnimplementedMeServer) DeletePost(context.Context, *message.DeletePostRequest) (*message.DeletePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePost not implemented")
+}
+func (UnimplementedMeServer) UpdatePost(context.Context, *message.UpdatePostRequest) (*message.UpdatePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePost not implemented")
+}
+func (UnimplementedMeServer) CheckPostPassword(context.Context, *message.CheckPostPasswordRequest) (*message.CheckPostPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckPostPassword not implemented")
 }
 func (UnimplementedMeServer) IncrementView(context.Context, *message.IncrementViewRequest) (*message.IncrementViewResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IncrementView not implemented")
@@ -365,6 +407,60 @@ func _Me_FetchPost_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Me_DeletePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.DeletePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).DeletePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/DeletePost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).DeletePost(ctx, req.(*message.DeletePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_UpdatePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.UpdatePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).UpdatePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/UpdatePost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).UpdatePost(ctx, req.(*message.UpdatePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Me_CheckPostPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.CheckPostPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).CheckPostPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/CheckPostPassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).CheckPostPassword(ctx, req.(*message.CheckPostPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Me_IncrementView_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(message.IncrementViewRequest)
 	if err := dec(in); err != nil {
@@ -507,6 +603,18 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FetchPost",
 			Handler:    _Me_FetchPost_Handler,
+		},
+		{
+			MethodName: "DeletePost",
+			Handler:    _Me_DeletePost_Handler,
+		},
+		{
+			MethodName: "UpdatePost",
+			Handler:    _Me_UpdatePost_Handler,
+		},
+		{
+			MethodName: "CheckPostPassword",
+			Handler:    _Me_CheckPostPassword_Handler,
 		},
 		{
 			MethodName: "IncrementView",

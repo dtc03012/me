@@ -33,8 +33,11 @@ type DBService interface {
 	UploadPost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error
 	FetchPostList(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*post.Data, error)
 	FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*post.Data, error)
-	IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error
+	UpdatePost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error
+	DeletePost(ctx context.Context, tx *sqlx.Tx, postId int) error
 	GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32, error)
+
+	IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error
 
 	LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *post.Comment) error
 	FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*post.Comment, error)
@@ -44,6 +47,8 @@ type DBService interface {
 	CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) (bool, error)
 	IncrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error
 	DecrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error
+
+	CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int, password string) (bool, error)
 }
 
 type dbService struct {

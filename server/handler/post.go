@@ -15,7 +15,7 @@ func (m *MeServer) UploadPost(ctx context.Context, req *message.UploadPostReques
 
 	defer tx.Rollback()
 
-	err = m.db.UploadPost(ctx, tx, req.GetData())
+	err = m.db.UploadPost(ctx, tx, req.GetPost())
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +68,7 @@ func (m *MeServer) FetchPost(ctx context.Context, req *message.FetchPostRequest)
 
 	defer tx.Rollback()
 
-	post, err := m.db.FetchPost(ctx, tx, int(req.Id))
-
+	post, err := m.db.FetchPost(ctx, tx, int(req.GetPostId()))
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +82,42 @@ func (m *MeServer) FetchPost(ctx context.Context, req *message.FetchPostRequest)
 	return &message.FetchPostResponse{Post: post}, nil
 }
 
+func (m *MeServer) UpdatePost(ctx context.Context, req *message.UpdatePostRequest) (*message.UpdatePostResponse, error) {
+
+	tx, err := m.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer tx.Rollback()
+
+	err = m.db.UpdatePost(ctx, tx, req.GetPost())
+	if err != nil {
+		return nil, err
+	}
+
+	tx.Commit()
+	return &message.UpdatePostResponse{}, nil
+}
+
+func (m *MeServer) DeletePost(ctx context.Context, req *message.DeletePostRequest) (*message.DeletePostResponse, error) {
+
+	tx, err := m.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer tx.Rollback()
+
+	err = m.db.DeletePost(ctx, tx, int(req.GetPostId()))
+	if err != nil {
+		return nil, err
+	}
+
+	tx.Commit()
+	return &message.DeletePostResponse{}, nil
+}
+
 func (m *MeServer) IncrementView(ctx context.Context, req *message.IncrementViewRequest) (*message.IncrementViewResponse, error) {
 
 	tx, err := m.db.BeginTx(ctx, nil)
@@ -92,7 +127,7 @@ func (m *MeServer) IncrementView(ctx context.Context, req *message.IncrementView
 
 	defer tx.Rollback()
 
-	err = m.db.IncrementViews(ctx, tx, int(req.GetId()), req.GetUuid())
+	err = m.db.IncrementViews(ctx, tx, int(req.GetPostId()), req.GetUuid())
 	if err != nil {
 		return nil, err
 	}
@@ -144,6 +179,7 @@ func (m *MeServer) FetchCommentList(ctx context.Context, req *message.FetchComme
 		return nil, err
 	}
 
+	tx.Commit()
 	return &message.FetchCommentListResponse{
 		CommentList:       commentList,
 		TotalCommentCount: totalCommentCount,
@@ -202,4 +238,22 @@ func (m *MeServer) DecrementLike(ctx context.Context, req *message.DecrementLike
 
 	tx.Commit()
 	return &message.DecrementLikeResponse{}, nil
+}
+
+func (m *MeServer) CheckPostPassword(ctx context.Context, req *message.CheckPostPasswordRequest) (*message.CheckPostPasswordResponse, error) {
+
+	tx, err := m.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer tx.Rollback()
+
+	success, err := m.db.CheckPostPassword(ctx, tx, int(req.GetPostId()), req.GetPassword())
+	if err != nil {
+		return nil, err
+	}
+
+	tx.Commit()
+	return &message.CheckPostPasswordResponse{Success: success}, nil
 }

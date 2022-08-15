@@ -18,10 +18,14 @@ type Admin interface {
 type Post interface {
 	GetPost(ctx context.Context, tx *sqlx.Tx, pid int32) (*entity.Post, error)
 	GetBulkPost(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) ([]*entity.Post, error)
-	InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post, tags []string) error
+	InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) (int, error)
+	DeletePost(ctx context.Context, tx *sqlx.Tx, pid int32) error
+	UpdatePost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) error
 	GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int, error)
 
 	GetBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) ([]string, error)
+	InsertBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32, tags []string) error
+	DeleteBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) error
 
 	GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error)
 	InsertViews(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error

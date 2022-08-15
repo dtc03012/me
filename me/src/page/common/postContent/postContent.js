@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
-import {Button, Grid, IconButton, Typography} from "@mui/material";
+import {Button, Grid, IconButton, Link, Typography} from "@mui/material";
 import createDOMPurify from 'dompurify'
 import axios from "axios";
 import {setCookie, getCookie} from "../../../util/cookie";
@@ -8,6 +8,7 @@ import {v4} from 'uuid';
 import Comment from "./comment";
 import ReplyComment from "./replyComment";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useNavigate } from 'react-router-dom';
 
 const DOMPurify = createDOMPurify(window)
 
@@ -15,6 +16,8 @@ export default function PostContent(props) {
 
     const numOfPage = 5
     const numOfComment = 8
+
+    const navigate = useNavigate();
 
     const isIncrement = false
     const [title, setTitle] = useState("")
@@ -54,11 +57,11 @@ export default function PostContent(props) {
         }
 
         let date = new Date(timestamp)
-        let year = date.getUTCFullYear()
-        let month = date.getUTCMonth() + 1
-        let day = date.getUTCDate()
-        let hour = date.getUTCHours()
-        let minute = date.getUTCMinutes()
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let day = date.getDate()
+        let hour = date.getHours()
+        let minute = date.getMinutes()
         return String(year) + ". " + String(month) + ". " + String(day) + ". " + addLeadingZeros(hour,2) + ":" + addLeadingZeros(minute,2)
     }
 
@@ -109,13 +112,13 @@ export default function PostContent(props) {
 
         let uuid = getCookie("uuid")
 
-        let url = "/v2/increment-board-view?id=" + postId + "&uuid=" + uuid
+        let url = "/v2/increment-board-view?post_id=" + postId + "&uuid=" + uuid
         axios.put(url).then(
         ).catch( err => {
             console.log(err)
         })
 
-        url = "/v2/fetch-board-post?id=" + postId
+        url = "/v2/fetch-board-post?post_id=" + postId
         url += "&uuid=" + uuid
 
         axios.get(url).then(
@@ -153,6 +156,9 @@ export default function PostContent(props) {
             console.log(err)
         })
     }, [])
+
+    const handleDeleteClick = (event) => {
+    }
 
     return (
         <Box>
@@ -258,6 +264,44 @@ export default function PostContent(props) {
                             }}>
                                 {likes}
                             </Typography>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item minWidth="60%" sx={{
+                    mt: 3,
+                }}>
+                    <Grid container direction="row" justifyContent={"flex-end"}>
+                        <Grid item sx={{
+                            mr: 2,
+                        }}>
+                            <Button variant="contained" color="primary" sx={{
+                                fontSize: 15,
+                                fontFamily: "Elice Digital Baeum",
+                            }}>
+                                수정
+                            </Button>
+                        </Grid>
+                        <Grid item sx={{
+                            mr: 2,
+                        }}>
+                            <Button variant="contained" color="error" sx={{
+                                fontSize: 15,
+                                fontFamily: "Elice Digital Baeum",
+                            }}>
+                                삭제
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Link href="/board/write" underline="none" color="inherit" sx={{
+                                mr: 2,
+                            }}>
+                                <Button variant="contained" color="success" sx={{
+                                    fontSize: 15,
+                                    fontFamily: "Elice Digital Baeum",
+                                }}>
+                                    글쓰기
+                                </Button>
+                            </Link>
                         </Grid>
                     </Grid>
                 </Grid>
