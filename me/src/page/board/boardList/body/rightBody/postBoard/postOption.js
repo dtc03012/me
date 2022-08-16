@@ -23,17 +23,17 @@ class PostOption extends React.Component {
                 pt: 4,
             }} justifyContent="space-between">
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Button variant={this.classificationOption === "All" ? "contained" : ""} href={"/board?classificationOption=All"} sx={{
+                    <Button variant={this.classificationOption === "All" ? "contained" : ""} href={"/board/lists?classificationOption=All"} sx={{
                         fontSize: 18,
                         fontWeight: 900,
                         fontFamily: "Elice Digital Baeum",
                     }}>전체</Button>
-                    <Button variant={this.classificationOption === "Popular" ? "contained" : ""} href={"/board?classificationOption=Popular"} sx={{
+                    <Button variant={this.classificationOption === "Popular" ? "contained" : ""} href={"/board/lists?classificationOption=Popular"} sx={{
                         fontSize: 18,
                         fontWeight: 900,
                         fontFamily: "Elice Digital Baeum",
                     }}>인기글</Button>
-                    <Button variant={this.classificationOption === "Notice" ? "contained" : ""} href={"/board?classificationOption=Notice"} sx={{
+                    <Button variant={this.classificationOption === "Notice" ? "contained" : ""} href={"/board/lists?classificationOption=Notice"} sx={{
                         fontSize: 18,
                         fontWeight: 900,
                         fontFamily: "Elice Digital Baeum",

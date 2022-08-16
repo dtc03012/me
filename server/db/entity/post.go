@@ -4,6 +4,7 @@ import "time"
 
 type Post struct {
 	Id               int32     `db:"pid"`
+	Password         string    `db:"password"`
 	Writer           string    `db:"writer"`
 	Tags             []string  `db:"value"`
 	Title            string    `db:"title"`

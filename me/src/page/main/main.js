@@ -8,9 +8,7 @@ class Main extends React.Component {
     render() {
         return (
             <Box>
-                <Header/>
                 <Body/>
-                <Footer/>
             </Box>
         )
     }

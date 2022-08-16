@@ -69,19 +69,22 @@ service me {
 
   rpc DeletePost(service.message.DeletePostRequest) returns (service.message.DeletePostResponse) {
     option (google.api.http) = {
-      delete: "/v2/delete-board-post"
+      post: "/v2/delete-board-post"
+      body: "*"
     };
   }
 
   rpc UpdatePost(service.message.UpdatePostRequest) returns (service.message.UpdatePostResponse) {
     option (google.api.http) = {
       post: "/v2/update-board-post"
+      body: "*"
     };
   }
 
   rpc CheckPostPassword(service.message.CheckPostPasswordRequest) returns (service.message.CheckPostPasswordResponse) {
     option (google.api.http) = {
-      post: "/v2/check-board-post-password"
+      post: "/v2/check-post-password"
+      body: "*"
     };
   }
 
@@ -106,7 +109,8 @@ service me {
 
   rpc DeleteComment(service.message.DeleteCommentRequest) returns (service.message.DeleteCommentResponse) {
     option (google.api.http) = {
-      delete: "/v2/delete-board-comment"
+      post: "/v2/delete-board-comment"
+      body: "*"
     };
   }
 
@@ -119,6 +123,12 @@ service me {
   rpc DecrementLike(service.message.DecrementLikeRequest) returns (service.message.DecrementLikeResponse) {
     option (google.api.http) = {
       delete: "/v2/decrement-board-like"
+    };
+  }
+
+  rpc CheckValidPostId(service.message.CheckValidPostIdRequest) returns (service.message.CheckValidPostIdResponse) {
+    option (google.api.http) = {
+      get: "/v2/check-valid-postId"
     };
   }
 }

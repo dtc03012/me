@@ -4,8 +4,13 @@ import {Button, Link} from "@mui/material";
 import Admin from "./admin";
 
 
+let menuURLMap = {
+    "Home": "/home",
+    "Board": "/board/lists"
+}
+
 function CreateMenuButton(name) {
-    const url = "/" + name.toLowerCase()
+    const url = menuURLMap[name]
 
     return (
         <Button

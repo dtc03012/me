@@ -38,6 +38,7 @@ message FetchPostResponse {
 
 message DeletePostRequest {
   int32 post_id = 1;
+  string password = 2;
 }
 
 message DeletePostResponse {
@@ -107,4 +108,11 @@ message DecrementLikeRequest {
 }
 
 message DecrementLikeResponse {
+}
+
+message CheckValidPostIdRequest {
+  int32 post_id = 1;
+}
+
+message CheckValidPostIdResponse {
 }

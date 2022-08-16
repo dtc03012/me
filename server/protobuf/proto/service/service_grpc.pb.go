@@ -39,6 +39,7 @@ type MeClient interface {
 	DeleteComment(ctx context.Context, in *message.DeleteCommentRequest, opts ...grpc.CallOption) (*message.DeleteCommentResponse, error)
 	IncrementLike(ctx context.Context, in *message.IncrementLikeRequest, opts ...grpc.CallOption) (*message.IncrementLikeResponse, error)
 	DecrementLike(ctx context.Context, in *message.DecrementLikeRequest, opts ...grpc.CallOption) (*message.DecrementLikeResponse, error)
+	CheckValidPostId(ctx context.Context, in *message.CheckValidPostIdRequest, opts ...grpc.CallOption) (*message.CheckValidPostIdResponse, error)
 }
 
 type meClient struct {
@@ -193,6 +194,15 @@ func (c *meClient) DecrementLike(ctx context.Context, in *message.DecrementLikeR
 	return out, nil
 }
 
+func (c *meClient) CheckValidPostId(ctx context.Context, in *message.CheckValidPostIdRequest, opts ...grpc.CallOption) (*message.CheckValidPostIdResponse, error) {
+	out := new(message.CheckValidPostIdResponse)
+	err := c.cc.Invoke(ctx, "/v2.service.me/CheckValidPostId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MeServer is the server API for Me service.
 // All implementations must embed UnimplementedMeServer
 // for forward compatibility
@@ -213,6 +223,7 @@ type MeServer interface {
 	DeleteComment(context.Context, *message.DeleteCommentRequest) (*message.DeleteCommentResponse, error)
 	IncrementLike(context.Context, *message.IncrementLikeRequest) (*message.IncrementLikeResponse, error)
 	DecrementLike(context.Context, *message.DecrementLikeRequest) (*message.DecrementLikeResponse, error)
+	CheckValidPostId(context.Context, *message.CheckValidPostIdRequest) (*message.CheckValidPostIdResponse, error)
 	mustEmbedUnimplementedMeServer()
 }
 
@@ -267,6 +278,9 @@ func (UnimplementedMeServer) IncrementLike(context.Context, *message.IncrementLi
 }
 func (UnimplementedMeServer) DecrementLike(context.Context, *message.DecrementLikeRequest) (*message.DecrementLikeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecrementLike not implemented")
+}
+func (UnimplementedMeServer) CheckValidPostId(context.Context, *message.CheckValidPostIdRequest) (*message.CheckValidPostIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckValidPostId not implemented")
 }
 func (UnimplementedMeServer) mustEmbedUnimplementedMeServer() {}
 
@@ -569,6 +583,24 @@ func _Me_DecrementLike_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Me_CheckValidPostId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(message.CheckValidPostIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeServer).CheckValidPostId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v2.service.me/CheckValidPostId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeServer).CheckValidPostId(ctx, req.(*message.CheckValidPostIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Me_ServiceDesc is the grpc.ServiceDesc for Me service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -639,6 +671,10 @@ var Me_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DecrementLike",
 			Handler:    _Me_DecrementLike_Handler,
+		},
+		{
+			MethodName: "CheckValidPostId",
+			Handler:    _Me_CheckValidPostId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

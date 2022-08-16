@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"github.com/dtc03012/me/db/option"
 	"github.com/dtc03012/me/protobuf/proto/service/message"
 )
@@ -91,6 +92,15 @@ func (m *MeServer) UpdatePost(ctx context.Context, req *message.UpdatePostReques
 
 	defer tx.Rollback()
 
+	check, err := m.db.CheckPostPassword(ctx, tx, int(req.GetPost().GetId()), req.GetPost().GetPassword())
+	if err != nil {
+		return nil, err
+	}
+
+	if !check {
+		return nil, errors.New("password isn't correct")
+	}
+
 	err = m.db.UpdatePost(ctx, tx, req.GetPost())
 	if err != nil {
 		return nil, err
@@ -109,6 +119,15 @@ func (m *MeServer) DeletePost(ctx context.Context, req *message.DeletePostReques
 
 	defer tx.Rollback()
 
+	check, err := m.db.CheckPostPassword(ctx, tx, int(req.GetPostId()), req.GetPassword())
+	if err != nil {
+		return nil, err
+	}
+
+	if !check {
+		return nil, errors.New("password isn't correct")
+	}
+
 	err = m.db.DeletePost(ctx, tx, int(req.GetPostId()))
 	if err != nil {
 		return nil, err
@@ -116,6 +135,26 @@ func (m *MeServer) DeletePost(ctx context.Context, req *message.DeletePostReques
 
 	tx.Commit()
 	return &message.DeletePostResponse{}, nil
+}
+
+func (m *MeServer) CheckPostPassword(ctx context.Context, req *message.CheckPostPasswordRequest) (*message.CheckPostPasswordResponse, error) {
+
+	tx, err := m.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer tx.Rollback()
+
+	check, err := m.db.CheckPostPassword(ctx, tx, int(req.GetPostId()), req.GetPassword())
+	if err != nil {
+		return nil, err
+	}
+
+	tx.Commit()
+	return &message.CheckPostPasswordResponse{
+		Success: check,
+	}, nil
 }
 
 func (m *MeServer) IncrementView(ctx context.Context, req *message.IncrementViewRequest) (*message.IncrementViewResponse, error) {
@@ -240,7 +279,7 @@ func (m *MeServer) DecrementLike(ctx context.Context, req *message.DecrementLike
 	return &message.DecrementLikeResponse{}, nil
 }
 
-func (m *MeServer) CheckPostPassword(ctx context.Context, req *message.CheckPostPasswordRequest) (*message.CheckPostPasswordResponse, error) {
+func (m *MeServer) CheckValidPostId(ctx context.Context, req *message.CheckValidPostIdRequest) (*message.CheckValidPostIdResponse, error) {
 
 	tx, err := m.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -249,11 +288,10 @@ func (m *MeServer) CheckPostPassword(ctx context.Context, req *message.CheckPost
 
 	defer tx.Rollback()
 
-	success, err := m.db.CheckPostPassword(ctx, tx, int(req.GetPostId()), req.GetPassword())
+	_, err = m.db.FetchPost(ctx, tx, int(req.GetPostId()))
 	if err != nil {
 		return nil, err
 	}
 
-	tx.Commit()
-	return &message.CheckPostPasswordResponse{Success: success}, nil
+	return &message.CheckValidPostIdResponse{}, nil
 }

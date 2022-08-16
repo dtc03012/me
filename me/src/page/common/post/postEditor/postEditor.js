@@ -44,13 +44,16 @@ function uploadPlugin(editor) {
 
 export default function PostEditor(props) {
 
-    const [title, setTitle] = useState("");
-    const [editorContent,setEditorContent] = useState("")
-    const [tags, setTags] = useState([])
+    const canModifyPassword = (props.post === undefined)
+
+    const [title, setTitle] = useState(props.post !== undefined ? props.post.title : "");
+    const [password, setPassword] = useState(props.post !== undefined ? props.post.password : "");
+    const [editorContent,setEditorContent] = useState(props.post !== undefined ? props.post.content : "")
+    const [tags, setTags] = useState(props.post !== undefined ? props.post.tags : [])
     const [inputTag, setInputTag] = useState("")
     const [likeCnt, setLikeCnt] = useState(0)
-    const [timeToReadMinute, setTimeToReadMinute] = useState(0)
-    const [noticeCheck, setNoticeCheck] = useState(false)
+    const [timeToReadMinute, setTimeToReadMinute] = useState(props.post !== undefined ? props.post.timeToReadMinute : 0)
+    const [noticeCheck, setNoticeCheck] = useState(props.post !== undefined ? props.post.isNotice : false)
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const createTagList = () => {
@@ -103,6 +106,10 @@ export default function PostEditor(props) {
     const handleTagTextFieldChange = (event) => {
         setInputTag(event.target.value)
     }
+    const handlePasswordTextFieldChange = (event) => {
+        setPassword(event.target.value)
+    }
+
 
     const handleTagTextFieldKeyDown = (event) => {
         if(event.keyCode === 13){
@@ -115,19 +122,14 @@ export default function PostEditor(props) {
     }
 
     const uploadPost = () => {
-        axios.post("/v2/upload-board-post",{
-            post: {
-                title: title,
-                writer: 'admin',
-                isNotice: noticeCheck,
-                content: editorContent,
-                timeToReadMinute: timeToReadMinute,
-                likeCnt: likeCnt,
-                tags: tags,
-            }
-        }).then(
-        ).catch((err) => {
-            console.log(err)
+        props.requestPost({
+            title: title,
+            password: password,
+            writer: 'admin',
+            isNotice: noticeCheck,
+            content: editorContent,
+            timeToReadMinute: timeToReadMinute,
+            tags: tags,
         })
     }
 
@@ -165,33 +167,57 @@ export default function PostEditor(props) {
                         }}
                     />
                 </Grid>
-                <Grid item container direction="column" spacing="10">
-                    <Grid item>
-                        <Box sx={{
-                            pl: 1
-                        }}>
-                            <TextField id="tag" variant="standard" label="태그 입력" value={inputTag} inputProps={{
-                                style: {
-                                    fontFamily: "Elice Digital Baeum",
-                                    fontSize: 15,
-                                    fontWeight: 500,
-                                }
-                            }}
-                                       InputLabelProps={{
-                                           style: {
-                                               fontFamily: "Elice Digital Baeum",
-                                               fontSize: 15,
-                                               fontWeight: 500,
-                                           }
-                                       }}
-                                       onBlur={handleTagTextFieldBlur}
-                                       onChange={handleTagTextFieldChange}
-                                       onKeyDown={handleTagTextFieldKeyDown}
-                            />
-                        </Box>
-                    </Grid>
-                    <Grid item container direction="row" spacing="5">
-                        {createTagList()}
+                <Grid item>
+                    <Box sx={{
+                        pl: 1
+                    }}>
+                        <TextField disabled={!canModifyPassword} type="password" id="password" variant="standard" label="비밀번호 입력" value={password} inputProps={{
+                            style: {
+                                fontFamily: "Elice Digital Baeum",
+                                fontSize: 15,
+                                fontWeight: 500,
+                            }
+                        }}
+                                   InputLabelProps={{
+                                       style: {
+                                           fontFamily: "Elice Digital Baeum",
+                                           fontSize: 15,
+                                           fontWeight: 500,
+                                       }
+                                   }}
+                                   onChange={handlePasswordTextFieldChange}
+                        />
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Grid container direction="column" spacing="10">
+                        <Grid item>
+                            <Box sx={{
+                                pl: 1
+                            }}>
+                                <TextField id="tag" variant="standard" label="태그 입력" value={inputTag} inputProps={{
+                                    style: {
+                                        fontFamily: "Elice Digital Baeum",
+                                        fontSize: 15,
+                                        fontWeight: 500,
+                                    }
+                                }}
+                                           InputLabelProps={{
+                                               style: {
+                                                   fontFamily: "Elice Digital Baeum",
+                                                   fontSize: 15,
+                                                   fontWeight: 500,
+                                               }
+                                           }}
+                                           onBlur={handleTagTextFieldBlur}
+                                           onChange={handleTagTextFieldChange}
+                                           onKeyDown={handleTagTextFieldKeyDown}
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item container direction="row" spacing="5">
+                            {createTagList()}
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid item>
@@ -233,14 +259,12 @@ export default function PostEditor(props) {
                 <Grid item sx={{
                     ml: 0.5,
                 }}>
-                    <Link href="/board" underline="none" color="inherit">
-                        <Button variant="contained" color="success" sx={{
-                            fontSize: 15,
-                            fontFamily: "Elice Digital Baeum",
-                        }} onClick={() => uploadPost()}>
-                            완료
-                        </Button>
-                    </Link>
+                    <Button variant="contained" color="success" sx={{
+                        fontSize: 15,
+                        fontFamily: "Elice Digital Baeum",
+                    }} onClick={() => uploadPost()}>
+                        완료
+                    </Button>
                 </Grid>
             </Grid>
         </Box>

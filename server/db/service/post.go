@@ -17,6 +17,7 @@ func (dbs *dbService) UploadPost(ctx context.Context, tx *sqlx.Tx, postData *pos
 
 	p := &entity.Post{
 		Title:            postData.GetTitle(),
+		Password:         postData.GetPassword(),
 		Writer:           postData.GetWriter(),
 		Content:          postData.GetContent(),
 		IsNotice:         postData.GetIsNotice(),
@@ -118,16 +119,25 @@ func (dbs *dbService) UpdatePost(ctx context.Context, tx *sqlx.Tx, postData *pos
 	}
 
 	p := &entity.Post{
+		Id:               postData.GetId(),
 		Title:            postData.GetTitle(),
 		Writer:           postData.GetWriter(),
 		Content:          postData.GetContent(),
 		IsNotice:         postData.GetIsNotice(),
-		Likes:            postData.GetLikes(),
 		TimeToReadMinute: postData.GetTimeToReadMinute(),
 	}
 
 	err := dbs.PostRepo.UpdatePost(ctx, tx, p)
+	if err != nil {
+		return err
+	}
 
+	err = dbs.PostRepo.DeleteBulkTag(ctx, tx, postData.Id)
+	if err != nil {
+		return err
+	}
+
+	err = dbs.PostRepo.InsertBulkTag(ctx, tx, postData.Id, postData.Tags)
 	return err
 }
 
@@ -150,6 +160,20 @@ func (dbs *dbService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32
 	}
 
 	return int32(totalCount), nil
+}
+
+func (dbs *dbService) CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int, password string) (bool, error) {
+
+	if pid <= 0 {
+		return false, errors.New("check post password db service error: pid is out of range")
+	}
+
+	check, err := dbs.PostRepo.CheckPostPassword(ctx, tx, int32(pid), password)
+	if err != nil {
+		return false, err
+	}
+
+	return check, err
 }
 
 func (dbs *dbService) IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error {
@@ -231,7 +255,7 @@ func (dbs *dbService) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid
 
 func (dbs *dbService) CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) (bool, error) {
 
-	if pid <= 0 || len(uuid) == 0 {
+	if pid <= 0 {
 		return false, errors.New("increment like db service error: pid or uuid is out of range")
 	}
 
@@ -257,18 +281,4 @@ func (dbs *dbService) DecrementLike(ctx context.Context, tx *sqlx.Tx, pid int, u
 
 	err := dbs.PostRepo.DeleteLike(ctx, tx, int32(pid), uuid)
 	return err
-}
-
-func (dbs *dbService) CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int, password string) (bool, error) {
-
-	if pid <= 0 {
-		return false, errors.New("check post password db service error: pid is out of range")
-	}
-
-	check, err := dbs.PostRepo.CheckUserLike(ctx, tx, int32(pid), password)
-	if err != nil {
-		return false, err
-	}
-
-	return check, err
 }

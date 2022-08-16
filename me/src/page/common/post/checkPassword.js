@@ -1,36 +1,24 @@
 import React, {useEffect, useState} from "react";
 import {Button, Grid, Paper, TextField, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
-import axios from 'axios';
 
 export default function CheckPassword(props) {
 
+    const [checkFail, setCheckFail] = useState(false)
     const [password, setPassword] = useState("")
-    const [postId, setPostId] = useState(0)
-
-    useEffect(() => {
-        setPostId(props.postId)
-    },[])
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value)
     }
 
     const handleCheckPasswordButtonClick = (event) => {
-
-        let url = "/v2/check-board-post-password"
-        axios.post(url,{
-            "postId": postId,
-            "password": password,
-        }).then( response => {
-
-        }).catch( err => {
-            console.log(err)
+        props.requestCheckPassword(password, () => {
+            setCheckFail(true)
         })
     }
 
     return (
-        <Grid container minHeight="400px" justifyContent={"center"} sx={{
+        <Grid container minHeight="700px" justifyContent={"center"} alignContent={"center"} sx={{
             mt: 4,
             mb: 4,
         }}>
@@ -76,6 +64,18 @@ export default function CheckPassword(props) {
                                 확인
                             </Button>
                         </Grid>
+                        {checkFail ? <Grid item sx={{
+                            mt: 3,
+                        }}>
+                            <Typography sx={{
+                                fontSize: 16,
+                                fontWeight: 300,
+                                color: 'red',
+                                fontFamily: "Elice Digital Baeum",
+                            }}>
+                                비밀번호가 잘못되었습니다.
+                            </Typography>
+                        </Grid> : undefined}
                     </Grid>
                 </Paper>
             </Grid>

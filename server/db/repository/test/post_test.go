@@ -22,19 +22,22 @@ func TestPost_GetPost(t *testing.T) {
 	assert.NoError(t, err)
 
 	currentTime := time.Now()
-	expectedSQL := fmt.Sprintf("SELECT bp.pid, bp.writer, bp.title, bp.content, bp.like_cnt, bp.time_to_read_minute, bp.create_at, COUNT(*) as views FROM board_post as bp LEFT OUTER JOIN board_views as bv ON bp.pid = bv.pid WHERE bp.pid = ? GROUP BY bp.pid")
-	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(1).
-		WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "like_cnt", "time_to_read_minute", "create_at", "views"}).AddRow(1, "writer1", "title1", "content1", 3, 1, currentTime, 1))
+	query := goqu.Dialect("mysql").Select("bp.pid", "bp.writer", "bp.title", "bp.content", goqu.COUNT(goqu.I("bl.uuid").Distinct()).As("likes"), "bp.time_to_read_minute", "bp.create_at", goqu.COUNT(goqu.I("bv.uuid").Distinct()).As("views")).
+		From(goqu.T("board_post").As("bp")).
+		LeftOuterJoin(goqu.T("board_views").As("bv"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bv.pid")))).
+		LeftOuterJoin(goqu.T("board_likes").As("bl"), goqu.On(goqu.I("bp.pid").Eq(goqu.I("bl.pid")))).
+		Where(goqu.Ex{"bp.pid": 1}).
+		GroupBy("bp.pid")
 
-	expectedSQL = fmt.Sprintf("SELECT value FROM board_tag WHERE board_tag.tid IN (SELECT board_post_tag.tid FROM board_post_tag WHERE board_post_tag.pid = ?)")
-	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(1).
-		WillReturnRows(sqlmock.NewRows([]string{"value"}).AddRow("tag1"))
+	expectedSQL, _, err := query.ToSQL()
+
+	mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs().
+		WillReturnRows(sqlmock.NewRows([]string{"pid", "writer", "title", "content", "likes", "time_to_read_minute", "create_at", "views"}).AddRow(1, "writer1", "title1", "content1", 3, 1, currentTime, 1))
 
 	postRepo := repository.NewPostRepo()
 	post, err := postRepo.GetPost(ctx, tx, 1)
 	assert.NoError(t, err)
 	assert.NotNil(t, post)
-	assert.NotNil(t, post.Tags)
 
 	assert.Equal(t, int32(1), post.Id)
 	assert.Equal(t, "writer1", post.Writer)
@@ -43,9 +46,6 @@ func TestPost_GetPost(t *testing.T) {
 	assert.Equal(t, int32(3), post.Likes)
 	assert.Equal(t, int32(1), post.TimeToReadMinute)
 	assert.Equal(t, currentTime, post.CreateAt)
-
-	assert.Len(t, post.Tags, 1)
-	assert.Equal(t, "tag1", post.Tags[0])
 
 	err = mock.ExpectationsWereMet()
 	assert.NoError(t, err)
@@ -213,6 +213,7 @@ func TestPost_InsertPost(t *testing.T) {
 
 	post := &entity.Post{
 		Writer:           "writer1",
+		Password:         "password1",
 		Title:            "title1",
 		Content:          "content1",
 		Likes:            3,
@@ -220,22 +221,14 @@ func TestPost_InsertPost(t *testing.T) {
 		TimeToReadMinute: 1,
 	}
 
-	tags := []string{"tag1"}
-
-	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_post(writer, title, content, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?)")
-	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(post.Writer, post.Title, post.Content, post.IsNotice, post.TimeToReadMinute).WillReturnResult(sqlmock.NewResult(1, 1))
-
-	expectedSQL = fmt.Sprintf("INSERT IGNORE INTO board_tag(value) VALUES (?)")
-	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(tags[0]).WillReturnResult(sqlmock.NewResult(1, 1))
-
-	expectedSQL = fmt.Sprintf("INSERT IGNORE INTO board_post_tag(tid, pid) VALUES(?, ?)")
-	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(1, 1).WillReturnResult(sqlmock.NewResult(1, 1))
+	expectedSQL := fmt.Sprintf("INSERT IGNORE INTO board_post(writer, password, title, content, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?, ?)")
+	mock.ExpectExec(regexp.QuoteMeta(expectedSQL)).WithArgs(post.Writer, post.Password, post.Title, post.Content, post.IsNotice, post.TimeToReadMinute).WillReturnResult(sqlmock.NewResult(1, 1))
 
 	postRepo := repository.NewPostRepo()
-	err = postRepo.InsertPost(ctx, tx, post, tags)
+	_, err = postRepo.InsertPost(ctx, tx, post)
 	assert.NoError(t, err)
 
-	err = postRepo.InsertPost(ctx, tx, nil, tags)
+	_, err = postRepo.InsertPost(ctx, tx, nil)
 	assert.Error(t, err)
 
 	err = mock.ExpectationsWereMet()
@@ -361,4 +354,23 @@ func TestPost_DeleteComment(t *testing.T) {
 
 	err = mock.ExpectationsWereMet()
 	assert.NoError(t, err)
+}
+
+func TestPost_UpdatePost(t *testing.T) {
+	t.Parallel()
+
+	ctx, tx, _, err := db.SetupMock()
+	assert.NoError(t, err)
+
+	p := &entity.Post{
+		Id:               1,
+		Title:            "t1",
+		Content:          "w1",
+		Writer:           "w1",
+		TimeToReadMinute: 1,
+	}
+
+	postRepo := repository.NewPostRepo()
+	err = postRepo.UpdatePost(ctx, tx, p)
+
 }

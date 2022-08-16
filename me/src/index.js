@@ -5,6 +5,9 @@ import PageRouter from "./pageRouter";
 import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
 import store from './redux/store/store'
+import Header from "./page/common/header/header";
+import Footer from "./page/common/footer/footer";
+import Box from "@mui/material/Box";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +16,13 @@ root.render(
           <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet"/>
           <link href="//font.elice.io/EliceDigitalBaeum.css" rel="stylesheet"/>
           <Provider store={store}>
-            <PageRouter/>
+              <Box sx={{
+                  backgroundColor: '#f5f5f5',
+              }}>
+                  <Header/>
+                  <PageRouter/>
+                  <Footer/>
+              </Box>
           </Provider>
     </div>
 );

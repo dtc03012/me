@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS board_post(
     pid INT NOT NULL AUTO_INCREMENT,
+    password VARCHAR(50),
     writer VARCHAR(50) NOT NULL,
     title VARCHAR(100) NOT NULL,
     content MEDIUMTEXT NOT NULL,

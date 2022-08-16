@@ -151,7 +151,7 @@ func (a *post) InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) (
 		return 0, errors.New("post db repository error: post is nil")
 	}
 
-	postResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_post(writer, title, content, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?)", post.Writer, post.Title, post.Content, post.IsNotice, post.TimeToReadMinute)
+	postResult, err := tx.ExecContext(ctx, "INSERT IGNORE INTO board_post(writer, password, title, content, is_notice, time_to_read_minute) VALUES (?, ?, ?, ?, ?, ?)", post.Writer, post.Password, post.Title, post.Content, post.IsNotice, post.TimeToReadMinute)
 	if err != nil {
 		return 0, err
 	}
@@ -181,9 +181,12 @@ func (a *post) DeletePost(ctx context.Context, tx *sqlx.Tx, pid int32) error {
 
 func (a *post) UpdatePost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) error {
 
-	query := mysql.Update("board_post").Set(entity.Post{
-		Title:   post.Title,
-		Content: post.Content,
+	query := mysql.Update("board_post").Set(goqu.Record{
+		"title":               post.Title,
+		"content":             post.Content,
+		"writer":              post.Writer,
+		"is_notice":           post.IsNotice,
+		"time_to_read_minute": post.TimeToReadMinute,
 	}).Where(goqu.Ex{
 		"pid": post.Id,
 	})

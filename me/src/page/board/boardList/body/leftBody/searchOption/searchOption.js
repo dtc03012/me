@@ -86,7 +86,7 @@ class SearchOption extends React.Component {
     }
 
     createSearchURL = () => {
-        let url = "/board?page=1"
+        let url = "/board/lists?page=1"
         if(this.state.option !== "" || this.optionMap[this.state.option] !== undefined) {
             url += "&queryOption=" + this.optionMap[this.state.option]
         }
