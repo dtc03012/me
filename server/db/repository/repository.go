@@ -31,10 +31,12 @@ type Post interface {
 	GetViews(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error)
 	InsertViews(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error
 
+	GetComment(ctx context.Context, tx *sqlx.Tx, cid int32) ([]*entity.Comment, error)
 	GetBulkComment(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*entity.Comment, error)
 	InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.Comment) error
-	DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error
+	DeleteComment(ctx context.Context, tx *sqlx.Tx, commentId int, password string) error
 	GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int32) (int, error)
+	CheckCommentPassword(ctx context.Context, tx *sqlx.Tx, cid int32, password string) (bool, error)
 
 	CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) (bool, error)
 	InsertLike(ctx context.Context, tx *sqlx.Tx, pid int32, uuid string) error

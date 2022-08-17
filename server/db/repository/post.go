@@ -292,6 +292,36 @@ func (a *post) InsertViews(ctx context.Context, tx *sqlx.Tx, pid int32, uuid str
 	return nil
 }
 
+func (a *post) GetComment(ctx context.Context, tx *sqlx.Tx, cid int32) ([]*entity.Comment, error) {
+
+	var commentList []*entity.Comment
+	commentList = make([]*entity.Comment, 0)
+
+	query := mysql.From("board_comment").Where(goqu.Ex{
+		"cid": cid,
+	})
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
+		return nil, err
+	}
+
+	err = tx.SelectContext(ctx, &commentList, sql)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(commentList) == 0 {
+		return nil, errors.New("get comment db repository error: there is no comment id in db")
+	}
+
+	if len(commentList) > 1 {
+		return nil, errors.New("get comment db repository error: unexpected error")
+	}
+
+	return commentList, nil
+}
+
 func (a *post) GetBulkComment(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*entity.Comment, error) {
 
 	var commentList []*entity.Comment
@@ -344,9 +374,9 @@ func (a *post) InsertComment(ctx context.Context, tx *sqlx.Tx, comment *entity.C
 	return nil
 }
 
-func (a *post) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
+func (a *post) DeleteComment(ctx context.Context, tx *sqlx.Tx, commentId int, password string) error {
 
-	_, err := tx.ExecContext(ctx, "UPDATE board_comment SET is_exist = false WHERE pid = ? and cid = ?", postId, commentId)
+	_, err := tx.ExecContext(ctx, "UPDATE board_comment SET is_exist = false WHERE cid = ? AND password = ?", commentId, password)
 	if err != nil {
 		return err
 	}
@@ -439,6 +469,36 @@ func (a *post) CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int32, pa
 
 	if len(pidList) > 1 {
 		return false, errors.New("check post password repository error: unexpected error")
+	}
+
+	if len(pidList) == 0 {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func (a *post) CheckCommentPassword(ctx context.Context, tx *sqlx.Tx, cid int32, password string) (bool, error) {
+
+	var pidList []int
+
+	query := mysql.Select("cid").From("board_comment").Where(goqu.Ex{
+		"cid":      cid,
+		"password": password,
+	})
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
+		return false, err
+	}
+
+	err = tx.SelectContext(ctx, &pidList, sql)
+	if err != nil {
+		return false, err
+	}
+
+	if len(pidList) > 1 {
+		return false, errors.New("check comment password repository error: unexpected error")
 	}
 
 	if len(pidList) == 0 {

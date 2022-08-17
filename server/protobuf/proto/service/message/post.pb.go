@@ -915,8 +915,8 @@ type DeleteCommentRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PostId    int32 `protobuf:"varint,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
-	CommentId int32 `protobuf:"varint,2,opt,name=comment_id,json=commentId,proto3" json:"comment_id,omitempty"`
+	CommentId int32  `protobuf:"varint,1,opt,name=comment_id,json=commentId,proto3" json:"comment_id,omitempty"`
+	Password  string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 }
 
 func (x *DeleteCommentRequest) Reset() {
@@ -951,18 +951,18 @@ func (*DeleteCommentRequest) Descriptor() ([]byte, []int) {
 	return file_proto_service_message_post_proto_rawDescGZIP(), []int{18}
 }
 
-func (x *DeleteCommentRequest) GetPostId() int32 {
-	if x != nil {
-		return x.PostId
-	}
-	return 0
-}
-
 func (x *DeleteCommentRequest) GetCommentId() int32 {
 	if x != nil {
 		return x.CommentId
 	}
 	return 0
+}
+
+func (x *DeleteCommentRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
 }
 
 type DeleteCommentResponse struct {
@@ -1003,6 +1003,91 @@ func (*DeleteCommentResponse) Descriptor() ([]byte, []int) {
 	return file_proto_service_message_post_proto_rawDescGZIP(), []int{19}
 }
 
+type CheckValidCommentIdRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Cid int32 `protobuf:"varint,1,opt,name=cid,proto3" json:"cid,omitempty"`
+}
+
+func (x *CheckValidCommentIdRequest) Reset() {
+	*x = CheckValidCommentIdRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_service_message_post_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CheckValidCommentIdRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckValidCommentIdRequest) ProtoMessage() {}
+
+func (x *CheckValidCommentIdRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_service_message_post_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckValidCommentIdRequest.ProtoReflect.Descriptor instead.
+func (*CheckValidCommentIdRequest) Descriptor() ([]byte, []int) {
+	return file_proto_service_message_post_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *CheckValidCommentIdRequest) GetCid() int32 {
+	if x != nil {
+		return x.Cid
+	}
+	return 0
+}
+
+type CheckValidCommentIdResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CheckValidCommentIdResponse) Reset() {
+	*x = CheckValidCommentIdResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_service_message_post_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CheckValidCommentIdResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckValidCommentIdResponse) ProtoMessage() {}
+
+func (x *CheckValidCommentIdResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_service_message_post_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckValidCommentIdResponse.ProtoReflect.Descriptor instead.
+func (*CheckValidCommentIdResponse) Descriptor() ([]byte, []int) {
+	return file_proto_service_message_post_proto_rawDescGZIP(), []int{21}
+}
+
 type IncrementLikeRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1015,7 +1100,7 @@ type IncrementLikeRequest struct {
 func (x *IncrementLikeRequest) Reset() {
 	*x = IncrementLikeRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_service_message_post_proto_msgTypes[20]
+		mi := &file_proto_service_message_post_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1028,7 +1113,7 @@ func (x *IncrementLikeRequest) String() string {
 func (*IncrementLikeRequest) ProtoMessage() {}
 
 func (x *IncrementLikeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_service_message_post_proto_msgTypes[20]
+	mi := &file_proto_service_message_post_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1041,7 +1126,7 @@ func (x *IncrementLikeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IncrementLikeRequest.ProtoReflect.Descriptor instead.
 func (*IncrementLikeRequest) Descriptor() ([]byte, []int) {
-	return file_proto_service_message_post_proto_rawDescGZIP(), []int{20}
+	return file_proto_service_message_post_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *IncrementLikeRequest) GetPostId() int32 {
@@ -1067,7 +1152,7 @@ type IncrementLikeResponse struct {
 func (x *IncrementLikeResponse) Reset() {
 	*x = IncrementLikeResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_service_message_post_proto_msgTypes[21]
+		mi := &file_proto_service_message_post_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1080,7 +1165,7 @@ func (x *IncrementLikeResponse) String() string {
 func (*IncrementLikeResponse) ProtoMessage() {}
 
 func (x *IncrementLikeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_service_message_post_proto_msgTypes[21]
+	mi := &file_proto_service_message_post_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1093,7 +1178,7 @@ func (x *IncrementLikeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IncrementLikeResponse.ProtoReflect.Descriptor instead.
 func (*IncrementLikeResponse) Descriptor() ([]byte, []int) {
-	return file_proto_service_message_post_proto_rawDescGZIP(), []int{21}
+	return file_proto_service_message_post_proto_rawDescGZIP(), []int{23}
 }
 
 type DecrementLikeRequest struct {
@@ -1108,7 +1193,7 @@ type DecrementLikeRequest struct {
 func (x *DecrementLikeRequest) Reset() {
 	*x = DecrementLikeRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_service_message_post_proto_msgTypes[22]
+		mi := &file_proto_service_message_post_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1121,7 +1206,7 @@ func (x *DecrementLikeRequest) String() string {
 func (*DecrementLikeRequest) ProtoMessage() {}
 
 func (x *DecrementLikeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_service_message_post_proto_msgTypes[22]
+	mi := &file_proto_service_message_post_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1134,7 +1219,7 @@ func (x *DecrementLikeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DecrementLikeRequest.ProtoReflect.Descriptor instead.
 func (*DecrementLikeRequest) Descriptor() ([]byte, []int) {
-	return file_proto_service_message_post_proto_rawDescGZIP(), []int{22}
+	return file_proto_service_message_post_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *DecrementLikeRequest) GetPostId() int32 {
@@ -1160,7 +1245,7 @@ type DecrementLikeResponse struct {
 func (x *DecrementLikeResponse) Reset() {
 	*x = DecrementLikeResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_service_message_post_proto_msgTypes[23]
+		mi := &file_proto_service_message_post_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1173,7 +1258,7 @@ func (x *DecrementLikeResponse) String() string {
 func (*DecrementLikeResponse) ProtoMessage() {}
 
 func (x *DecrementLikeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_service_message_post_proto_msgTypes[23]
+	mi := &file_proto_service_message_post_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1186,7 +1271,7 @@ func (x *DecrementLikeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DecrementLikeResponse.ProtoReflect.Descriptor instead.
 func (*DecrementLikeResponse) Descriptor() ([]byte, []int) {
-	return file_proto_service_message_post_proto_rawDescGZIP(), []int{23}
+	return file_proto_service_message_post_proto_rawDescGZIP(), []int{25}
 }
 
 type CheckValidPostIdRequest struct {
@@ -1200,7 +1285,7 @@ type CheckValidPostIdRequest struct {
 func (x *CheckValidPostIdRequest) Reset() {
 	*x = CheckValidPostIdRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_service_message_post_proto_msgTypes[24]
+		mi := &file_proto_service_message_post_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1213,7 +1298,7 @@ func (x *CheckValidPostIdRequest) String() string {
 func (*CheckValidPostIdRequest) ProtoMessage() {}
 
 func (x *CheckValidPostIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_service_message_post_proto_msgTypes[24]
+	mi := &file_proto_service_message_post_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1226,7 +1311,7 @@ func (x *CheckValidPostIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckValidPostIdRequest.ProtoReflect.Descriptor instead.
 func (*CheckValidPostIdRequest) Descriptor() ([]byte, []int) {
-	return file_proto_service_message_post_proto_rawDescGZIP(), []int{24}
+	return file_proto_service_message_post_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *CheckValidPostIdRequest) GetPostId() int32 {
@@ -1245,7 +1330,7 @@ type CheckValidPostIdResponse struct {
 func (x *CheckValidPostIdResponse) Reset() {
 	*x = CheckValidPostIdResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_service_message_post_proto_msgTypes[25]
+		mi := &file_proto_service_message_post_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1258,7 +1343,7 @@ func (x *CheckValidPostIdResponse) String() string {
 func (*CheckValidPostIdResponse) ProtoMessage() {}
 
 func (x *CheckValidPostIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_service_message_post_proto_msgTypes[25]
+	mi := &file_proto_service_message_post_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1271,7 +1356,7 @@ func (x *CheckValidPostIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckValidPostIdResponse.ProtoReflect.Descriptor instead.
 func (*CheckValidPostIdResponse) Descriptor() ([]byte, []int) {
-	return file_proto_service_message_post_proto_rawDescGZIP(), []int{25}
+	return file_proto_service_message_post_proto_rawDescGZIP(), []int{27}
 }
 
 var File_proto_service_message_post_proto protoreflect.FileDescriptor
@@ -1361,34 +1446,39 @@ var file_proto_service_message_post_proto_rawDesc = []byte{
 	0x74, 0x12, 0x2c, 0x0a, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
 	0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x11, 0x74, 0x6f,
 	0x74, 0x61, 0x6c, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x22,
-	0x4e, 0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x73, 0x74, 0x5f,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64,
-	0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x22,
-	0x17, 0x0a, 0x15, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43, 0x0a, 0x14, 0x49, 0x6e, 0x63, 0x72,
+	0x51, 0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
+	0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f,
+	0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f,
+	0x72, 0x64, 0x22, 0x17, 0x0a, 0x15, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x6d,
+	0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2e, 0x0a, 0x1a, 0x43,
+	0x68, 0x65, 0x63, 0x6b, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
+	0x49, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x63, 0x69, 0x64, 0x22, 0x1d, 0x0a, 0x1b, 0x43,
+	0x68, 0x65, 0x63, 0x6b, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
+	0x49, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43, 0x0a, 0x14, 0x49, 0x6e,
+	0x63, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x6b, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x73, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x75,
+	0x75, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x75, 0x69, 0x64, 0x22,
+	0x17, 0x0a, 0x15, 0x49, 0x6e, 0x63, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x6b, 0x65,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43, 0x0a, 0x14, 0x44, 0x65, 0x63, 0x72,
 	0x65, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x6b, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
 	0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x73, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x05, 0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x75, 0x75, 0x69,
 	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x75, 0x69, 0x64, 0x22, 0x17, 0x0a,
-	0x15, 0x49, 0x6e, 0x63, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x6b, 0x65, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x43, 0x0a, 0x14, 0x44, 0x65, 0x63, 0x72, 0x65, 0x6d,
-	0x65, 0x6e, 0x74, 0x4c, 0x69, 0x6b, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17,
-	0x0a, 0x07, 0x70, 0x6f, 0x73, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
-	0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x75, 0x75, 0x69, 0x64, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x75, 0x69, 0x64, 0x22, 0x17, 0x0a, 0x15, 0x44,
-	0x65, 0x63, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x6b, 0x65, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x32, 0x0a, 0x17, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x56, 0x61, 0x6c,
-	0x69, 0x64, 0x50, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x17, 0x0a, 0x07, 0x70, 0x6f, 0x73, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05,
-	0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x22, 0x1a, 0x0a, 0x18, 0x43, 0x68, 0x65, 0x63,
-	0x6b, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x50, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x42, 0x37, 0x5a, 0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
-	0x6f, 0x6d, 0x2f, 0x64, 0x74, 0x63, 0x30, 0x33, 0x30, 0x31, 0x32, 0x2f, 0x6d, 0x65, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x15, 0x44, 0x65, 0x63, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x6b, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x32, 0x0a, 0x17, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x56,
+	0x61, 0x6c, 0x69, 0x64, 0x50, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x73, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x22, 0x1a, 0x0a, 0x18, 0x43, 0x68,
+	0x65, 0x63, 0x6b, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x50, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x37, 0x5a, 0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x74, 0x63, 0x30, 0x33, 0x30, 0x31, 0x32, 0x2f, 0x6d, 0x65,
+	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1403,46 +1493,48 @@ func file_proto_service_message_post_proto_rawDescGZIP() []byte {
 	return file_proto_service_message_post_proto_rawDescData
 }
 
-var file_proto_service_message_post_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
+var file_proto_service_message_post_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
 var file_proto_service_message_post_proto_goTypes = []interface{}{
-	(*UploadPostRequest)(nil),         // 0: v2.service.message.UploadPostRequest
-	(*UploadPostResponse)(nil),        // 1: v2.service.message.UploadPostResponse
-	(*FetchPostListRequest)(nil),      // 2: v2.service.message.FetchPostListRequest
-	(*FetchPostListResponse)(nil),     // 3: v2.service.message.FetchPostListResponse
-	(*FetchPostRequest)(nil),          // 4: v2.service.message.FetchPostRequest
-	(*FetchPostResponse)(nil),         // 5: v2.service.message.FetchPostResponse
-	(*DeletePostRequest)(nil),         // 6: v2.service.message.DeletePostRequest
-	(*DeletePostResponse)(nil),        // 7: v2.service.message.DeletePostResponse
-	(*UpdatePostRequest)(nil),         // 8: v2.service.message.UpdatePostRequest
-	(*UpdatePostResponse)(nil),        // 9: v2.service.message.UpdatePostResponse
-	(*CheckPostPasswordRequest)(nil),  // 10: v2.service.message.CheckPostPasswordRequest
-	(*CheckPostPasswordResponse)(nil), // 11: v2.service.message.CheckPostPasswordResponse
-	(*IncrementViewRequest)(nil),      // 12: v2.service.message.IncrementViewRequest
-	(*IncrementViewResponse)(nil),     // 13: v2.service.message.IncrementViewResponse
-	(*LeaveCommentRequest)(nil),       // 14: v2.service.message.LeaveCommentRequest
-	(*LeaveCommentResponse)(nil),      // 15: v2.service.message.LeaveCommentResponse
-	(*FetchCommentListRequest)(nil),   // 16: v2.service.message.FetchCommentListRequest
-	(*FetchCommentListResponse)(nil),  // 17: v2.service.message.FetchCommentListResponse
-	(*DeleteCommentRequest)(nil),      // 18: v2.service.message.DeleteCommentRequest
-	(*DeleteCommentResponse)(nil),     // 19: v2.service.message.DeleteCommentResponse
-	(*IncrementLikeRequest)(nil),      // 20: v2.service.message.IncrementLikeRequest
-	(*IncrementLikeResponse)(nil),     // 21: v2.service.message.IncrementLikeResponse
-	(*DecrementLikeRequest)(nil),      // 22: v2.service.message.DecrementLikeRequest
-	(*DecrementLikeResponse)(nil),     // 23: v2.service.message.DecrementLikeResponse
-	(*CheckValidPostIdRequest)(nil),   // 24: v2.service.message.CheckValidPostIdRequest
-	(*CheckValidPostIdResponse)(nil),  // 25: v2.service.message.CheckValidPostIdResponse
-	(*post.Data)(nil),                 // 26: v2.entity.post.data
-	(*post.Option)(nil),               // 27: v2.entity.post.option
-	(*post.Comment)(nil),              // 28: v2.entity.post.comment
+	(*UploadPostRequest)(nil),           // 0: v2.service.message.UploadPostRequest
+	(*UploadPostResponse)(nil),          // 1: v2.service.message.UploadPostResponse
+	(*FetchPostListRequest)(nil),        // 2: v2.service.message.FetchPostListRequest
+	(*FetchPostListResponse)(nil),       // 3: v2.service.message.FetchPostListResponse
+	(*FetchPostRequest)(nil),            // 4: v2.service.message.FetchPostRequest
+	(*FetchPostResponse)(nil),           // 5: v2.service.message.FetchPostResponse
+	(*DeletePostRequest)(nil),           // 6: v2.service.message.DeletePostRequest
+	(*DeletePostResponse)(nil),          // 7: v2.service.message.DeletePostResponse
+	(*UpdatePostRequest)(nil),           // 8: v2.service.message.UpdatePostRequest
+	(*UpdatePostResponse)(nil),          // 9: v2.service.message.UpdatePostResponse
+	(*CheckPostPasswordRequest)(nil),    // 10: v2.service.message.CheckPostPasswordRequest
+	(*CheckPostPasswordResponse)(nil),   // 11: v2.service.message.CheckPostPasswordResponse
+	(*IncrementViewRequest)(nil),        // 12: v2.service.message.IncrementViewRequest
+	(*IncrementViewResponse)(nil),       // 13: v2.service.message.IncrementViewResponse
+	(*LeaveCommentRequest)(nil),         // 14: v2.service.message.LeaveCommentRequest
+	(*LeaveCommentResponse)(nil),        // 15: v2.service.message.LeaveCommentResponse
+	(*FetchCommentListRequest)(nil),     // 16: v2.service.message.FetchCommentListRequest
+	(*FetchCommentListResponse)(nil),    // 17: v2.service.message.FetchCommentListResponse
+	(*DeleteCommentRequest)(nil),        // 18: v2.service.message.DeleteCommentRequest
+	(*DeleteCommentResponse)(nil),       // 19: v2.service.message.DeleteCommentResponse
+	(*CheckValidCommentIdRequest)(nil),  // 20: v2.service.message.CheckValidCommentIdRequest
+	(*CheckValidCommentIdResponse)(nil), // 21: v2.service.message.CheckValidCommentIdResponse
+	(*IncrementLikeRequest)(nil),        // 22: v2.service.message.IncrementLikeRequest
+	(*IncrementLikeResponse)(nil),       // 23: v2.service.message.IncrementLikeResponse
+	(*DecrementLikeRequest)(nil),        // 24: v2.service.message.DecrementLikeRequest
+	(*DecrementLikeResponse)(nil),       // 25: v2.service.message.DecrementLikeResponse
+	(*CheckValidPostIdRequest)(nil),     // 26: v2.service.message.CheckValidPostIdRequest
+	(*CheckValidPostIdResponse)(nil),    // 27: v2.service.message.CheckValidPostIdResponse
+	(*post.Data)(nil),                   // 28: v2.entity.post.data
+	(*post.Option)(nil),                 // 29: v2.entity.post.option
+	(*post.Comment)(nil),                // 30: v2.entity.post.comment
 }
 var file_proto_service_message_post_proto_depIdxs = []int32{
-	26, // 0: v2.service.message.UploadPostRequest.post:type_name -> v2.entity.post.data
-	27, // 1: v2.service.message.FetchPostListRequest.option:type_name -> v2.entity.post.option
-	26, // 2: v2.service.message.FetchPostListResponse.post_list:type_name -> v2.entity.post.data
-	26, // 3: v2.service.message.FetchPostResponse.post:type_name -> v2.entity.post.data
-	26, // 4: v2.service.message.UpdatePostRequest.post:type_name -> v2.entity.post.data
-	28, // 5: v2.service.message.LeaveCommentRequest.comment:type_name -> v2.entity.post.comment
-	28, // 6: v2.service.message.FetchCommentListResponse.comment_list:type_name -> v2.entity.post.comment
+	28, // 0: v2.service.message.UploadPostRequest.post:type_name -> v2.entity.post.data
+	29, // 1: v2.service.message.FetchPostListRequest.option:type_name -> v2.entity.post.option
+	28, // 2: v2.service.message.FetchPostListResponse.post_list:type_name -> v2.entity.post.data
+	28, // 3: v2.service.message.FetchPostResponse.post:type_name -> v2.entity.post.data
+	28, // 4: v2.service.message.UpdatePostRequest.post:type_name -> v2.entity.post.data
+	30, // 5: v2.service.message.LeaveCommentRequest.comment:type_name -> v2.entity.post.comment
+	30, // 6: v2.service.message.FetchCommentListResponse.comment_list:type_name -> v2.entity.post.comment
 	7,  // [7:7] is the sub-list for method output_type
 	7,  // [7:7] is the sub-list for method input_type
 	7,  // [7:7] is the sub-list for extension type_name
@@ -1697,7 +1789,7 @@ func file_proto_service_message_post_proto_init() {
 			}
 		}
 		file_proto_service_message_post_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*IncrementLikeRequest); i {
+			switch v := v.(*CheckValidCommentIdRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1709,7 +1801,7 @@ func file_proto_service_message_post_proto_init() {
 			}
 		}
 		file_proto_service_message_post_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*IncrementLikeResponse); i {
+			switch v := v.(*CheckValidCommentIdResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1721,7 +1813,7 @@ func file_proto_service_message_post_proto_init() {
 			}
 		}
 		file_proto_service_message_post_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DecrementLikeRequest); i {
+			switch v := v.(*IncrementLikeRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1733,7 +1825,7 @@ func file_proto_service_message_post_proto_init() {
 			}
 		}
 		file_proto_service_message_post_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DecrementLikeResponse); i {
+			switch v := v.(*IncrementLikeResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1745,7 +1837,7 @@ func file_proto_service_message_post_proto_init() {
 			}
 		}
 		file_proto_service_message_post_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckValidPostIdRequest); i {
+			switch v := v.(*DecrementLikeRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1757,6 +1849,30 @@ func file_proto_service_message_post_proto_init() {
 			}
 		}
 		file_proto_service_message_post_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DecrementLikeResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_service_message_post_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CheckValidPostIdRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_service_message_post_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CheckValidPostIdResponse); i {
 			case 0:
 				return &v.state
@@ -1775,7 +1891,7 @@ func file_proto_service_message_post_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_service_message_post_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   26,
+			NumMessages:   28,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -18,6 +18,27 @@ type Post struct {
 	mock.Mock
 }
 
+// CheckCommentPassword provides a mock function with given fields: ctx, tx, cid, password
+func (_m *Post) CheckCommentPassword(ctx context.Context, tx *sqlx.Tx, cid int32, password string) (bool, error) {
+	ret := _m.Called(ctx, tx, cid, password)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32, string) bool); ok {
+		r0 = rf(ctx, tx, cid, password)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int32, string) error); ok {
+		r1 = rf(ctx, tx, cid, password)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CheckPostPassword provides a mock function with given fields: ctx, tx, pid, password
 func (_m *Post) CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int32, password string) (bool, error) {
 	ret := _m.Called(ctx, tx, pid, password)
@@ -74,13 +95,13 @@ func (_m *Post) DeleteBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) error
 	return r0
 }
 
-// DeleteComment provides a mock function with given fields: ctx, tx, postId, commentId
-func (_m *Post) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
-	ret := _m.Called(ctx, tx, postId, commentId)
+// DeleteComment provides a mock function with given fields: ctx, tx, commentId, password
+func (_m *Post) DeleteComment(ctx context.Context, tx *sqlx.Tx, commentId int, password string) error {
+	ret := _m.Called(ctx, tx, commentId, password)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int) error); ok {
-		r0 = rf(ctx, tx, postId, commentId)
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, string) error); ok {
+		r0 = rf(ctx, tx, commentId, password)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -178,6 +199,29 @@ func (_m *Post) GetBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) ([]strin
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int32) error); ok {
 		r1 = rf(ctx, tx, pid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetComment provides a mock function with given fields: ctx, tx, cid
+func (_m *Post) GetComment(ctx context.Context, tx *sqlx.Tx, cid int32) ([]*entity.Comment, error) {
+	ret := _m.Called(ctx, tx, cid)
+
+	var r0 []*entity.Comment
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int32) []*entity.Comment); ok {
+		r0 = rf(ctx, tx, cid)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.Comment)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int32) error); ok {
+		r1 = rf(ctx, tx, cid)
 	} else {
 		r1 = ret.Error(1)
 	}

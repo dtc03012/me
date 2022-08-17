@@ -64,6 +64,27 @@ func (_m *DBService) CheckAdminPassword(ctx context.Context, tx *sqlx.Tx, passwo
 	return r0, r1
 }
 
+// CheckCommentPassword provides a mock function with given fields: ctx, tx, cid, password
+func (_m *DBService) CheckCommentPassword(ctx context.Context, tx *sqlx.Tx, cid int, password string) (bool, error) {
+	ret := _m.Called(ctx, tx, cid, password)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, string) bool); ok {
+		r0 = rf(ctx, tx, cid, password)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int, string) error); ok {
+		r1 = rf(ctx, tx, cid, password)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CheckPostPassword provides a mock function with given fields: ctx, tx, pid, password
 func (_m *DBService) CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int, password string) (bool, error) {
 	ret := _m.Called(ctx, tx, pid, password)
@@ -120,13 +141,13 @@ func (_m *DBService) DecrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uu
 	return r0
 }
 
-// DeleteComment provides a mock function with given fields: ctx, tx, postId, commentId
-func (_m *DBService) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
-	ret := _m.Called(ctx, tx, postId, commentId)
+// DeleteComment provides a mock function with given fields: ctx, tx, commentId, password
+func (_m *DBService) DeleteComment(ctx context.Context, tx *sqlx.Tx, commentId int, password string) error {
+	ret := _m.Called(ctx, tx, commentId, password)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, int) error); ok {
-		r0 = rf(ctx, tx, postId, commentId)
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int, string) error); ok {
+		r0 = rf(ctx, tx, commentId, password)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -146,6 +167,29 @@ func (_m *DBService) DeletePost(ctx context.Context, tx *sqlx.Tx, postId int) er
 	}
 
 	return r0
+}
+
+// FetchComment provides a mock function with given fields: ctx, tx, cid
+func (_m *DBService) FetchComment(ctx context.Context, tx *sqlx.Tx, cid int) (*post.Comment, error) {
+	ret := _m.Called(ctx, tx, cid)
+
+	var r0 *post.Comment
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, int) *post.Comment); ok {
+		r0 = rf(ctx, tx, cid)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*post.Comment)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, int) error); ok {
+		r1 = rf(ctx, tx, cid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // FetchCommentList provides a mock function with given fields: ctx, tx, opt

@@ -237,7 +237,16 @@ func (m *MeServer) DeleteComment(ctx context.Context, req *message.DeleteComment
 
 	defer tx.Rollback()
 
-	err = m.db.DeleteComment(ctx, tx, int(req.GetPostId()), int(req.GetCommentId()))
+	check, err := m.db.CheckCommentPassword(ctx, tx, int(req.GetCommentId()), req.GetPassword())
+	if err != nil {
+		return nil, err
+	}
+
+	if !check {
+		return nil, errors.New("password isn't correct")
+	}
+
+	err = m.db.DeleteComment(ctx, tx, int(req.GetCommentId()), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -297,4 +306,21 @@ func (m *MeServer) CheckValidPostId(ctx context.Context, req *message.CheckValid
 	}
 
 	return &message.CheckValidPostIdResponse{}, nil
+}
+
+func (m *MeServer) CheckValidCommentId(ctx context.Context, req *message.CheckValidCommentIdRequest) (*message.CheckValidCommentIdResponse, error) {
+
+	tx, err := m.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer tx.Rollback()
+
+	_, err = m.db.FetchComment(ctx, tx, int(req.GetCid()))
+	if err != nil {
+		return nil, err
+	}
+
+	return &message.CheckValidCommentIdResponse{}, nil
 }

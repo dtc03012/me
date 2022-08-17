@@ -38,13 +38,15 @@ func convertEntityPostList(postList []*entity.Post) []*post.Data {
 func convertEntityComment(c *entity.Comment) *post.Comment {
 
 	convertComment := &post.Comment{
-		PostId:   c.PostId,
-		Writer:   c.Writer,
-		Password: c.Comment,
-		IsExist:  c.IsExist,
-		Comment:  c.Comment,
-		LikeCnt:  c.LikeCnt,
-		CreateAt: timestamppb.New(c.CreateAt),
+		Id:        c.Id,
+		ParentCid: c.ParentCommentId,
+		PostId:    c.PostId,
+		Writer:    c.Writer,
+		Password:  c.Comment,
+		IsExist:   c.IsExist,
+		Comment:   c.Comment,
+		LikeCnt:   c.LikeCnt,
+		CreateAt:  timestamppb.New(c.CreateAt),
 	}
 
 	return convertComment

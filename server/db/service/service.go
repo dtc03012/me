@@ -41,9 +41,11 @@ type DBService interface {
 	IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error
 
 	LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *post.Comment) error
+	FetchComment(ctx context.Context, tx *sqlx.Tx, cid int) (*post.Comment, error)
 	FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*post.Comment, error)
-	DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error
+	DeleteComment(ctx context.Context, tx *sqlx.Tx, commentId int, password string) error
 	GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid int) (int32, error)
+	CheckCommentPassword(ctx context.Context, tx *sqlx.Tx, cid int, password string) (bool, error)
 
 	CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) (bool, error)
 	IncrementLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) error

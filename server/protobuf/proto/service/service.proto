@@ -131,4 +131,10 @@ service me {
       get: "/v2/check-valid-postId"
     };
   }
+
+  rpc CheckValidCommentId(service.message.CheckValidCommentIdRequest) returns (service.message.CheckValidCommentIdResponse) {
+    option (google.api.http) = {
+      get: "/v2/check-valid-commentId"
+    };
+  }
 }

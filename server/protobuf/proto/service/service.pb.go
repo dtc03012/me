@@ -35,7 +35,7 @@ var file_proto_service_service_proto_rawDesc = []byte{
 	0x67, 0x65, 0x2f, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6d, 0x65,
 	0x73, 0x73, 0x61, 0x67, 0x65, 0x2f, 0x70, 0x6f, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x32, 0xa8, 0x12, 0x0a, 0x02, 0x6d, 0x65, 0x12, 0x84, 0x01, 0x0a, 0x0d, 0x46, 0x69, 0x6e, 0x64,
+	0x32, 0xc4, 0x13, 0x0a, 0x02, 0x6d, 0x65, 0x12, 0x84, 0x01, 0x0a, 0x0d, 0x46, 0x69, 0x6e, 0x64,
 	0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x55, 0x49, 0x44, 0x12, 0x28, 0x2e, 0x76, 0x32, 0x2e, 0x73,
 	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x46,
 	0x69, 0x6e, 0x64, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x65, 0x71, 0x75,
@@ -181,11 +181,20 @@ var file_proto_service_service_proto_rawDesc = []byte{
 	0x67, 0x65, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x50, 0x6f, 0x73,
 	0x74, 0x49, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x1e, 0x82, 0xd3, 0xe4,
 	0x93, 0x02, 0x18, 0x12, 0x16, 0x2f, 0x76, 0x32, 0x2f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x2d, 0x76,
-	0x61, 0x6c, 0x69, 0x64, 0x2d, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x42, 0x2f, 0x5a, 0x2d, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x74, 0x63, 0x30, 0x33, 0x30,
-	0x31, 0x32, 0x2f, 0x6d, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x6c, 0x69, 0x64, 0x2d, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x12, 0x99, 0x01, 0x0a, 0x13,
+	0x43, 0x68, 0x65, 0x63, 0x6b, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
+	0x74, 0x49, 0x64, 0x12, 0x2e, 0x2e, 0x76, 0x32, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x56, 0x61,
+	0x6c, 0x69, 0x64, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x2f, 0x2e, 0x76, 0x32, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x56, 0x61,
+	0x6c, 0x69, 0x64, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12, 0x19, 0x2f, 0x76,
+	0x32, 0x2f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x2d, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x2d, 0x63, 0x6f,
+	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x42, 0x2f, 0x5a, 0x2d, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x74, 0x63, 0x30, 0x33, 0x30, 0x31, 0x32, 0x2f, 0x6d,
+	0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_proto_service_service_proto_goTypes = []interface{}{
@@ -206,23 +215,25 @@ var file_proto_service_service_proto_goTypes = []interface{}{
 	(*message.IncrementLikeRequest)(nil),         // 14: v2.service.message.IncrementLikeRequest
 	(*message.DecrementLikeRequest)(nil),         // 15: v2.service.message.DecrementLikeRequest
 	(*message.CheckValidPostIdRequest)(nil),      // 16: v2.service.message.CheckValidPostIdRequest
-	(*message.FindAdminUUIDResponse)(nil),        // 17: v2.service.message.FindAdminUUIDResponse
-	(*message.InsertAdminUUIDResponse)(nil),      // 18: v2.service.message.InsertAdminUUIDResponse
-	(*message.LoginAdminResponse)(nil),           // 19: v2.service.message.LoginAdminResponse
-	(*message.FetchDistrictWeatherResponse)(nil), // 20: v2.service.message.FetchDistrictWeatherResponse
-	(*message.UploadPostResponse)(nil),           // 21: v2.service.message.UploadPostResponse
-	(*message.FetchPostListResponse)(nil),        // 22: v2.service.message.FetchPostListResponse
-	(*message.FetchPostResponse)(nil),            // 23: v2.service.message.FetchPostResponse
-	(*message.DeletePostResponse)(nil),           // 24: v2.service.message.DeletePostResponse
-	(*message.UpdatePostResponse)(nil),           // 25: v2.service.message.UpdatePostResponse
-	(*message.CheckPostPasswordResponse)(nil),    // 26: v2.service.message.CheckPostPasswordResponse
-	(*message.IncrementViewResponse)(nil),        // 27: v2.service.message.IncrementViewResponse
-	(*message.LeaveCommentResponse)(nil),         // 28: v2.service.message.LeaveCommentResponse
-	(*message.FetchCommentListResponse)(nil),     // 29: v2.service.message.FetchCommentListResponse
-	(*message.DeleteCommentResponse)(nil),        // 30: v2.service.message.DeleteCommentResponse
-	(*message.IncrementLikeResponse)(nil),        // 31: v2.service.message.IncrementLikeResponse
-	(*message.DecrementLikeResponse)(nil),        // 32: v2.service.message.DecrementLikeResponse
-	(*message.CheckValidPostIdResponse)(nil),     // 33: v2.service.message.CheckValidPostIdResponse
+	(*message.CheckValidCommentIdRequest)(nil),   // 17: v2.service.message.CheckValidCommentIdRequest
+	(*message.FindAdminUUIDResponse)(nil),        // 18: v2.service.message.FindAdminUUIDResponse
+	(*message.InsertAdminUUIDResponse)(nil),      // 19: v2.service.message.InsertAdminUUIDResponse
+	(*message.LoginAdminResponse)(nil),           // 20: v2.service.message.LoginAdminResponse
+	(*message.FetchDistrictWeatherResponse)(nil), // 21: v2.service.message.FetchDistrictWeatherResponse
+	(*message.UploadPostResponse)(nil),           // 22: v2.service.message.UploadPostResponse
+	(*message.FetchPostListResponse)(nil),        // 23: v2.service.message.FetchPostListResponse
+	(*message.FetchPostResponse)(nil),            // 24: v2.service.message.FetchPostResponse
+	(*message.DeletePostResponse)(nil),           // 25: v2.service.message.DeletePostResponse
+	(*message.UpdatePostResponse)(nil),           // 26: v2.service.message.UpdatePostResponse
+	(*message.CheckPostPasswordResponse)(nil),    // 27: v2.service.message.CheckPostPasswordResponse
+	(*message.IncrementViewResponse)(nil),        // 28: v2.service.message.IncrementViewResponse
+	(*message.LeaveCommentResponse)(nil),         // 29: v2.service.message.LeaveCommentResponse
+	(*message.FetchCommentListResponse)(nil),     // 30: v2.service.message.FetchCommentListResponse
+	(*message.DeleteCommentResponse)(nil),        // 31: v2.service.message.DeleteCommentResponse
+	(*message.IncrementLikeResponse)(nil),        // 32: v2.service.message.IncrementLikeResponse
+	(*message.DecrementLikeResponse)(nil),        // 33: v2.service.message.DecrementLikeResponse
+	(*message.CheckValidPostIdResponse)(nil),     // 34: v2.service.message.CheckValidPostIdResponse
+	(*message.CheckValidCommentIdResponse)(nil),  // 35: v2.service.message.CheckValidCommentIdResponse
 }
 var file_proto_service_service_proto_depIdxs = []int32{
 	0,  // 0: v2.service.me.FindAdminUUID:input_type -> v2.service.message.FindAdminUUIDRequest
@@ -242,25 +253,27 @@ var file_proto_service_service_proto_depIdxs = []int32{
 	14, // 14: v2.service.me.IncrementLike:input_type -> v2.service.message.IncrementLikeRequest
 	15, // 15: v2.service.me.DecrementLike:input_type -> v2.service.message.DecrementLikeRequest
 	16, // 16: v2.service.me.CheckValidPostId:input_type -> v2.service.message.CheckValidPostIdRequest
-	17, // 17: v2.service.me.FindAdminUUID:output_type -> v2.service.message.FindAdminUUIDResponse
-	18, // 18: v2.service.me.InsertAdminUUID:output_type -> v2.service.message.InsertAdminUUIDResponse
-	19, // 19: v2.service.me.LoginAdmin:output_type -> v2.service.message.LoginAdminResponse
-	20, // 20: v2.service.me.FetchDistrictWeather:output_type -> v2.service.message.FetchDistrictWeatherResponse
-	21, // 21: v2.service.me.UploadPost:output_type -> v2.service.message.UploadPostResponse
-	22, // 22: v2.service.me.FetchPostList:output_type -> v2.service.message.FetchPostListResponse
-	23, // 23: v2.service.me.FetchPost:output_type -> v2.service.message.FetchPostResponse
-	24, // 24: v2.service.me.DeletePost:output_type -> v2.service.message.DeletePostResponse
-	25, // 25: v2.service.me.UpdatePost:output_type -> v2.service.message.UpdatePostResponse
-	26, // 26: v2.service.me.CheckPostPassword:output_type -> v2.service.message.CheckPostPasswordResponse
-	27, // 27: v2.service.me.IncrementView:output_type -> v2.service.message.IncrementViewResponse
-	28, // 28: v2.service.me.LeaveComment:output_type -> v2.service.message.LeaveCommentResponse
-	29, // 29: v2.service.me.FetchCommentList:output_type -> v2.service.message.FetchCommentListResponse
-	30, // 30: v2.service.me.DeleteComment:output_type -> v2.service.message.DeleteCommentResponse
-	31, // 31: v2.service.me.IncrementLike:output_type -> v2.service.message.IncrementLikeResponse
-	32, // 32: v2.service.me.DecrementLike:output_type -> v2.service.message.DecrementLikeResponse
-	33, // 33: v2.service.me.CheckValidPostId:output_type -> v2.service.message.CheckValidPostIdResponse
-	17, // [17:34] is the sub-list for method output_type
-	0,  // [0:17] is the sub-list for method input_type
+	17, // 17: v2.service.me.CheckValidCommentId:input_type -> v2.service.message.CheckValidCommentIdRequest
+	18, // 18: v2.service.me.FindAdminUUID:output_type -> v2.service.message.FindAdminUUIDResponse
+	19, // 19: v2.service.me.InsertAdminUUID:output_type -> v2.service.message.InsertAdminUUIDResponse
+	20, // 20: v2.service.me.LoginAdmin:output_type -> v2.service.message.LoginAdminResponse
+	21, // 21: v2.service.me.FetchDistrictWeather:output_type -> v2.service.message.FetchDistrictWeatherResponse
+	22, // 22: v2.service.me.UploadPost:output_type -> v2.service.message.UploadPostResponse
+	23, // 23: v2.service.me.FetchPostList:output_type -> v2.service.message.FetchPostListResponse
+	24, // 24: v2.service.me.FetchPost:output_type -> v2.service.message.FetchPostResponse
+	25, // 25: v2.service.me.DeletePost:output_type -> v2.service.message.DeletePostResponse
+	26, // 26: v2.service.me.UpdatePost:output_type -> v2.service.message.UpdatePostResponse
+	27, // 27: v2.service.me.CheckPostPassword:output_type -> v2.service.message.CheckPostPasswordResponse
+	28, // 28: v2.service.me.IncrementView:output_type -> v2.service.message.IncrementViewResponse
+	29, // 29: v2.service.me.LeaveComment:output_type -> v2.service.message.LeaveCommentResponse
+	30, // 30: v2.service.me.FetchCommentList:output_type -> v2.service.message.FetchCommentListResponse
+	31, // 31: v2.service.me.DeleteComment:output_type -> v2.service.message.DeleteCommentResponse
+	32, // 32: v2.service.me.IncrementLike:output_type -> v2.service.message.IncrementLikeResponse
+	33, // 33: v2.service.me.DecrementLike:output_type -> v2.service.message.DecrementLikeResponse
+	34, // 34: v2.service.me.CheckValidPostId:output_type -> v2.service.message.CheckValidPostIdResponse
+	35, // 35: v2.service.me.CheckValidCommentId:output_type -> v2.service.message.CheckValidCommentIdResponse
+	18, // [18:36] is the sub-list for method output_type
+	0,  // [0:18] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

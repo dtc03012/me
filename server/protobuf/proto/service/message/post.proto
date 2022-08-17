@@ -87,11 +87,18 @@ message FetchCommentListResponse {
 }
 
 message DeleteCommentRequest {
-  int32 post_id = 1;
-  int32 comment_id = 2;
+  int32 comment_id = 1;
+  string password = 2;
 }
 
 message DeleteCommentResponse {
+}
+
+message CheckValidCommentIdRequest {
+  int32 cid = 1;
+}
+
+message CheckValidCommentIdResponse {
 }
 
 message IncrementLikeRequest {

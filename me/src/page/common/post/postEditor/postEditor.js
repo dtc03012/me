@@ -148,12 +148,12 @@ export default function PostEditor(props) {
     return (
         <Box sx={{
             pt: 7,
-            pl: 50,
-            pr: 50,
             pb: 30,
         }}>
-            <Grid container direction="column" spacing={3} >
-                <Grid item>
+            <Grid container alignContent={"center"} direction="column" spacing={3} >
+                <Grid item sx={{
+                    width: "60%"
+                }}>
                     <TextField id="title" variant="standard" fullWidth inputProps={{
                         style: {
                             fontFamily: "Elice Digital Baeum",

@@ -208,6 +208,19 @@ func (dbs *dbService) LeaveComment(ctx context.Context, tx *sqlx.Tx, comment *po
 	return err
 }
 
+func (dbs *dbService) FetchComment(ctx context.Context, tx *sqlx.Tx, cid int) (*post.Comment, error) {
+	if cid <= 0 {
+		return nil, errors.New("fetch comment db service error: cid is out of range")
+	}
+
+	post, err := dbs.FetchComment(ctx, tx, cid)
+	if err != nil {
+		return nil, err
+	}
+
+	return post, err
+}
+
 func (dbs *dbService) FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *option.CommentOption) ([]*post.Comment, error) {
 
 	if opt == nil {
@@ -224,17 +237,13 @@ func (dbs *dbService) FetchCommentList(ctx context.Context, tx *sqlx.Tx, opt *op
 	return convertCommentList, nil
 }
 
-func (dbs *dbService) DeleteComment(ctx context.Context, tx *sqlx.Tx, postId int, commentId int) error {
-
-	if postId <= 0 {
-		return errors.New("delete comment db service error: post id is out of range")
-	}
+func (dbs *dbService) DeleteComment(ctx context.Context, tx *sqlx.Tx, commentId int, password string) error {
 
 	if commentId <= 0 {
 		return errors.New("delete comment db service error: comment id is out of range")
 	}
 
-	err := dbs.PostRepo.DeleteComment(ctx, tx, postId, commentId)
+	err := dbs.PostRepo.DeleteComment(ctx, tx, commentId, password)
 
 	return err
 }
@@ -251,6 +260,20 @@ func (dbs *dbService) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid
 	}
 
 	return int32(totalCount), nil
+}
+
+func (dbs *dbService) CheckCommentPassword(ctx context.Context, tx *sqlx.Tx, cid int, password string) (bool, error) {
+
+	if cid <= 0 {
+		return false, errors.New("check comment password db service error: cid is out of range")
+	}
+
+	check, err := dbs.PostRepo.CheckCommentPassword(ctx, tx, int32(cid), password)
+	if err != nil {
+		return false, err
+	}
+
+	return check, err
 }
 
 func (dbs *dbService) CheckUserLike(ctx context.Context, tx *sqlx.Tx, pid int, uuid string) (bool, error) {
