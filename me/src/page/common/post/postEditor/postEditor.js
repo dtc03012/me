@@ -45,13 +45,12 @@ function uploadPlugin(editor) {
 export default function PostEditor(props) {
 
     const canModifyPassword = (props.post === undefined)
-
+    
     const [title, setTitle] = useState(props.post !== undefined ? props.post.title : "");
     const [password, setPassword] = useState(props.post !== undefined ? props.post.password : "");
     const [editorContent,setEditorContent] = useState(props.post !== undefined ? props.post.content : "")
     const [tags, setTags] = useState(props.post !== undefined ? props.post.tags : [])
     const [inputTag, setInputTag] = useState("")
-    const [likeCnt, setLikeCnt] = useState(0)
     const [timeToReadMinute, setTimeToReadMinute] = useState(props.post !== undefined ? props.post.timeToReadMinute : 0)
     const [noticeCheck, setNoticeCheck] = useState(props.post !== undefined ? props.post.isNotice : false)
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
