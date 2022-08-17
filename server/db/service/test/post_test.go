@@ -28,7 +28,8 @@ func TestDBService_UploadPost(t *testing.T) {
 	}
 
 	svc, m := service.NewMockDBService()
-	m.PostRepo.On("InsertPost", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
+	m.PostRepo.On("InsertPost", mock.Anything, mock.Anything, mock.Anything).Return(1, nil).Once()
+	m.PostRepo.On("InsertBulkTag", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
 
 	err = svc.UploadPost(ctx, tx, postData)
 	assert.NoError(t, err)
@@ -36,7 +37,6 @@ func TestDBService_UploadPost(t *testing.T) {
 	err = svc.UploadPost(ctx, tx, nil)
 	assert.Error(t, err)
 
-	m.PostRepo.AssertNumberOfCalls(t, "InsertPost", 1)
 	m.PostRepo.AssertExpectations(t)
 }
 
@@ -102,7 +102,6 @@ func TestDBService_FetchPost(t *testing.T) {
 	postData := &entity.Post{
 		Title:            "title1",
 		Content:          "content1",
-		Tags:             []string{"tag1"},
 		Likes:            3,
 		Views:            1,
 		TimeToReadMinute: 1,
@@ -110,6 +109,7 @@ func TestDBService_FetchPost(t *testing.T) {
 
 	svc, m := service.NewMockDBService()
 	m.PostRepo.On("GetPost", mock.Anything, mock.Anything, mock.Anything).Return(postData, nil).Once()
+	m.PostRepo.On("GetBulkTag", mock.Anything, mock.Anything, mock.Anything).Return([]string{"tag1"}, nil).Once()
 
 	fetchPost, err := svc.FetchPost(ctx, tx, 1)
 	assert.NoError(t, err)
@@ -124,7 +124,6 @@ func TestDBService_FetchPost(t *testing.T) {
 	_, err = svc.FetchPost(ctx, tx, 0)
 	assert.Error(t, err)
 
-	m.PostRepo.AssertNumberOfCalls(t, "GetPost", 1)
 	m.PostRepo.AssertExpectations(t)
 }
 

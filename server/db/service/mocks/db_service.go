@@ -259,20 +259,20 @@ func (_m *DBService) GetTotalCommentCount(ctx context.Context, tx *sqlx.Tx, pid 
 	return r0, r1
 }
 
-// GetTotalPostCount provides a mock function with given fields: ctx, tx
-func (_m *DBService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32, error) {
-	ret := _m.Called(ctx, tx)
+// GetTotalPostCount provides a mock function with given fields: ctx, tx, opt
+func (_m *DBService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) (int32, error) {
+	ret := _m.Called(ctx, tx, opt)
 
 	var r0 int32
-	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx) int32); ok {
-		r0 = rf(ctx, tx)
+	if rf, ok := ret.Get(0).(func(context.Context, *sqlx.Tx, *option.PostOption) int32); ok {
+		r0 = rf(ctx, tx, opt)
 	} else {
 		r0 = ret.Get(0).(int32)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx) error); ok {
-		r1 = rf(ctx, tx)
+	if rf, ok := ret.Get(1).(func(context.Context, *sqlx.Tx, *option.PostOption) error); ok {
+		r1 = rf(ctx, tx, opt)
 	} else {
 		r1 = ret.Error(1)
 	}

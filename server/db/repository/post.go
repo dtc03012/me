@@ -200,11 +200,24 @@ func (a *post) UpdatePost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) e
 	return err
 }
 
-func (a *post) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int, error) {
+func (a *post) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) (int, error) {
 
 	var totalCount []int
 
-	err := tx.SelectContext(ctx, &totalCount, "SELECT COUNT(*) FROM board_post")
+	query := mysql.Select(goqu.COUNT("*")).From(goqu.T("board_post").As("bp"))
+
+	if opt.ClassificationType == option.ClassificationNotice {
+		query = query.Where(goqu.I("bp.is_notice").Eq(true))
+	} else {
+		query = query.Where(goqu.I("bp.is_notice").Eq(false))
+	}
+
+	sql, _, err := query.ToSQL()
+	if err != nil {
+		return 0, err
+	}
+
+	err = tx.SelectContext(ctx, &totalCount, sql)
 	if err != nil {
 		return 0, err
 	}

@@ -109,13 +109,17 @@ class PostBoard extends React.Component {
     }
 
     createPageHref = (page) => {
-        let url = "board?page=" + page.toString()
+        let url = "/board/lists?page=" + page.toString()
         if(this.queryOption !== "") {
             url += "&queryOption=" + this.queryOption
             url += "&queryString=" + this.queryString
             this.tags.forEach((tag) => {
                 url += "&tags=" + tag
             })
+        }
+
+        if(this.classificationOption !== ""){
+            url += "&classificationOption=" + this.classificationOption
         }
 
         return url

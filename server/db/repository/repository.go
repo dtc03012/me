@@ -21,7 +21,7 @@ type Post interface {
 	InsertPost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) (int, error)
 	DeletePost(ctx context.Context, tx *sqlx.Tx, pid int32) error
 	UpdatePost(ctx context.Context, tx *sqlx.Tx, post *entity.Post) error
-	GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int, error)
+	GetTotalPostCount(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) (int, error)
 	CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int32, password string) (bool, error)
 
 	GetBulkTag(ctx context.Context, tx *sqlx.Tx, pid int32) ([]string, error)

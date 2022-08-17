@@ -152,9 +152,9 @@ func (dbs *dbService) DeletePost(ctx context.Context, tx *sqlx.Tx, postId int) e
 	return err
 }
 
-func (dbs *dbService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32, error) {
+func (dbs *dbService) GetTotalPostCount(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) (int32, error) {
 
-	totalCount, err := dbs.PostRepo.GetTotalPostCount(ctx, tx)
+	totalCount, err := dbs.PostRepo.GetTotalPostCount(ctx, tx, opt)
 	if err != nil {
 		return 0, err
 	}

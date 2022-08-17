@@ -35,7 +35,7 @@ type DBService interface {
 	FetchPost(ctx context.Context, tx *sqlx.Tx, postId int) (*post.Data, error)
 	UpdatePost(ctx context.Context, tx *sqlx.Tx, postData *post.Data) error
 	DeletePost(ctx context.Context, tx *sqlx.Tx, postId int) error
-	GetTotalPostCount(ctx context.Context, tx *sqlx.Tx) (int32, error)
+	GetTotalPostCount(ctx context.Context, tx *sqlx.Tx, opt *option.PostOption) (int32, error)
 	CheckPostPassword(ctx context.Context, tx *sqlx.Tx, pid int, password string) (bool, error)
 
 	IncrementViews(ctx context.Context, tx *sqlx.Tx, postId int, uuid string) error

@@ -34,7 +34,7 @@ func (m *MeServer) FetchPostList(ctx context.Context, req *message.FetchPostList
 
 	defer tx.Rollback()
 
-	postList, err := m.db.FetchPostList(ctx, tx, &option.PostOption{
+	postOption := &option.PostOption{
 		SizeRange: &option.RangeOption{
 			Row:  int(req.GetRow()),
 			Size: int(req.GetSize()),
@@ -42,12 +42,15 @@ func (m *MeServer) FetchPostList(ctx context.Context, req *message.FetchPostList
 		ClassificationType: option.ClassificationTypeMap[req.GetOption().GetClassificationOption().String()],
 		QueryType:          option.QueryTypeMap[req.GetOption().GetQueryOption().String()],
 		Query:              req.GetOption().GetQuery(),
-	})
+	}
+
+	postList, err := m.db.FetchPostList(ctx, tx, postOption)
+
 	if err != nil {
 		return nil, err
 	}
 
-	totalPostCount, err := m.db.GetTotalPostCount(ctx, tx)
+	totalPostCount, err := m.db.GetTotalPostCount(ctx, tx, postOption)
 
 	for _, post := range postList {
 		post.IsLike, err = m.db.CheckUserLike(ctx, tx, int(post.Id), req.GetUuid())
