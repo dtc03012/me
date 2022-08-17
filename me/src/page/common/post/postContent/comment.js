@@ -17,10 +17,10 @@ export default function Comment(props) {
         }
 
         let date = new Date(timestamp)
-        let year = date.getUTCFullYear()
-        let month = date.getUTCMonth() + 1
-        let day = date.getUTCDate()
-        let hour = date.getUTCHours()
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let day = date.getDate()
+        let hour = date.getHours()
         let minute = date.getMinutes()
         return String(year) + ". " + String(month) + ". " + String(day) + ". " + addLeadingZeros(hour,2) + ":" + addLeadingZeros(minute,2)
     }
