@@ -18,6 +18,7 @@ export default function UpdatePost(props) {
 
     const [post, setPost] = useState({})
     const [postId, setPostId] = useState(0)
+    const [password, setPassword] = useState("")
     const [checkPassword, setCheckPassword] = useState(false)
     const [isValidPostId, setIsValidPostId] = useState(CheckStatus.LOADING)
 
@@ -31,20 +32,32 @@ export default function UpdatePost(props) {
         })
     },[paramPostId])
 
-    const requestCheckPassword = (password) => {
+    useEffect(() => {
+
+    }, [password])
+
+    const requestCheckPassword = (requestPassword, checkFailCallback) => {
+        setPassword(requestPassword)
         let url = "/v2/check-post-password"
         axios.post(url,{
             postId: postId,
-            password: password,
+            password: requestPassword,
         }).then( response => {
-            url = "/v2/fetch-board-post?postId=" + postId.toString()
-            axios.get(url).then( response => {
-                setPost(response.data.post)
-                setCheckPassword(true)
-            }).catch( err => {
-                console.log(err)
-                navigate("/error")
-            })
+            if(response.data.success){
+                url = "/v2/fetch-board-post?postId=" + postId.toString()
+                axios.get(url).then(response => {
+                    let postResponse = response.data.post
+                    postResponse.password = requestPassword
+                    console.log(postResponse)
+                    setPost(postResponse)
+                    setCheckPassword(true)
+                }).catch(err => {
+                    console.log(err)
+                    navigate("/error")
+                })
+            }else{
+                checkFailCallback()
+            }
         }).catch( err => {
             console.log(err)
             navigate("/error")

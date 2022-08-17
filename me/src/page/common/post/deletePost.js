@@ -28,7 +28,7 @@ export default function DeletePost(props) {
         })
     },[paramPostId])
 
-    const requestCheckPassword = (password, callback) => {
+    const requestCheckPassword = (password, checkFailCallback) => {
         let url = "/v2/delete-board-post"
         axios.post(url, {
             postId: postId,
@@ -37,7 +37,7 @@ export default function DeletePost(props) {
             navigate("/board/lists")
         }).catch( err => {
             console.log(err)
-            callback()
+            checkFailCallback()
         })
     }
 
