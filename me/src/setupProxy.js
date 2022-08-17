@@ -11,7 +11,7 @@ module.exports = function(app) {
     app.use(
         '/file',
         createProxyMiddleware({
-            target: 'https://me-server-7t4azswppa-du.a.run.app/',
+            target: 'https://me-file-server-7t4azswppa-du.a.run.app',
             changeOrigin: true,
         })
     );
