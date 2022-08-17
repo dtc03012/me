@@ -4,14 +4,14 @@ module.exports = function(app) {
     app.use(
         '/v2',
         createProxyMiddleware({
-            target: 'http://localhost:9000',
+            target: 'https://me-server-7t4azswppa-du.a.run.app/',
             changeOrigin: true,
         })
     );
     app.use(
         '/file',
         createProxyMiddleware({
-            target: 'http://localhost:8282',
+            target: 'https://me-server-7t4azswppa-du.a.run.app/',
             changeOrigin: true,
         })
     );
