@@ -4,8 +4,9 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Box from "@mui/material/Box";
 import {Button, Checkbox, Chip, FormControlLabel, FormGroup, Grid, Link, TextField, Typography} from "@mui/material";
 import "./postEditor.css"
-import axios from "axios";
 
+
+let try_file_upload_count = 0
 
 function uploadAdapter(loader) {
     return {
@@ -14,6 +15,7 @@ function uploadAdapter(loader) {
                 const body = new FormData();
                 loader.file.then((file) => {
                     body.append("file", file);
+                    try_file_upload_count = try_file_upload_count + 1
                     fetch(`/file/upload-file`, {
                         method: "post",
                         body: body,
@@ -26,9 +28,11 @@ function uploadAdapter(loader) {
                             resolve({
                                 default: `/file/get-file/${res.filename}`
                             });
+                            try_file_upload_count = try_file_upload_count - 1
                         })
                         .catch((err) => {
                             reject(err);
+                            try_file_upload_count = try_file_upload_count - 1
                         });
                 })
             });
@@ -121,15 +125,20 @@ export default function PostEditor(props) {
     }
 
     const uploadPost = () => {
-        props.requestPost({
-            title: title,
-            password: password,
-            writer: 'admin',
-            isNotice: noticeCheck,
-            content: editorContent,
-            timeToReadMinute: timeToReadMinute,
-            tags: tags,
-        })
+        if(try_file_upload_count === 0) {
+            props.requestPost({
+                title: title,
+                password: password,
+                writer: 'admin',
+                isNotice: noticeCheck,
+                content: editorContent,
+                timeToReadMinute: timeToReadMinute,
+                tags: tags,
+            })
+            return
+        }
+
+        alert("모든 파일이 업로드 되지 않았습니다.")
     }
 
     const handleTimeToReadMinuteTextFieldChange = (event) => {
@@ -158,6 +167,7 @@ export default function PostEditor(props) {
                         config={{
                             extraPlugins: [uploadPlugin],
                         }}
+                        data={editorContent}
                         editor={ClassicEditor}
                         onBlur={(event, editor) => {}}
                         onFocus={(event, editor) => {}}
